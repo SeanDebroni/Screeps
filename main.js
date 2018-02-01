@@ -6,6 +6,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleHauler = require('role.hauler');
 var roleScout = require('role.scout');
+var roleReserver = require('role.reserver');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -18,6 +19,7 @@ var taskIdle = require ('task.idle');
 var taskUpgradeRoom = require('task.upgradeRoom');
 var taskBuild = require ('task.build');
 var taskMoveToTarget = require('task.moveToTarget');
+var taskReserve = require('task.reserve');
 
 const profiler = require('profiler');
 
@@ -76,38 +78,6 @@ module.exports.loop = function ()
     roomControllerLogic.runRoomController(roomController);
   }
 
-/*
-        for(var spawn_name in Game.spawns) {
-            var spawn = Game.spawns[spawn_name];
-            if(true)
-            {
-              intelligentSpawner.recycleCreeps(spawn);
-              var notSpawning = true;
-              if(spawn.spawning != null) notSpawning = false;
-              if(notSpawning) notSpawning = intelligentSpawner.spawnHauler(spawn, spawn.room); //only spawns if needed to haul
-                var end3 = new Date().getTime();
-                var time3 = end3 - start;
-               console.log("time difference after spawnHaul: " + time3);
-
-              if(notSpawning) notSpawning = intelligentSpawner.spawnHarvester(spawn, spawn.room);
-                              var end4 = new Date().getTime();
-                var time4 = end4 - start;
-               console.log("time difference after spawnHarv: " + time4);
-              if(notSpawning) notSpawning = intelligentSpawner.spawnBuilder(spawn, spawn.room);
-                              var end5 = new Date().getTime();
-                var time5 = end5 - start;
-              console.log("time difference after spawnBuild: " + time5);
-              if(notSpawning) notSpawning = intelligentSpawner.spawnUpgrader(spawn, spawn.room);
-
-                                            var end6 = new Date().getTime();
-                var time6 = end6 - start;
-               console.log("time difference after spawnUPG: " + time6);
-               if(notSpawning) notspawning = intelligentSpawner.spawnScout(spawn, spawn.room);
-            }
-
-
-        }
-    }*/
 
     var end2 = new Date().getTime();
     var time2 = end2 - start;
@@ -132,6 +102,9 @@ module.exports.loop = function ()
             break;
           case CONST.ROLE_SCOUT:
             roleScout.run(creep);
+            break;
+          case CONST.ROLE_RESERVER:
+            roleReserver.run(creep);
             break;
           default:
             break;
@@ -179,6 +152,9 @@ module.exports.loop = function ()
           break;
         case CONST.TASK_MOVETOTARGET:
           taskMoveToTarget.run(creep);
+          break;
+        case CONST.TASK_RESERVE:
+          taskReserve.run(creep);
           break;
         default:
           break;

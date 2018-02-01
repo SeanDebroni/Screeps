@@ -92,6 +92,11 @@ function runExtensionRoom(extRoom, mainRoom)
   if(!didntMakeCreep) curSpawn = curSpawn+1;
   if(curSpawn >= notBusySpawns.length) return;
 
+  didntMakeCreep = intelligentSpawner.spawnReserver(notBusySpawns[curSpawn], extRoom, 1);
+
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+  if(curSpawn >= notBusySpawns.length) return;
+
 }
 
 module.exports =

@@ -3,6 +3,17 @@ const CONST = require('CONSTANTS');
 
 module.exports = {
 
+  makeBestReserver: function(homeRoom, workRoom, spawner, makeCreep)
+  {
+    var parts = [MOVE,MOVE,CLAIM,CLAIM];
+    var level =1;
+    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER+Game.time,{dryRun: true});
+    if(canMake != 0) return -1;
+
+    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER+Game.time,{memory:{homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_RESERVER, task: CONST.TASK_SPAWNING, lvl: level}});
+    return level;
+
+  },
   makeBestScout: function(homeRoom, workRoom, spawner, makeCreep)
   {
     var parts = [MOVE];

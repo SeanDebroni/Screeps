@@ -14,6 +14,21 @@ module.exports =
       spawner.recycleCreep(toRecycle[i]);
     }
   },
+  spawnReserver: function(spawner, workRoom, maxReservers)
+  {
+    if(maxReservers == 0) return;
+    var reservers= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
+    if(reservers.length < maxReservers)
+    {
+      var res = makeCreep.makeBestReserver(spawner.room, workRoom, spawner, true);
+      if(res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+    }
+  },
   spawnScout: function(spawner, workRoom, maxScouts)
   {
       if(maxScouts == 0) return;
