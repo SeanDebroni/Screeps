@@ -1,0 +1,146 @@
+Step 0: Hauler assignment. DONE WAITING ON DEBUG.
+Haulers given strict jobs to prioritize first? (each one to a source?)
+Given a source.
+if(no living assigned harvester) Looks around that source for any harvester creeps; assign to that one. (drive by source issues?) look at harvester task
+looks at the harvesters square first for dropped energy
+if nothing, looks at assigned work room for energy
+creep.memory.assignedHarvesterName
+creep.memory.assignedSourceID
+
+
+Step 1 - Give creeps rooms to work/live in. Make code not rely on what room the creep is currently in. // DONE
+
+Give every creep 2 things in memory
+
+creep.memory.homeRoom - This is the room that their associated base is located.
+This is used to return energy too.
+This is used to pull energy from for building and upgrading.
+
+creep.memory.workRoom - This is the room that they go to do their job in.
+This is used to harvest energy in by harvesters.
+This is used to pickup droppedEnergy from haulers.
+This is used to go to to build in, if assigned.
+This is used to go to to upgrade in, if assigned.
+
+This is used to go to to claim, if assigned.
+
+!!!
+Refactor all creeps references to rooms to take this into account. // DONE
+!!!
+
+
+Make a util function to get room from name. If doesn't exist default to current creep room. //DONE
+
+
+Step 1.5 Cachefind to work with multiple rooms to look in.  // I THINK THAT THIS IS UNNEEDED AND WILL BE HANDLED IN LATER REVIEW.
+
+refactor cacheFind to allow for putting in arrays of rooms.
+
+
+step 1.75
+
+Make creeps check workRoom for structures to get energy from/fill before hoomroom.
+This would be builders, upgraders, haulers\
+
+
+#######################     ABOVE IS FINISHED ############################################
+
+step 1.8
+
+make spawner check time to build each creep to use for crap, scale with type no just magic number
+
+Step 2 Make a room controller logic. Move all logic from spawner ( spawner should be dumb) to roomcontroller. roomcontroller should have a list of room, what type of room they are.
+
+USE FLAGS TO ASSIGN ROOMS TO ROOMCONTROLLERS.
+ALSO TO MAKE NEW ROOM CONTROLLERS.
+UNQIUE PREFIX FOR THAT.
+
+// QUESTION:
+Should I have spawners keep doing logic?
+NO
+
+Implement a roomscontroller Object in memory.
+
+What does this roomcontroller do?
+ONLY SPAWN CREEPS THAT ARE NOT HAULER/HARVESTER IF ROOM IS AT FULL CAPACITY OF EXTENSIONS AND SPAWN.
+  it maintains the rooms that are assigned to it.
+  room maintaince level is based on current status of room? (number of extensions, number of containers, roads? towers? room level?).
+
+    roomController.spawnCreepsIfNeeded();
+      roomController.spawnHarvesters();
+      etc.
+
+    roomController.buildBuildingsIfNeeded();
+      etc.
+
+README
+For current creeps.
+If time remaing < time it takes to spawn that creep + travel time to that creeps location (only for harvesters? maybe not worth. actually 100% worth for harvesters, not for haulers).
+Make a replacement.
+
+on spawners, do a chest if time to finish spawning <2?
+if so, if the spawning creep has a property of what creep it is being made to replace.
+Recycle that creeps
+(REPLACE CURRENT RECYCLE CODE WITH THIS. SMARTER.)
+README
+
+
+ code based on room level?
+ each room is either a base room, or a satellite of a base;
+
+ each room controller can have 1 base room, and any number of satellites.
+
+ On claiming + spawner built, unregister room from old and add to new.
+
+NOTE on logical progression of room.
+  RCL 1
+  1: make harvesters + haulers. (2 haulers per harvester) This can be as many rooms as it can handle. Manually add in rooms that make sense?
+  2: make an upgrader. fill source is the spawner.
+  3: make 2 builders
+  4: make a container near room controller for upgrader. REMEMBER THIS CONTAINER IN ROOM CONTROLLER. ASSIGN IT TO THE UPGRADERS AS TARGET FOR FILLING.
+  RCL 2
+  1: make as many extensions as possible.
+  2: make a container near base for builder.
+  3: add in a road worker/repairer. (Same role? sure);
+
+
+step 2.5
+
+Upgraders should be assigned a container/store id on creation. they should only get energy for upgrading from this one position. spawner at start, dedicated container/storage later.
+builders should be assigned a container/store id on creation. they should only fill from this position. This should start as spawner, move to container after spawn.
+creep.memory.fillFromID
+
+if said source is destroyed backup to using any.
+
+Step 3
+completely refactor all pathfinding code to actually fucking work well.
+
+Cache path from x to y, but also
+  1.store the path in creep memory.
+  2.store what step on the path the creep is on?
+  3.store the time that the creep has been stuck on the step for.
+
+what happens when a path fails.
+when creep tries to move,
+
+Step 3.5
+If builders have nothing to build, have them repair over upgrade. They are not optimized for room upgrading. upgraders are.
+
+Step 4
+Make a road worker. Priority last. WORK=CARRY=MOVE, MOVE > CARRY > WORK. 1 per room should be enough. other builders will help anyways.
+Seperate base builder from road builders
+Road builder does -
+IF: Energy is empty - Fill from base.
+ELSE: there are roads to be built, build them. - Find roads that are under constuction. assign targetID. assign task.build
+ELSE: if there are roads to repair, repair them. Find roads that have health < maxHealth. assign targetID. task.repair
+ELSE: find a cached path. From start, to finish, create roads buildings on that path. - I think I like this logic being here? one per room should be enough. task.makeRoads
+
+
+step 5:
+
+add code to roomcontroller that calculates the energy income (sources*9 per tick)
+and calculates the energy expenditures - Cost of creeps that are being built/1500, cost of maintaining roads and containersToFill
+Make sure that there is a surpluss of work of upgraders + work of builders/10
+If there is more, add an upgrader to fill it.
+Less, reduce the amount of work on upgraders.
+Budgets? make sure always run surplus?
