@@ -37,7 +37,7 @@ profiler.enable();
 module.exports.loop = function ()
 {
   profiler.wrap(function() {
-    roomController.init();
+    var roomControllers = roomController.init();
     console.log(" ");
 
 

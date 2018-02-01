@@ -1,23 +1,24 @@
 
 module.exports =
 {
-
+  //TODO: save and load this at some point rather then remaking it every time.
   init: function()
   {
-    if(Memory.roomControllers != undefined)
-    {
-      var roomControllers = JSON.parse(Memory.roomControllers);
-    }
-    if(roomControllers == undefined)
-    {
-      roomControllers = [];
-    }
+
+    roomControllers = [];
+    
     var flags = Game.flags;
 
     var flagNames = Object.keys(flags);
 
     for(var i = 0; i< flagNames.length; ++i)
     {
+      //lost sight of room TODO get IT BACK
+      if(flags[flagNames[i]].room == undefined) 
+      {
+          continue;
+      }
+
       var splitFlag = flagNames[i].split("-");
       if(splitFlag[0]=="RC" && splitFlag.length == 3)
       {
@@ -25,11 +26,14 @@ module.exports =
           {
             roomControllers[splitFlag[1]] = [];
           }
-          roomControllers[splitFlag[1]][splitFlag[2]] = flags[flagNames[i]].room.name;
+          var rc = roomControllers[splitFlag[1]];
+          rc[splitFlag[2]] = flags[flagNames[i]].room.name;
+          roomControllers[splitFlag[1]] = rc;
+
       }
     }
 
-    Memory.roomControllers = JSON.stringify([...roomControllers]);
+    return roomControllers;
 
 
   }
