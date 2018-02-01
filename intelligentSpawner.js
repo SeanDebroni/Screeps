@@ -16,7 +16,13 @@ module.exports =
   },
   spawnReserver: function(spawner, workRoom, maxReservers)
   {
-    if(maxReservers == 0) return;
+    if(maxReservers == 0) return true;
+
+    if(workRoom.controller.reservation != undefined)
+    {
+      if(workRoom.controller.reservation.ticksToEnd > 1000) return true;
+    }
+
     var reservers= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
     if(reservers.length < maxReservers)
     {
@@ -27,11 +33,11 @@ module.exports =
       }
     }
     return true;
-    }
+
   },
   spawnScout: function(spawner, workRoom, maxScouts)
   {
-      if(maxScouts == 0) return;
+      if(maxScouts == 0) return true;
 
       var scouts= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
       if(scouts.length<maxScouts)
@@ -46,7 +52,7 @@ module.exports =
   },
   spawnUpgrader: function(spawner, workRoom, maxUpgraders)
   {
-    if(maxUpgraders == 0) return;
+    if(maxUpgraders == 0) return true;
 
     var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == workRoom));
     if(upgraders.length < maxUpgraders)
@@ -78,7 +84,7 @@ module.exports =
 
   spawnBuilder: function(spawner, workRoom, maxBuilders)
   {
-    if(maxBuilders == 0 ) return;
+    if(maxBuilders == 0 ) return true;
 
     var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
 
@@ -110,7 +116,7 @@ module.exports =
   },
   spawnHauler: function(spawner, workRoom, maxHaulersPerSource)
   {
-    if(maxHaulersPerSource == 0) return;
+    if(maxHaulersPerSource == 0) return true;
 
     var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && creep.ticksToLive > 50));
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
