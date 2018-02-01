@@ -4,6 +4,11 @@ module.exports =
 
   init: function()
   {
+    var roomControllers = JSON.parse(Memory.roomControllers);
+    if(roomControllers == undefined)
+    {
+      roomControllers = [];
+    }
     var flags = Game.flags;
 
     var flagNames = Object.keys(flags);
@@ -11,16 +16,17 @@ module.exports =
     for(var i = 0; i< flagNames.length; ++i)
     {
       var splitFlag = flagNames[i].split("-");
-
       if(splitFlag[0]=="RC" && splitFlag.length == 3)
       {
-        //Memory.roomControllers.0000.M
-        //Memory.roomControllers.0000.E1
-        //Memory.roomControllers.0000.E2
-        Memory.roomControllers[splitFlag[1]][splitFlag[3]] = flags[flagName[i]].room;
-        console.log(flags[flagName[i]].room);
+          if(roomControllers[splitFlag[1]]==undefined)
+          {
+            roomControllers[splitFlag[1]] = [];
+          }
+          roomControllers[splitFlag[1]][splitFlag[2]] = flags[flagNames[i]].room.name;
       }
     }
+
+    Memory.roomControllers = JSON.stringify([...roomControllers]);
 
 
   }
