@@ -4,7 +4,10 @@ module.exports =
 
   init: function()
   {
-    var roomControllers = JSON.parse(Memory.roomControllers);
+    if(Memory.roomControllers != undefined)
+    {
+      var roomControllers = JSON.parse(Memory.roomControllers);
+    }
     if(roomControllers == undefined)
     {
       roomControllers = [];
