@@ -98,7 +98,7 @@ module.exports =
     if(maxHaulersPerSource == 0) return;
 
     var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && creep.ticksToLive > 50));
-    var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, spawner.room);
+    var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
 
 
     var sumCapac = 0;
@@ -133,13 +133,13 @@ module.exports =
     {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
-    //console.log("DROPPED ENERGY: "+droppedSum);
+    console.log("DROPPED ENERGY: "+droppedSum);
 
     //if we have too much shit on the ground, make a new hauler
     if(droppedSum > sumCapac)
     {
-        //console.log("we need a new or upgraded hauler");
-      var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, spawner.room);
+      //console.log("we need a new or upgraded hauler");
+      var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
       //Find the source that has the least amount of haulers assigned to it.
       var sourceLeastID = undefined;
       var sourceLeastCount = 99;
