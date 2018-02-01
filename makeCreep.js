@@ -96,15 +96,15 @@ module.exports = {
   },
   makeBestBuilder: function(homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [WORK,WORK,CARRY,MOVE];
+    var parts = [WORK,CARRY,MOVE];
     var level =1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_BUILDER+Game.time,{dryRun: true});
     if(canMake != 0) return -1;
     while(canMake == 0)
     {
-      if(level%3 == 1) parts.push(WORK);
-      else if(level %3 == 2) parts.push(CARRY);
-      else if(level %3 == 0) parts.push(MOVE);
+      if(level%3 == 2) parts.push(WORK);
+      else if(level %3 == 0) parts.push(CARRY);
+      else if(level %3 == 1) parts.push(MOVE);
       level = level+1;
       canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_BUILDER+Game.time,{dryRun: true});
     }
