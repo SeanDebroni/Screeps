@@ -24,7 +24,9 @@ const profiler = require('profiler');
 
 
 var towerLogic = require('towerLogic');
-var intelligentSpawner = require('intelligentSpawner')
+var intelligentSpawner = require('intelligentSpawner');
+var roomController = require('roomController');
+var dumbSpawner = require('dumbSpawner');
 var util = require('util');
 
 var cacheFind = require('cacheFind');
@@ -35,9 +37,10 @@ profiler.enable();
 module.exports.loop = function ()
 {
   profiler.wrap(function() {
+    roomController.init();
     console.log(" ");
 
-  
+
        console.log(Game.time);
 
   //console.log("CPU limit: "+ Game.cpu.limit);

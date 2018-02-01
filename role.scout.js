@@ -5,6 +5,7 @@ var roleScout =
 {
     run: function(creep)
     {
+      //hmm
       var flags = Game.flags;
       if(flags["scout"] != undefined)
       {
