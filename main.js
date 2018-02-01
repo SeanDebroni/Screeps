@@ -25,7 +25,7 @@ const profiler = require('profiler');
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
-var roomController = require('roomController');
+var roomControllerLogic = require('roomControllerLogic');
 var dumbSpawner = require('dumbSpawner');
 var util = require('util');
 
@@ -37,16 +37,13 @@ profiler.enable();
 module.exports.loop = function ()
 {
   profiler.wrap(function() {
-    var roomControllers = roomController.init();
     console.log(" ");
-
-
-       console.log(Game.time);
+    console.log(Game.time);
 
   //console.log("CPU limit: "+ Game.cpu.limit);
   //console.log("CPU ticklimit: "+ Game.cpu.tickLimit);
   //console.log("CPU bucket: "+ Game.cpu.bucket);
-      var start = new Date().getTime();
+  var start = new Date().getTime();
 
 
   var a = Game.time & 1023;
@@ -54,19 +51,32 @@ module.exports.loop = function ()
   {
       cacheMoveTo.cacheMoveToClear();
   }
-  cacheFind.cacheFindClear();
   var time = Game.time;
   var rand = Math.floor(Math.random() *100);
+
+  cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
 
-    for(var room_name in Game.rooms) {
-        var towers = cacheFind.findCached(CONST.CACHEFIND_MYTOWERS, Game.rooms[room_name]);
+  for(var room_name in Game.rooms)
+  {
+      var towers = cacheFind.findCached(CONST.CACHEFIND_MYTOWERS, Game.rooms[room_name]);
 
-        for(var i = 0; i<towers.length; ++i)
-        {
-          towerLogic.runTower(towers[i]);
-        }
+      for(var i = 0; i<towers.length; ++i)
+      {
+        towerLogic.runTower(towers[i]);
+      }
+  }
 
+  var allRoomControllers = roomControllerLogic.init();
+
+  var allRoomControllersKeys = Object.keys(allRoomControllers);
+  for(var i =0; i< allRoomControllersKeys.length; ++i)
+  {
+    var roomController = allRoomControllers[allRoomControllersKeys[i]]);
+    roomControllerLogic.runRoomController(roomController);
+  }
+
+/*
         for(var spawn_name in Game.spawns) {
             var spawn = Game.spawns[spawn_name];
             if(true)
@@ -97,8 +107,9 @@ module.exports.loop = function ()
 
 
         }
-    }
-         var end2 = new Date().getTime();
+    }*/
+
+    var end2 = new Date().getTime();
     var time2 = end2 - start;
     console.log("time difference after spawnAll: " + time2);
 

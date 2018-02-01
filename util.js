@@ -1,6 +1,20 @@
 var cacheMoveTo = require('cacheMoveTo');
 
 module.exports = {
+  getNotBusySpawns: function(room)
+  {
+    var spawns = cacheFind(CONST.CACHEFIND_SPAWNS, room);
+    var notBusySpawns = [];
+    //How many of them are spawning currently?
+    for(var i =0; i<spawns.length;++i)
+    {
+      if(spawn.spawning == null)
+      {
+        notBusySpawns.push(spawn);
+      }
+    }
+    return notBusySpawns;
+  },
   getHomeRoom: function(creep)
   {
     var ret = Game.rooms[creep.memory.homeRoom];

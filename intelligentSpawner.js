@@ -14,10 +14,12 @@ module.exports =
       spawner.recycleCreep(toRecycle[i]);
     }
   },
-  spawnScout: function(spawner, workRoom)
+  spawnScout: function(spawner, workRoom, maxScouts)
   {
+      if(maxScouts == 0) return;
+
       var scouts= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
-      if(scouts.length<1)
+      if(scouts.length<maxScouts)
       {
         var res = makeCreep.makeBestScout(spawner.room, workRoom, spawner, true);
         if(res != -1)
@@ -27,10 +29,12 @@ module.exports =
       }
       return true;
   },
-  spawnUpgrader: function(spawner, workRoom)
+  spawnUpgrader: function(spawner, workRoom, maxUpgraders)
   {
+    if(maxUpgraders == 0) return;
+
     var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == spawner.room));
-    if(upgraders.length < 2)
+    if(upgraders.length < maxUpgraders)
     {
     console.log("Making Upgrader since <3");
       var res = makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, true);
@@ -57,11 +61,13 @@ module.exports =
     return true;
   },
 
-  spawnBuilder: function(spawner, workRoom)
+  spawnBuilder: function(spawner, workRoom, maxBuilders)
   {
+    if(maxBuilders == 0 ) return;
+
     var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == spawner.room));
 
-    if(builders.length < 0)
+    if(builders.length < maxBuilders)
     {
       var res = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
       if(res != -1)
@@ -87,8 +93,9 @@ module.exports =
     return true;
 
   },
-  spawnHauler: function(spawner, workRoom)
+  spawnHauler: function(spawner, workRoom, maxHaulersPerSource)
   {
+    if(maxHaulersPerSource == 0) return;
 
     var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == spawner.room && creep.ticksToLive > 50));
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, spawner.room);
@@ -155,7 +162,7 @@ module.exports =
       }
       //console.log(sourceLeastCount + " SLC0");
       //console.log(sourceLeastID + " ID")
-      if(sourceLeastCount < 2)
+      if(sourceLeastCount < maxHaulersPerSource)
       {
           //console.log("NEW HAULER");
         var res = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, sourceLeastID);
