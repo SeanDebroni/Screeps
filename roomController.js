@@ -12,9 +12,13 @@ module.exports =
     {
       var splitFlag = flagNames[i].split("-");
 
-      if(splitFlag[0]=="RC")
+      if(splitFlag[0]=="RC" && splitFlag.length == 3)
       {
-        console.log(flagNames[i]);
+        //Memory.roomControllers.0000.M
+        //Memory.roomControllers.0000.E1
+        //Memory.roomControllers.0000.E2
+        Memory.roomControllers[splitFlag[1]][splitFlag[3]] = flags[flagName[i]].room;
+        console.log(flags[flagName[i]].room);
       }
     }
 
