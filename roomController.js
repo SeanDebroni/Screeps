@@ -6,15 +6,19 @@ module.exports =
   {
 
     roomControllers = [];
-    
+
     var flags = Game.flags;
 
     var flagNames = Object.keys(flags);
 
+    //Roomcontrollers has list of RC names.
+    //Each RC name has a bunch of room names
+    //Each room name has the real room name attached to it.
+    //I think this is good so that i can use what I name rooms to decide behavior
     for(var i = 0; i< flagNames.length; ++i)
     {
       //lost sight of room TODO get IT BACK
-      if(flags[flagNames[i]].room == undefined) 
+      if(flags[flagNames[i]].room == undefined)
       {
           continue;
       }
@@ -29,7 +33,6 @@ module.exports =
           var rc = roomControllers[splitFlag[1]];
           rc[splitFlag[2]] = flags[flagNames[i]].room.name;
           roomControllers[splitFlag[1]] = rc;
-
       }
     }
 
