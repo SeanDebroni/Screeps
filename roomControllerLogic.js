@@ -7,7 +7,7 @@ function runMainRoom(mainRoom)
     var notBusySpawns = util.getNotBusySpawns(mainRoom);
     if(notBusySpawns.length==0)
     {
-      console.log("All " + spawns.length + " spawns are spawning.");
+      console.log("All spawns are spawning.");
       return;
     }
 
@@ -19,32 +19,32 @@ function runMainRoom(mainRoom)
 
     var curSpawn = 0;
     var didntMakeCreep;
-    if(curSpawn > notBusySpawns.length) return;
+    if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[i], mainRoom, 2);
-
-    if(!didntMakeCreep) curSpawn = curSpawn+1;
-    if(curSpawn > notBusySpawns.length) return;
-
-    didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[i], mainRoom);
+    didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], mainRoom, 2);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
-    if(curSpawn > notBusySpawns.length) return;
+    if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[i], mainRoom, 0);
-
-    if(!didntMakeCreep) curSpawn = curSpawn+1;
-    if(curSpawn > notBusySpawns.length) return;
-
-    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[i], mainRoom, 2);
+    didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], mainRoom);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
-    if(curSpawn > notBusySpawns.length) return;
+    if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[i], mainRoom, 1);
+    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 0);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
-    if(curSpawn > notBusySpawns.length) return;
+    if(curSpawn >= notBusySpawns.length) return;
+
+    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 2);
+
+    if(!didntMakeCreep) curSpawn = curSpawn+1;
+    if(curSpawn >= notBusySpawns.length) return;
+
+    didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], mainRoom, 1);
+
+    if(!didntMakeCreep) curSpawn = curSpawn+1;
+    if(curSpawn >= notBusySpawns.length) return;
 
 }
 
@@ -53,7 +53,7 @@ function runExtensionRoom(extRoom, mainRoom)
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All " + spawns.length + " spawns are spawning.");
+    console.log("All  spawns are spawning.");
     return;
   }
 
@@ -65,32 +65,32 @@ function runExtensionRoom(extRoom, mainRoom)
 
   var curSpawn = 0;
   var didntMakeCreep;
-  if(curSpawn > notBusySpawns.length) return;
+  if(curSpawn >= notBusySpawns.length) return;
 
-  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[i], extRoom, 1);
-
-  if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn > notBusySpawns.length) return;
-
-  didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[i], extRoom);
+  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 1);
 
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn > notBusySpawns.length) return;
+  if(curSpawn >= notBusySpawns.length) return;
 
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[i], extRoom, 0);
-
-  if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn > notBusySpawns.length) return;
-
-  didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[i], extRoom, 0);
+  didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], extRoom);
 
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn > notBusySpawns.length) return;
+  if(curSpawn >= notBusySpawns.length) return;
 
-  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[i], extRoom, 0);
+  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], extRoom, 0);
 
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn > notBusySpawns.length) return;
+  if(curSpawn >= notBusySpawns.length) return;
+
+  didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], extRoom, 0);
+
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+  if(curSpawn >= notBusySpawns.length) return;
+
+  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], extRoom, 0);
+
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+  if(curSpawn >= notBusySpawns.length) return;
 
 }
 

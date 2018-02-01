@@ -196,7 +196,7 @@ module.exports =
   },
   spawnHarvester: function(spawner, workRoom)
   {
-    var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, spawner.room);
+    var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for(var i =0; i< sources.length; ++i )
     {
       var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == spawner.room && creep.memory.sID == sources[i].id && creep.ticksToLive > 31));

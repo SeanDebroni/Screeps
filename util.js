@@ -1,16 +1,19 @@
 var cacheMoveTo = require('cacheMoveTo');
+var cacheFind = require('cacheFind');
+const CONST = require('CONSTANTS');
+
 
 module.exports = {
   getNotBusySpawns: function(room)
   {
-    var spawns = cacheFind(CONST.CACHEFIND_SPAWNS, room);
+    var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, room);
     var notBusySpawns = [];
     //How many of them are spawning currently?
     for(var i =0; i<spawns.length;++i)
     {
-      if(spawn.spawning == null)
+      if(spawns[i].spawning == null)
       {
-        notBusySpawns.push(spawn);
+        notBusySpawns.push(spawns[i]);
       }
     }
     return notBusySpawns;
