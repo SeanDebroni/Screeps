@@ -8,7 +8,7 @@ module.exports =
 {
   recycleCreeps: function(spawner)
   {
-    var toRecycle = _.filter(Game.creeps, (creep) => ((creep.memory.task === CONST.TASK_WAITINGTOBERECYCLED) && util.getWorkRoom(creep) == spawner.room));
+    var toRecycle = _.filter(Game.creeps, (creep) => ((creep.memory.task === CONST.TASK_WAITINGTOBERECYCLED) && creep.room == spawner.room));
     for(var i =0; i<toRecycle.length; ++i)
     {
       spawner.recycleCreep(toRecycle[i]);
@@ -33,7 +33,7 @@ module.exports =
   {
     if(maxUpgraders == 0) return;
 
-    var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == spawner.room));
+    var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == workRoom));
     if(upgraders.length < maxUpgraders)
     {
     console.log("Making Upgrader since <3");
@@ -65,7 +65,7 @@ module.exports =
   {
     if(maxBuilders == 0 ) return;
 
-    var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == spawner.room));
+    var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
 
     if(builders.length < maxBuilders)
     {
@@ -97,7 +97,7 @@ module.exports =
   {
     if(maxHaulersPerSource == 0) return;
 
-    var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == spawner.room && creep.ticksToLive > 50));
+    var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && creep.ticksToLive > 50));
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, spawner.room);
 
 
@@ -199,9 +199,10 @@ module.exports =
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for(var i =0; i< sources.length; ++i )
     {
-      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == spawner.room && creep.memory.sID == sources[i].id && creep.ticksToLive > 31));
+      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > 31));
       if(harvesters2.length <1)
       {
+        console.log("adding harvester because source missing one");
         var res = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
         if(res != -1)
         {

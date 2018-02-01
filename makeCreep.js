@@ -22,6 +22,24 @@ module.exports = {
 
 
   },
+  makeBestRuggedHarvester:function(homeRoom, workRoom, spawner, sourceID, makeCreep)
+  {
+    var parts = [WORK,MOVE];
+    var level =1;
+    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HARVESTER+Game.time,{dryRun: true});
+    if(canMake != 0) return -1;
+    while(canMake == 0 && level < 10)
+    {
+      if(level%2 == 1) parts.push(MOVE);
+      if(level%2 == 2) parts.push(WORK);
+      level = level+1;
+      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HARVESTER+Game.time,{dryRun: true});
+    }
+    parts.pop();
+
+    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HARVESTER+Game.time, {memory:{homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_HARVESTER, task: CONST.TASK_SPAWNING, sID: sourceID, lvl: level-1}});
+    return level-1;
+  },
   makeBestHarvester: function(homeRoom, workRoom, spawner, sourceID, makeCreep)
   {
     var parts = [WORK,WORK,MOVE];

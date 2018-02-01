@@ -36,7 +36,7 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 2);
+    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 1);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
