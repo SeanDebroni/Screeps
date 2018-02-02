@@ -20,7 +20,7 @@ module.exports =
 
     if(workRoom.controller.reservation != undefined)
     {
-      if(workRoom.controller.reservation.ticksToEnd > 1000) return true;
+      if(workRoom.controller.reservation.ticksToEnd > 4500) return true;
     }
 
     var reservers= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
