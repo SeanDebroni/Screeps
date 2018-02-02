@@ -25,7 +25,7 @@ module.exports = {
     return level;
 
   },
-  makeBestScout: function(homeRoom, workRoom, spawner, makeCreep)
+  makeBestScout: function(homeRoom, workRoom, spawner, makeCreep, flagName)
   {
     var parts = [MOVE];
     var level =1;
@@ -39,7 +39,7 @@ module.exports = {
     }
     parts.pop();
 
-    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_SCOUT+Game.time,{memory:{homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_SCOUT, task: CONST.TASK_SPAWNING, lvl: level-1}});
+    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_SCOUT+Game.time,{memory:{targetID: flagName, homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_SCOUT, task: CONST.TASK_SPAWNING, lvl: level-1}});
     return level-1;
 
 

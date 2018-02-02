@@ -51,14 +51,21 @@ module.exports =
     return true;
 
   },
-  spawnScout: function(spawner, workRoom, maxScouts)
+  spawnScout: function(spawner, workRoom, maxScouts, flagTarget)
   {
       if(maxScouts == 0) return true;
-
-      var scouts= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
+      var scouts;
+      if(flagTarget == undefined)
+      {
+        scouts= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
+      }
+      else
+      {
+        scouts= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT) && creep.memory.targetID == flagTarget));
+      }
       if(scouts.length<maxScouts)
       {
-        var res = makeCreep.makeBestScout(spawner.room, workRoom, spawner, true);
+        var res = makeCreep.makeBestScout(spawner.room, workRoom, spawner, true, flagTarget);
         if(res != -1)
         {
           return false;

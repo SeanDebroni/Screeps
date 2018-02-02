@@ -77,7 +77,7 @@ module.exports.loop = function ()
   for(var i =0; i< allRoomControllersKeys.length; ++i)
   {
     var roomController = allRoomControllers[allRoomControllersKeys[i]];
-    roomControllerLogic.runRoomController(roomController);
+    roomControllerLogic.runRoomController(roomController, allRoomControllersKeys[i]);
   }
 
 

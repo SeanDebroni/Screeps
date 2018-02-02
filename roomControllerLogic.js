@@ -3,6 +3,19 @@ var util = require("util");
 var cacheFind = require("cacheFind");
 const CONST = require('CONSTANTS');
 
+
+function makeScoutForFlag(flagName,mainBaseRoom)
+{
+  var notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
+  if(notBusySpawns.length==0)
+  {
+    console.log("All spawns are spawning.");
+    return;
+  }
+  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
+
+}
+
 function runMainRoom(mainRoom)
 {
     var notBusySpawns = util.getNotBusySpawns(mainRoom);
@@ -42,7 +55,7 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], mainRoom, 1);
+    didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], mainRoom, 1, undefined);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
@@ -136,7 +149,7 @@ function runExtensionRoom(extRoom, mainRoom)
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
-  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], extRoom, 0);
+  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], extRoom, 0, undefined);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
@@ -168,7 +181,7 @@ module.exports =
       //lost sight of room TODO get IT BACK
       if(flags[flagNames[i]].room == undefined)
       {
-          continue;
+
       }
 
       var splitFlag = flagNames[i].split("-");
@@ -179,7 +192,14 @@ module.exports =
             roomControllers[splitFlag[1]] = [];
           }
           var rc = roomControllers[splitFlag[1]];
-          rc[splitFlag[2]] = flags[flagNames[i]].room.name;
+          if(flags[flagNames[i]].room != undefined)
+          {
+            rc[splitFlag[2]] = flags[flagNames[i]].room.name;
+          }
+          else
+          {
+            rc[splitFlag[2]] = undefined;
+          }
           roomControllers[splitFlag[1]] = rc;
       }
     }
@@ -189,10 +209,9 @@ module.exports =
 
   },
 
-  runRoomController: function(roomController)
+  runRoomController: function(roomController, rcName)
   {
     var rooms = Object.keys(roomController);
-
     var mainBaseRoom = Game.rooms[roomController["M"]];
     if(mainBaseRoom==undefined)
     {
@@ -216,7 +235,8 @@ module.exports =
         }
         else
         {
-          console.log("LOST SIGHT OF EXTENSION ROOM");
+          var flagName = "RC-" + rcName + "-"+ roomName;
+          makeScoutForFlag(flagName,mainBaseRoom);
         }
       }
     }
@@ -224,7 +244,6 @@ module.exports =
     {
       var roomName = rooms[i];
       var room = Game.rooms[roomController[rooms[i]]];
-
       if(roomName.startsWith("A"))
       {
         if(room!= undefined)
@@ -234,7 +253,8 @@ module.exports =
         }
         else
         {
-          console.log("LOST SIGHT OF Attack ROOM");
+          var flagName = "RC-" + rcName + "-"+ roomName;
+          makeScoutForFlag(flagName,mainBaseRoom);
         }
       }
 

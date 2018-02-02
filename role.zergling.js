@@ -6,6 +6,10 @@ var roleZergling = {
     run: function(creep)
     {
       var targRoom = Game.rooms[creep.memory.workRoom];
+      if(targRoom == undefined)
+      {
+        return;
+      }
        var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS,targRoom);
        var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS,targRoom);
 

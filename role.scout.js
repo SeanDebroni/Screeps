@@ -6,6 +6,13 @@ var roleScout =
     run: function(creep)
     {
       //hmm
+
+      if(creep.memory.targetID != undefined)
+      {
+        creep.memory.task = CONST.TASK_MOVETOTARGET;
+        return;
+      }
+
       var flags = Game.flags;
       if(flags["scout"] != undefined)
       {
