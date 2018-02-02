@@ -5,7 +5,7 @@ module.exports = {
 
   makeZergling: function(homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [MELEE,MOVE];
+    var parts = [ATTACK,MOVE];
     var level =1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING+Game.time,{dryRun: true});
     if(canMake != 0) return -1;

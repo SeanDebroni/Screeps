@@ -1,5 +1,6 @@
 var intelligentSpawner = require("intelligentSpawner");
 var util = require("util");
+var cacheFind = require("cacheFind");
 const CONST = require('CONSTANTS');
 
 function runMainRoom(mainRoom)
@@ -57,8 +58,8 @@ function runAttackRoom(attackRoom, mainRoom)
     return;
   }
 
-  var hostileCreeps = cachFind.findCached(CONST.CACHEFIND_HOSTILECREEPS);
-  var hostileBuildings = cachFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS);
+  var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, attackRoom);
+  var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS,attackRoom);
   var curSpawn = 0;
   var didntMakeCreep;
 
@@ -93,8 +94,8 @@ function runExtensionRoom(extRoom, mainRoom)
     intelligentSpawner.recycleCreeps(notBusySpawns[i]);
   }
 
-  var hostileCreeps = cachFind.findCached(CONST.CACHEFIND_HOSTILECREEPS);
-  var hostileBuildings = cachFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS);
+  var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
+  var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, extRoom);
   var curSpawn = 0;
   var didntMakeCreep;
 
@@ -105,7 +106,7 @@ function runExtensionRoom(extRoom, mainRoom)
     {
       if(curSpawn >= notBusySpawns.length) return;
 
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 10);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 5);
 
       if(!didntMakeCreep) curSpawn = curSpawn+1;
     }

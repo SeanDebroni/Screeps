@@ -1,8 +1,7 @@
 var taskKill = {
   run: function(creep)
   {
-    var target = Game.getObjectByID(creep.memory.targetID);
-
+    var target = Game.getObjectById(creep.memory.targetID);
     if(target == undefined)
     {
 
