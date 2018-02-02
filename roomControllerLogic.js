@@ -133,7 +133,7 @@ function runExtensionRoom(extRoom, mainRoom)
 
 
   if(curSpawn >= notBusySpawns.length) return;
-  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 1);
+  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 2);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;

@@ -85,7 +85,7 @@ module.exports = {
     var level =1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER+Game.time,{dryRun: true});
     if(canMake != 0) return -1;
-    while(canMake == 0 && level < 10)
+    while(canMake == 0 && level < 13)
     {
       parts.push(WORK);
       level = level+1;
