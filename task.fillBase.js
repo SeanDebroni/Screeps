@@ -16,13 +16,23 @@ var taskFillBaseUtil =
     }
     else
     {
-      //var baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, util.getWorkRoom(creep));
+      //var baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
       var baseToFill = (creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
         filter: (structure) =>
         {
             return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && (structure.energy < structure.energyCapacity);
         }
       }));
+      if(baseToFill == null)
+      {
+          baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
+      }
+      if(Array.isArray(baseToFill))
+      {
+          console.log("Used random since cannot find closest since different room");
+          baseToFill = baseToFill[Math.floor(Math.random() * baseToFill.length)];
+      }
+
       if(baseToFill)
       {
         creep.memory.targetID = baseToFill.id;
@@ -31,6 +41,7 @@ var taskFillBaseUtil =
       }
       else
       {
+          console.log("WHY HERE");
         var containersToFill = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSTOFILL, room);
         if(containersToFill.length>0)
         {

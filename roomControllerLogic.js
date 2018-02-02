@@ -18,6 +18,8 @@ function makeScoutForFlag(flagName,mainBaseRoom)
 
 function runMainRoom(mainRoom)
 {
+    var curSpawn = 0;
+
     var notBusySpawns = util.getNotBusySpawns(mainRoom);
     if(notBusySpawns.length==0)
     {
@@ -31,7 +33,6 @@ function runMainRoom(mainRoom)
       intelligentSpawner.recycleCreeps(notBusySpawns[i]);
     }
 
-    var curSpawn = 0;
     var didntMakeCreep;
     if(curSpawn >= notBusySpawns.length) return;
 
@@ -45,7 +46,7 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 0);
+    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 1);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
@@ -64,6 +65,8 @@ function runMainRoom(mainRoom)
 
 function runAttackRoom(attackRoom, mainRoom)
 {
+  var curSpawn = 0;
+
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
@@ -73,7 +76,6 @@ function runAttackRoom(attackRoom, mainRoom)
 
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, attackRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS,attackRoom);
-  var curSpawn = 0;
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
@@ -218,8 +220,26 @@ module.exports =
       console.log("ROOM CONTROLLER MISSING MAIN BASE FLAG. ABORT. ABORT. ABORT");
       return;
     }
-    console.log("RUNNING MAIN ROOM");
-    runMainRoom(mainBaseRoom);
+
+    for(var i = 0; i< rooms.length; ++i)
+    {
+      var roomName = rooms[i];
+      var room = Game.rooms[roomController[rooms[i]]];
+      if(roomName.startsWith("A"))
+      {
+        if(room!= undefined)
+        {
+          console.log("RUNNING ATTACK ROOM");
+          runAttackRoom(room, mainBaseRoom);
+        }
+        else
+        {
+          var flagName = "RC-" + rcName + "-"+ roomName;
+          makeScoutForFlag(flagName,mainBaseRoom);
+        }
+      }
+
+    }
 
     for(var i = 0; i< rooms.length; ++i)
     {
@@ -240,25 +260,12 @@ module.exports =
         }
       }
     }
-    for(var i = 0; i< rooms.length; ++i)
-    {
-      var roomName = rooms[i];
-      var room = Game.rooms[roomController[rooms[i]]];
-      if(roomName.startsWith("A"))
-      {
-        if(room!= undefined)
-        {
-          console.log("RUNNING ATTACK ROOM");
-          runAttackRoom(room, mainBaseRoom);
-        }
-        else
-        {
-          var flagName = "RC-" + rcName + "-"+ roomName;
-          makeScoutForFlag(flagName,mainBaseRoom);
-        }
-      }
 
-    }
+    console.log("RUNNING MAIN ROOM");
+    runMainRoom(mainBaseRoom);
+
+
+
   }
 
 

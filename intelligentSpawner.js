@@ -109,6 +109,8 @@ module.exports =
   {
     if(maxBuilders == 0 ) return true;
 
+    if(cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, workRoom).length ==0) return true;
+    
     var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
 
     if(builders.length < maxBuilders)
@@ -124,7 +126,7 @@ module.exports =
       var level = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, false);
       for(var i = 0; i<builders.length; ++i)
       {
-        if(level > builders[i].memory.lvl)
+        if(level > builders[i].memory.lvl+4)
         {
           makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
           builders[i].memory.targetID = -1;
@@ -221,7 +223,7 @@ module.exports =
         var level = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, false, 0);
         for(var i = 0; i<haulers.length; ++i)
         {
-          if(level > haulers[i].memory.lvl)
+          if(level > haulers[i].memory.lvl+4)
           {
             if(makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, haulers[i].assignedSourceID) != -1)
             {
@@ -243,7 +245,9 @@ module.exports =
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for(var i =0; i< sources.length; ++i )
     {
-      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > 31));
+      var ttspd = 31;
+      if(spawner.room!= workRoom) ttspd = 100;
+      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > ttspd));
       if(harvesters2.length <1)
       {
         console.log("adding harvester because source missing one");
