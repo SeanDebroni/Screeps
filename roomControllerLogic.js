@@ -48,8 +48,38 @@ function runMainRoom(mainRoom)
 
 }
 
+function runAttackRoom(attackRoom, mainRoom)
+{
+  var notBusySpawns = util.getNotBusySpawns(mainRoom);
+  if(notBusySpawns.length==0)
+  {
+    console.log("All  spawns are spawning.");
+    return;
+  }
+
+  var hostileCreeps = cachFind.findCached(CONST.CACHEFIND_HOSTILECREEPS);
+  var hostileBuildings = cachFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS);
+  var curSpawn = 0;
+  var didntMakeCreep;
+
+  //if theres a hostile creep, GO GO GO KILLLLL
+  if(hostileCreeps.length>0 || hostileBuildings.length > 0)
+  {
+    for(var z = 0; z<3; ++z)
+    {
+      if(curSpawn >= notBusySpawns.length) return;
+
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 10);
+
+      if(!didntMakeCreep) curSpawn = curSpawn+1;
+    }
+  }
+
+}
+
 function runExtensionRoom(extRoom, mainRoom)
 {
+
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
@@ -63,8 +93,26 @@ function runExtensionRoom(extRoom, mainRoom)
     intelligentSpawner.recycleCreeps(notBusySpawns[i]);
   }
 
+  var hostileCreeps = cachFind.findCached(CONST.CACHEFIND_HOSTILECREEPS);
+  var hostileBuildings = cachFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS);
   var curSpawn = 0;
   var didntMakeCreep;
+
+  //if theres a hostile creep, GO GO GO KILLLLL
+  if(hostileCreeps.length>0 || hostileBuildings.length > 0)
+  {
+    for(var z = 0; z<3; ++z)
+    {
+      if(curSpawn >= notBusySpawns.length) return;
+
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 10);
+
+      if(!didntMakeCreep) curSpawn = curSpawn+1;
+    }
+  }
+
+
+
   if(curSpawn >= notBusySpawns.length) return;
 
   didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 1);
@@ -169,6 +217,18 @@ module.exports =
         else
         {
           console.log("LOST SIGHT OF EXTENSION ROOM");
+        }
+      }
+      else if (roomName.startsWith("A"))
+      {
+        if(room!= undefined)
+        {
+          console.log("RUNNING EXTENSION ROOM");
+          runAttackRoom(room, mainBaseRoom);
+        }
+        else
+        {
+          console.log("LOST SIGHT OF ATTACK ROOM");
         }
       }
 

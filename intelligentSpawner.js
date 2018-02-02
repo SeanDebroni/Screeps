@@ -14,6 +14,22 @@ module.exports =
       spawner.recycleCreep(toRecycle[i]);
     }
   },
+  spawnZergling: function(spawner, workRoom, maxZerglings)
+  {
+      if(maxZerglings == 0) return true;
+      var lings= _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_ZERGLING) && util.getWorkRoom(creep) == workRoom));
+
+      if(lings.length < maxZerglings)
+      {
+        var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true);
+        if(res != -1)
+        {
+          return false;
+        }
+      }
+      return true;
+
+  },
   spawnReserver: function(spawner, workRoom, maxReservers)
   {
     if(maxReservers == 0) return true;

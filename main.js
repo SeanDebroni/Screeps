@@ -7,6 +7,7 @@ var roleBuilder = require('role.builder');
 var roleHauler = require('role.hauler');
 var roleScout = require('role.scout');
 var roleReserver = require('role.reserver');
+var roleZergling = require('role.zergling');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -20,6 +21,7 @@ var taskUpgradeRoom = require('task.upgradeRoom');
 var taskBuild = require ('task.build');
 var taskMoveToTarget = require('task.moveToTarget');
 var taskReserve = require('task.reserve');
+var taskKill = require('task.kill');
 
 const profiler = require('profiler');
 
@@ -106,6 +108,9 @@ module.exports.loop = function ()
           case CONST.ROLE_RESERVER:
             roleReserver.run(creep);
             break;
+          case CONST.ROLE_ZERGLING:
+            roleZergling.run(creep);
+            break;
           default:
             break;
         }
@@ -119,7 +124,9 @@ module.exports.loop = function ()
 
         switch(creep.memory.task)
         {
-
+        case CONST.TASK_KILL:
+          taskKill.run(creep);
+          break;
         case CONST.TASK_FILLBASE:
           taskFillBase.run(creep);
           break;
