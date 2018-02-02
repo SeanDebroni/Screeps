@@ -9,7 +9,7 @@ var taskRecycle =
   {
     if(creep.memory.targetID != -1)
     {
-      var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, util.getWorkRoom(creep));
+      var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, util.getHomeRoom(creep));
       if(spawns.length >0)
       {
           creep.memory.targetID = spawns[0].id;
@@ -38,7 +38,7 @@ var taskRecycle =
     }
     else
     {
-      var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, util.getWorkRoom(creep));
+      var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, util.getHomeRoom(creep));
       if(spawns.length>0)
       {
         creep.memory.targetID = spawns[0].id;
