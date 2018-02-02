@@ -70,11 +70,16 @@ function runAttackRoom(attackRoom, mainRoom)
     {
       if(curSpawn >= notBusySpawns.length) return;
 
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 10);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 5);
 
       if(!didntMakeCreep) curSpawn = curSpawn+1;
     }
   }
+
+  if(curSpawn >= notBusySpawns.length) return;
+
+  //didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], attackRoom, 1);
+
 
 }
 
@@ -115,35 +120,29 @@ function runExtensionRoom(extRoom, mainRoom)
 
 
   if(curSpawn >= notBusySpawns.length) return;
-
   didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 1);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn >= notBusySpawns.length) return;
 
+  if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], extRoom);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn >= notBusySpawns.length) return;
 
+  if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], extRoom, 0);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn >= notBusySpawns.length) return;
 
+  if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], extRoom, 0);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
-  if(curSpawn >= notBusySpawns.length) return;
 
+  if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], extRoom, 0);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
+
   if(curSpawn >= notBusySpawns.length) return;
-
   didntMakeCreep = intelligentSpawner.spawnReserver(notBusySpawns[curSpawn], extRoom, 1);
-
   if(!didntMakeCreep) curSpawn = curSpawn+1;
+
   if(curSpawn >= notBusySpawns.length) return;
 
 }
@@ -220,19 +219,24 @@ module.exports =
           console.log("LOST SIGHT OF EXTENSION ROOM");
         }
       }
-      else if (roomName.startsWith("A"))
+    }
+    for(var i = 0; i< rooms.length; ++i)
+    {
+      var roomName = rooms[i];
+      var room = Game.rooms[roomController[rooms[i]]];
+
+      if(roomName.startsWith("A"))
       {
         if(room!= undefined)
         {
-          console.log("RUNNING EXTENSION ROOM");
+          console.log("RUNNING ATTACK ROOM");
           runAttackRoom(room, mainBaseRoom);
         }
         else
         {
-          console.log("LOST SIGHT OF ATTACK ROOM");
+          console.log("LOST SIGHT OF Attack ROOM");
         }
       }
-
 
     }
   }

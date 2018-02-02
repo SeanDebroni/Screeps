@@ -15,6 +15,15 @@ module.exports = {
 
     switch(whatToFind)
     {
+      case CONST.CACHEFIND_WALLS:
+        var a = (room.find(FIND_STRUCTURES, {
+          filter: (structure) =>
+          {
+              return ( structure.structureType == STRUCTURE_WALL);
+          }
+        }));
+        cache.set(key,a);
+        break;
       case CONST.CACHEFIND_HOSTILECREEPS:
         var a = (room.find(FIND_HOSTILE_STRUCTURES));
         cache.set(key, a);
