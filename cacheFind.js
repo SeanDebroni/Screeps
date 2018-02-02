@@ -24,12 +24,17 @@ module.exports = {
         }));
         cache.set(key,a);
         break;
-      case CONST.CACHEFIND_HOSTILECREEPS:
-        var a = (room.find(FIND_HOSTILE_STRUCTURES));
+      case CONST.CACHEFIND_HOSTILEBUILDINGS:
+        var a = (room.find(FIND_HOSTILE_STRUCTURES, {
+              filter: (structure) =>
+              {
+                  return (structure.structureType != STRUCTURE_CONTROLLER);
+              }
+          } ));
         cache.set(key, a);
         break;
 
-      case CONST.CACHEFIND_HOSTILEBUILDINGS:
+      case CONST.CACHEFIND_HOSTILECREEPS:
         var a = (room.find(FIND_HOSTILE_CREEPS));
         cache.set(key, a);
         break;
