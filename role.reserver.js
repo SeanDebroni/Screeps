@@ -6,9 +6,29 @@ var roleReserver =
 {
   run: function(creep)
   {
-    if(creep.reserveController(util.getWorkRoom(creep).controller) == ERR_NOT_IN_RANGE)
+    var controller = util.getWorkRoom(creep).controller;
+
+    if(controller==undefined)
+    {
+      return;
+    }
+    var controller = util.getWorkRoom(creep).controller;
+    var err = creep.reserveController(controller);
+    if(err == ERR_NOT_IN_RANGE)
     {
       cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep).controller);
+    }
+    else if(err == ERR_NOT_OWNER)
+    {
+      err = creep.attackController(controller);
+      if(err == ERR_NOT_IN_RANGE)
+      {
+        cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep).controller);
+      }
+      else
+      {
+        creep.memory.task = CONST.TASK_RESERVE;
+      }
     }
     else
     {

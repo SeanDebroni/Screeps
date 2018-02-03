@@ -3,8 +3,17 @@ var taskReserve =
 {
   run: function(creep)
   {
-    var err = creep.reserveController(util.getWorkRoom(creep).controller);
-    if(err!=0)
+    var controller = util.getWorkRoom(creep).controller;
+    var err = creep.reserveController(controller);
+    if(err== ERR_NOT_OWNER)
+    {
+      err = creep.attackController(controller);
+      if(err!=0)
+      {
+        creep.memory.task = creep.memory.role;
+      }
+    }
+    else if( err!= 0)
     {
       creep.memory.task = creep.memory.role;
     }

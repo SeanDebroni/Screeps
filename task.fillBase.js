@@ -17,6 +17,7 @@ var taskFillBaseUtil =
     else
     {
       //var baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
+      //This only works if creep is in same room. Hmmmmmm.HRM. TODO find path to room, then entrance would use, then from that entrance find closest to fill.
       var baseToFill = (creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
         filter: (structure) =>
         {
@@ -26,13 +27,11 @@ var taskFillBaseUtil =
       if(baseToFill == null)
       {
           baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
-      }
+      }          
       if(Array.isArray(baseToFill))
       {
-          console.log("Used random since cannot find closest since different room");
           baseToFill = baseToFill[Math.floor(Math.random() * baseToFill.length)];
       }
-
       if(baseToFill)
       {
         creep.memory.targetID = baseToFill.id;
@@ -41,7 +40,6 @@ var taskFillBaseUtil =
       }
       else
       {
-          console.log("WHY HERE");
         var containersToFill = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSTOFILL, room);
         if(containersToFill.length>0)
         {

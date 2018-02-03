@@ -245,8 +245,8 @@ module.exports =
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for(var i =0; i< sources.length; ++i )
     {
-      var ttspd = 31;
-      if(spawner.room!= workRoom) ttspd = 100;
+      var ttspd = 40;
+      if(spawner.room!= workRoom) ttspd = 200;
       var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > ttspd));
       if(harvesters2.length <1)
       {
