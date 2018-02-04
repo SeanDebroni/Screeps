@@ -1,17 +1,19 @@
-var taskMoveToTarget=
-{
-  run: function(creep)
+var taskMoveToTarget = {
+  run: function (creep)
   {
     var target = Game.flags[creep.memory.targetID];
 
-    if(target != undefined)
+    if (target != undefined)
     {
-      if(target.pos.x == creep.pos.x && target.pos.y == creep.pos.y)
+      if (target.pos.x == creep.pos.x && target.pos.y == creep.pos.y)
       {
         creep.memory.task = creep.memory.role;
       }
     }
-    var err = creep.moveTo(target, {rememberPath: 50});
+    var err = creep.moveTo(target,
+    {
+      rememberPath: 50
+    });
 
   }
 

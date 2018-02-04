@@ -1,8 +1,7 @@
-var taskSpawning =
-{
-  run: function(creep)
+var taskSpawning = {
+  run: function (creep)
   {
-    if(!creep.spawning)
+    if (!creep.spawning)
     {
       creep.memory.task = creep.memory.role;
     }

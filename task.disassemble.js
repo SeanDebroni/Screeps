@@ -1,9 +1,8 @@
-var taskDisassemble =
-{
-  run: function(creep)
+var taskDisassemble = {
+  run: function (creep)
   {
     var flag = Game.flags[creep.memory.targetID];
-    if(flag==undefined)
+    if (flag == undefined)
     {
       creep.suicide();
       return;
@@ -11,15 +10,15 @@ var taskDisassemble =
     var working = false;
     var whatsThere = creep.room.lookAt(flag.pos.x, flag.pos.y);
 
-    for(var i =0; i< whatsThere.length; ++i)
+    for (var i = 0; i < whatsThere.length; ++i)
     {
-      if(whatsThere[i].type == 'structure')
+      if (whatsThere[i].type == 'structure')
       {
         creep.dismantle(whatsThere[i].structure);
-        working=true;
+        working = true;
       }
     }
-    if(!working)
+    if (!working)
     {
       flag.remove();
       creep.suicide();

@@ -4,9 +4,9 @@ const cacheFind = require('cacheFind');
 
 module.exports = {
 
-  runTower: function(tower)
+  runTower: function (tower)
   {
-    if(tower)
+    if (tower)
     {
       var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
@@ -15,13 +15,13 @@ module.exports = {
       var toRepair = damagedStructures[Math.floor(Math.random() * damagedStructures.length)];
 
 
-      if(closestHostile)
+      if (closestHostile)
       {
-          tower.attack(closestHostile);
+        tower.attack(closestHostile);
       }
-      if(toRepair)
+      if (toRepair)
       {
-          tower.repair(toRepair);
+        tower.repair(toRepair);
       }
 
 

@@ -1,7 +1,5 @@
-var taskWaitingToBeRecycled =
-{
-  run: function(creep)
-  {
+var taskWaitingToBeRecycled = {
+  run: function (creep) {
 
   }
 

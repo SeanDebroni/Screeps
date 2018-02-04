@@ -3,17 +3,16 @@ var util = require("util");
 const CONST = require("CONSTANTS");
 var cacheFind = require("cacheFind");
 
-var taskFillFromBaseUtil =
-{
+var taskFillFromBaseUtil = {
 
 }
 
 var taskFillFromBase = {
-  run: function(creep)
+  run: function (creep)
   {
-    if(creep.carry.energy < creep.carryCapacity)
+    if (creep.carry.energy < creep.carryCapacity)
     {
-      if(creep.memory.targetID != -1)
+      if (creep.memory.targetID != -1)
       {
         var target = Game.getObjectById(creep.memory.targetID);
         var err = util.withdrawEnergyFrom(creep, target, true);
@@ -22,23 +21,25 @@ var taskFillFromBase = {
       else
       {
         var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
-        if(baseContainers.length > 0)
+        if (baseContainers.length > 0)
         {
-            var rand = Math.floor(Math.random() * baseContainers.length)
-            creep.memory.targetID = baseContainers[0].id;
-            var target = Game.getObjectById(creep.memory.targetID);
-            util.withdrawEnergyFrom(creep, target, true);
-            return;
+          var rand = Math.floor(Math.random() * baseContainers.length)
+          creep.memory.targetID = baseContainers[0].id;
+          var target = Game.getObjectById(creep.memory.targetID);
+          util.withdrawEnergyFrom(creep, target, true);
+          return;
         }
-        baseContainers =  cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
-        if(baseContainers.length > 0)
+        baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
+        if (baseContainers.length > 0)
         {
-            var rand = Math.floor(Math.random() * baseContainers.length)
-            creep.memory.targetID = baseContainers[0].id;
-            var target = Game.getObjectById(creep.memory.targetID);
-            util.withdrawEnergyFrom(creep, target, true);
-            return;
+          var rand = Math.floor(Math.random() * baseContainers.length)
+          creep.memory.targetID = baseContainers[0].id;
+          var target = Game.getObjectById(creep.memory.targetID);
+          util.withdrawEnergyFrom(creep, target, true);
+          return;
         }
+        creep.memory.targetID = -1;
+        creep.memory.task = creep.memory.role;
         /*else
         {
           var baseBuildings = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESWITHENERGY, util.getWorkRoom(creep));
