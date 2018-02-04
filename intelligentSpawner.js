@@ -14,6 +14,22 @@ module.exports =
       spawner.recycleCreep(toRecycle[i]);
     }
   },
+  spawnDisassembleFlag: function(spawner, workRoom, maxDisassemblers, flagName)
+  {
+    if(maxDisassemblers == 0) return true;
+    var disassemblers = _.filter(Game.creeps, (creep) => ((creep.memory.targetID === flagName)));
+
+    if(disassemblers.length < maxDisassemblers)
+    {
+      var res = makeCreep.makeDisassembleFlag(spawner.room, workRoom, spawner, true, flagName);
+      console.log("tried to make dissasembleFlag "+ res);
+      if(res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+  },
   spawnZergling: function(spawner, workRoom, maxZerglings)
   {
       if(maxZerglings == 0) return true;
@@ -33,6 +49,8 @@ module.exports =
   spawnReserver: function(spawner, workRoom, maxReservers)
   {
     if(maxReservers == 0) return true;
+
+    if(workRoom.controller.level>0) return true;
 
     if(workRoom.controller.reservation != undefined)
     {
@@ -110,7 +128,7 @@ module.exports =
     if(maxBuilders == 0 ) return true;
 
     if(cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, workRoom).length ==0) return true;
-    
+
     var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
 
     if(builders.length < maxBuilders)
@@ -264,6 +282,7 @@ module.exports =
         {
           if(level > harvesters2[k].memory.lvl)
           {
+              console.log("UPGRADING HARV");
             makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
             harvesters2[k].memory.targetID = -1;
             harvesters2[k].memory.task = CONST.TASK_RECYCLE;

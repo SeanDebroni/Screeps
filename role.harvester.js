@@ -7,7 +7,7 @@ var roleHarvester = {
     {
         var source = Game.getObjectById(creep.memory.sID);
 
-        if(creep.harvest(source) == ERR_NOT_IN_RANGE)
+        if(creep.harvest(source) != 0)
         {
           creep.moveTo(source, {reusePath: 5});
         }

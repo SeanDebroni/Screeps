@@ -15,6 +15,23 @@ function makeScoutForFlag(flagName,mainBaseRoom)
   didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
 
 }
+function runDisassemblyFlag(flagName, mainBaseRoom)
+{
+  var notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
+  if(notBusySpawns.length==0)
+  {
+    console.log("All  spawns are spawning.");
+    return;
+  }
+  var curSpawn = 0;
+  var didntMakeCreep;
+
+  if(curSpawn >= notBusySpawns.length) return;
+  didntMakeCreep = intelligentSpawner.spawnDisassembleFlag(notBusySpawns[curSpawn], Game.flags[flagName].room, 5, flagName);
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+
+  return;
+}
 function runColonyRoom( colonyRoom, mainRoom)
 {
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
@@ -55,7 +72,7 @@ function runColonyRoom( colonyRoom, mainRoom)
   //if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], colonyRoom, 1);
+  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], colonyRoom, 3);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
@@ -104,12 +121,12 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 1);
+    didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 2);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 2);
+    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 3);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
@@ -201,7 +218,7 @@ function runExtensionRoom(extRoom, mainRoom)
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], extRoom, 0);
+  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], extRoom, 2);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
@@ -277,6 +294,27 @@ module.exports =
     {
       console.log("ROOM CONTROLLER MISSING MAIN BASE FLAG. ABORT. ABORT. ABORT");
       return;
+    }
+
+    for(var i = 0; i< rooms.length; ++i)
+    {
+      var roomName = rooms[i];
+      var room = Game.rooms[roomController[rooms[i]]];
+      if(roomName.startsWith("R"))
+      {
+        if(room!= undefined)
+        {
+          var flagName = "RC-" + rcName + "-"+ roomName;
+          console.log("RUNNING REMOVE FLAG");
+          runDisassemblyFlag(flagName, mainBaseRoom);
+        }
+        else
+        {
+          var flagName = "RC-" + rcName + "-"+ roomName;
+          makeScoutForFlag(flagName,mainBaseRoom);
+        }
+      }
+
     }
 
     for(var i = 0; i< rooms.length; ++i)

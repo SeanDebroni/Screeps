@@ -4,7 +4,7 @@ var util = require('util');
 var roleBuilder = {
 
     run: function(creep) {
-      if(creep.carry.energy < creep.carryCapacity)
+      if(creep.carry.energy < creep.carryCapacity*0.1)
       {
         creep.memory.targetID = -1;
         creep.memory.task = CONST.TASK_FILLFROMBASE;

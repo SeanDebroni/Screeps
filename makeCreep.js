@@ -3,6 +3,24 @@ const CONST = require('CONSTANTS');
 
 module.exports = {
 
+  makeDisassembleFlag: function(homeRoom, workRoom, spawner, makeCreep, flagName)
+  {
+    var parts = [WORK,MOVE];
+    var level = 1;
+    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG+Game.time,{dryRun: true});
+    if(canMake != 0) return -1;
+
+    while(canMake == 0)
+    {
+      if(level%1 == 1) parts.push(MOVE);
+      if(level%2 == 0) parts.push(WORK);
+      level = level+1;
+      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG+Game.time,{dryRun: true});
+    }
+    parts.pop();
+    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.DISASSEMBLEFLAG+Game.time,{memory:{targetID: flagName, homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_DISASSEMBLEFLAG, task: CONST.TASK_SPAWNING, lvl: level-1}});
+    return level-1;
+  },
   makeZergling: function(homeRoom, workRoom, spawner, makeCreep)
   {
     var parts = [ATTACK,MOVE];
