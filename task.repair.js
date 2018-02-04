@@ -1,8 +1,9 @@
 var cacheMoveTo = require('cacheMoveTo');
 
-var taskBuild = {
+var taskRepair = {
   run: function(creep)
   {
+    console.log("NEW REPAIR RUNNING");
     var target = Game.getObjectById(creep.memory.targetID);
     var err = creep.repair(target);
     if(err == ERR_NOT_IN_RANGE) {
@@ -15,4 +16,4 @@ var taskBuild = {
 
   }
 }
-module.exports = taskBuild;
+module.exports = taskRepair

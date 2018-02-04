@@ -9,7 +9,7 @@ function makeScoutForFlag(flagName,mainBaseRoom)
   var notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All spawns are spawning.");
+    //console.log("All spawns are spawning.");
     return;
   }
   didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
@@ -20,7 +20,7 @@ function runDisassemblyFlag(flagName, mainBaseRoom)
   var notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All  spawns are spawning.");
+    //console.log("All  spawns are spawning.");
     return;
   }
   var curSpawn = 0;
@@ -30,6 +30,7 @@ function runDisassemblyFlag(flagName, mainBaseRoom)
   didntMakeCreep = intelligentSpawner.spawnDisassembleFlag(notBusySpawns[curSpawn], Game.flags[flagName].room, 5, flagName);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
+
   return;
 }
 function runColonyRoom( colonyRoom, mainRoom)
@@ -37,7 +38,7 @@ function runColonyRoom( colonyRoom, mainRoom)
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All  spawns are spawning.");
+    //console.log("All  spawns are spawning.");
     return;
   }
   //TODO ALLOW SPAWNS TO RECYCLE WHILE BUSY
@@ -98,7 +99,7 @@ function runMainRoom(mainRoom)
 
     if(notBusySpawns.length==0)
     {
-      console.log("All spawns are spawning.");
+      //console.log("All spawns are spawning.");
       return;
     }
 
@@ -131,6 +132,11 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
+    didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], mainRoom, 2, 50);
+
+    if(!didntMakeCreep) curSpawn = curSpawn+1;
+    if(curSpawn >= notBusySpawns.length) return;
+
     didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], mainRoom, 1, undefined);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
@@ -145,7 +151,7 @@ function runAttackRoom(attackRoom, mainRoom)
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All  spawns are spawning.");
+    //console.log("All  spawns are spawning.");
     return;
   }
 
@@ -179,7 +185,7 @@ function runExtensionRoom(extRoom, mainRoom)
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
   if(notBusySpawns.length==0)
   {
-    console.log("All  spawns are spawning.");
+    //console.log("All  spawns are spawning.");
     return;
   }
 
@@ -223,6 +229,10 @@ function runExtensionRoom(extRoom, mainRoom)
 
   if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], extRoom, 0);
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+
+  if(curSpawn >= notBusySpawns.length) return;
+  didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], extRoom, 1, 2);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
@@ -305,7 +315,7 @@ module.exports =
         if(room!= undefined)
         {
           var flagName = "RC-" + rcName + "-"+ roomName;
-          console.log("RUNNING REMOVE FLAG");
+          //console.log("RUNNING REMOVE FLAG");
           runDisassemblyFlag(flagName, mainBaseRoom);
         }
         else
@@ -325,7 +335,7 @@ module.exports =
       {
         if(room!= undefined)
         {
-          console.log("RUNNING ATTACK ROOM");
+          //console.log("RUNNING ATTACK ROOM");
           runAttackRoom(room, mainBaseRoom);
         }
         else
@@ -347,7 +357,7 @@ module.exports =
       {
         if(room!= undefined)
         {
-          console.log("RUNNING COLONY ROOM");
+          //console.log("RUNNING COLONY ROOM");
           runColonyRoom(room, mainBaseRoom);
         }
         else
@@ -366,7 +376,7 @@ module.exports =
       {
         if(room!= undefined)
         {
-          console.log("RUNNING EXTENSION ROOM");
+          //console.log("RUNNING EXTENSION ROOM");
           runExtensionRoom(room, mainBaseRoom);
         }
         else
@@ -377,7 +387,7 @@ module.exports =
       }
     }
 
-    console.log("RUNNING MAIN ROOM");
+  //  console.log("RUNNING MAIN ROOM");
     runMainRoom(mainBaseRoom);
 
 

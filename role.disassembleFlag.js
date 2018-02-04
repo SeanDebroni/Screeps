@@ -16,21 +16,22 @@ var roleDisassembleFlag =
 
     if(flag.room == undefined)
     {
-      var err = creep.moveTo(target, {rememberPath: 50});
+      var err = creep.moveTo(target, {rememberPath: 5});
     }
     else if(creep.room!= flag.room)
     {
-      var err = creep.moveTo(target, {rememberPath: 50});
+      var err = creep.moveTo(target, {rememberPath: 5});
+
     }
     else
     {
-      if( Math.abs(creep.pos.x-flag.pos.x) <=1 && Math.abs(creep.pos.y-flag.pos.y))
+      if( Math.abs(creep.pos.x-flag.pos.x) <=1 && Math.abs(creep.pos.y-flag.pos.y) <= 1)
       {
         creep.memory.task = CONST.TASK_DISASSEMBLE;
       }
       else
       {
-        var err = creep.moveTo(target, {rememberPath: 50});
+        var err = creep.moveTo(target, {rememberPath: 5});
       }
     }
   }

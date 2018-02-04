@@ -172,6 +172,11 @@ module.exports = {
     var targetEnergy = 0;
     var creepSpace = creep.carryCapacity - _.sum(creep.carry);
 
+    if(target == null || target == undefined)
+    {
+      return -67;
+    }
+
     switch(target.structureType)
     {
       case STRUCTURE_SPAWN:

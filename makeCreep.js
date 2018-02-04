@@ -5,20 +5,41 @@ module.exports = {
 
   makeDisassembleFlag: function(homeRoom, workRoom, spawner, makeCreep, flagName)
   {
-    var parts = [WORK,MOVE];
+    var parts = [WORK,WORK,MOVE];
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG+Game.time,{dryRun: true});
     if(canMake != 0) return -1;
 
     while(canMake == 0)
     {
-      if(level%1 == 1) parts.push(MOVE);
-      if(level%2 == 0) parts.push(WORK);
+      if(level%3 == 1) parts.push(MOVE);
+      if(level%3 == 2) parts.push(WORK);
+      if(level%3 == 0) parts.push(WORK);
       level = level+1;
       canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG+Game.time,{dryRun: true});
     }
     parts.pop();
-    if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.DISASSEMBLEFLAG+Game.time,{memory:{targetID: flagName, homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_DISASSEMBLEFLAG, task: CONST.TASK_SPAWNING, lvl: level-1}});
+    if(makeCreep) console.log(Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG+Game.time,{memory:{targetID: flagName, homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_DISASSEMBLEFLAG, task: CONST.TASK_SPAWNING, lvl: level-1}}));
+    return level-1;
+  },
+  makeBestRepairman: function(homeRoom, workRoom, spawner, makeCreep, maxLevel)
+  {
+    var parts = [CARRY,WORK,MOVE,MOVE];
+    var level = 1;
+    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_REPAIRMAN+Game.time,{dryRun: true});
+    if(canMake != 0) return -1;
+
+    while(canMake == 0 && level <= maxLevel)
+    {
+      if(level%4 == 1) parts.push(WORK);
+      if(level%4 == 2) parts.push(CARRY);
+      if(level%4 == 3) parts.push(MOVE);
+      if(level%4 == 0) parts.push(MOVE);
+      level = level+1;
+      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_REPAIRMAN+Game.time,{dryRun: true});
+    }
+    parts.pop();
+    if(makeCreep) console.log(Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_REPAIRMAN+Game.time,{memory:{homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_REPAIRMAN, task: CONST.TASK_SPAWNING, lvl: level-1}}));
     return level-1;
   },
   makeZergling: function(homeRoom, workRoom, spawner, makeCreep)
@@ -34,11 +55,20 @@ module.exports = {
   },
   makeBestReserver: function(homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [MOVE,MOVE,CLAIM,CLAIM];
+    var parts = [MOVE,CLAIM];
     var level =1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER+Game.time,{dryRun: true});
     if(canMake != 0) return -1;
 
+     while(canMake == 0 && level <3)
+    {
+      parts.push(CLAIM);
+      parts.push(MOVE);
+      level = level+1;
+      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER+Game.time,{dryRun: true});
+    }
+    parts.pop();
+    parts.pop();
     if(makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER+Game.time,{memory:{homeRoom: homeRoom.name, workRoom: workRoom.name, role: CONST.ROLE_RESERVER, task: CONST.TASK_SPAWNING, lvl: level}});
     return level;
 

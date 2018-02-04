@@ -9,6 +9,7 @@ var roleScout = require('role.scout');
 var roleReserver = require('role.reserver');
 var roleZergling = require('role.zergling');
 var roleDisassembleFlag = require('role.disassembleFlag');
+var roleRepairman = require('role.repairman');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -24,6 +25,7 @@ var taskMoveToTarget = require('task.moveToTarget');
 var taskReserve = require('task.reserve');
 var taskKill = require('task.kill');
 var taskDisassemble = require('task.disassemble');
+var taskRepair = require('task.repair');
 
 const profiler = require('profiler');
 
@@ -92,8 +94,11 @@ module.exports.loop = function ()
         var creep = Game.creeps[name];
         switch(creep.memory.task)
         {
-          case CONST.ROLE_DISSASSEMBLEFLAG:
-            roleDissassembleFlag.run(creep);
+          case CONST.ROLE_REPAIRMAN:
+            roleRepairman.run(creep);
+            break;
+          case CONST.ROLE_DISASSEMBLEFLAG:
+            roleDisassembleFlag.run(creep);
             break;
           case CONST.ROLE_HARVESTER:
             roleHarvester.run(creep);
@@ -129,8 +134,11 @@ module.exports.loop = function ()
 
         switch(creep.memory.task)
         {
-          case CONST.TASK_DISASSEMBLE:
-          taskDissemble.run(creep);
+         case CONST.TASK_REPAIR:
+          taskRepair.run(creep);
+          break;
+         case CONST.TASK_DISASSEMBLE:
+          taskDisassemble.run(creep);
           break;
         case CONST.TASK_KILL:
           taskKill.run(creep);

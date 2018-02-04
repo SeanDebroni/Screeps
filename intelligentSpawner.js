@@ -22,7 +22,21 @@ module.exports =
     if(disassemblers.length < maxDisassemblers)
     {
       var res = makeCreep.makeDisassembleFlag(spawner.room, workRoom, spawner, true, flagName);
-      console.log("tried to make dissasembleFlag "+ res);
+      if(res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+  },
+  spawnRepairman: function(spawner, workRoom, maxRepairmen, maxLevel)
+  {
+    if(maxRepairmen == 0) return true;
+    var repairmen = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN) && util.getWorkRoom(creep) == workRoom));
+
+    if(repairmen.length < maxRepairmen)
+    {
+      var res = makeCreep.makeBestRepairman(spawner.room, workRoom, spawner, true, maxLevel);
       if(res != -1)
       {
         return false;
@@ -224,8 +238,8 @@ module.exports =
           sourceLeastCount = count;
         }
       }
-      //console.log(sourceLeastCount + " SLC0");
-      //console.log(sourceLeastID + " ID")
+      console.log(sourceLeastCount + " SLC0");
+      console.log(sourceLeastID + " ID")
       if(sourceLeastCount < maxHaulersPerSource)
       {
           //console.log("NEW HAULER");

@@ -7,6 +7,10 @@ var taskFillBaseUtil =
   fillTowersAndStructures: function(creep, room)
   {
     var towersToFill = cacheFind.findCached(CONST.CACHEFIND_TOWERSTOFILL, room);
+    
+    var harvesters2 = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && util.getHomeRoom(creep) == util.getWorkRoom(creep)));
+    if(harvesters2.length ==0 ) towersToFill = [];
+    
     if( towersToFill.length > 0)
     {
       var rand = Math.floor(Math.random() * towersToFill.length);

@@ -1,4 +1,5 @@
 const CONST = require('CONSTANTS');
+const cacheFind = require('cacheFind');
 
 
 module.exports = {
@@ -8,17 +9,19 @@ module.exports = {
     if(tower)
     {
       var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-      var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-          filter: (structure) => structure.hits < structure.hitsMax
-      });
+
+
+      var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, tower.room);
+      var toRepair = damagedStructures[Math.floor(Math.random() * damagedStructures.length)];
+
 
       if(closestHostile)
       {
           tower.attack(closestHostile);
       }
-      if(closestDamagedStructure)
+      if(toRepair)
       {
-          tower.repair(closestDamagedStructure);
+          tower.repair(toRepair);
       }
 
 

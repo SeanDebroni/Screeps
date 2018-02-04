@@ -15,12 +15,13 @@ var taskDisassemble =
     {
       if(whatsThere[i].type == 'structure')
       {
-        creep.dismantle(whatsThere[i]);
+        creep.dismantle(whatsThere[i].structure);
         working=true;
       }
     }
     if(!working)
     {
+      flag.remove();
       creep.suicide();
     }
 

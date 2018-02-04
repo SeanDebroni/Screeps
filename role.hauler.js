@@ -45,6 +45,14 @@ var roleHauler =
       else if (creep.memory.assignedSourceID != undefined)
       {
         var source = Game.getObjectById(creep.memory.assignedSourceID);
+        if(source == undefined|| source == null)
+        {
+          console.log(creep.memory.assignedSourceID);
+          console.log("ERRRRRRRRRRRRRRRRRR");
+          var source = cacheFind.findCached(CONST.CACHEFIND_SOURCES, util.getWorkRoom(creep));
+          creep.memory.assignedSourceID = source[0].id;
+          return;
+        }
         var whatsThere = source.room.lookAtArea(source.pos.y-1,source.pos.x-1,source.pos.y+1,source.pos.x+1,true);
         for(var i = 0; i<whatsThere.length; ++i)
         {

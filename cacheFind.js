@@ -15,6 +15,18 @@ module.exports = {
 
     switch(whatToFind)
     {
+      case CONST.CACHEFIND_DAMAGEDSTRUCTURES:
+
+        var a = (room.find(FIND_STRUCTURES, {
+          filter: (structure) =>
+          {
+              return (structure.hits < structure.hitsMax && structure.hits < CONST.VAL_MAXSTRUCTUREHITS);
+          }
+        }));
+        console.log(room.name + " has " + a.length + " damaged structures.");
+        cache.set(key,a);
+        break;
+
       case CONST.CACHEFIND_WALLS:
         var a = (room.find(FIND_STRUCTURES, {
           filter: (structure) =>
@@ -66,7 +78,7 @@ module.exports = {
         var d = (room.find(FIND_DROPPED_RESOURCES, {
             filter: (resource) =>
             {
-                return (resource.resourceType == RESOURCE_ENERGY);
+                return (resource.resourceType == RESOURCE_ENERGY && resource.amount > 5);
             }
         }));
         cache.set(key, d);
