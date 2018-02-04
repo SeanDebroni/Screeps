@@ -20,7 +20,7 @@ var roleBuilder = {
         else
         {
           var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
-          if(damagedstructures.length > 0)
+          if(damagedStructures.length > 0)
           {
             creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
             creep.memory.task = CONST.TASK_REPAIR;

@@ -127,7 +127,7 @@ function runMainRoom(mainRoom)
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
 
-    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 3);
+    didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 2);
 
     if(!didntMakeCreep) curSpawn = curSpawn+1;
     if(curSpawn >= notBusySpawns.length) return;
@@ -207,7 +207,7 @@ function runExtensionRoom(extRoom, mainRoom)
     {
       if(curSpawn >= notBusySpawns.length) return;
 
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 5);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 10);
 
       if(!didntMakeCreep) curSpawn = curSpawn+1;
     }
@@ -232,16 +232,18 @@ function runExtensionRoom(extRoom, mainRoom)
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
-  didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], extRoom, 1, 2);
-  if(!didntMakeCreep) curSpawn = curSpawn+1;
-
-  if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[curSpawn], extRoom, 0, undefined);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
 
   if(curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnReserver(notBusySpawns[curSpawn], extRoom, 1);
   if(!didntMakeCreep) curSpawn = curSpawn+1;
+
+  if(curSpawn >= notBusySpawns.length) return;
+  didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], extRoom, 1, 1);
+  if(!didntMakeCreep) curSpawn = curSpawn+1;
+
+
 
   if(curSpawn >= notBusySpawns.length) return;
 

@@ -28,7 +28,6 @@ module.exports = {
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_REPAIRMAN+Game.time,{dryRun: true});
     if(canMake != 0) return -1;
-
     while(canMake == 0 && level <= maxLevel)
     {
       if(level%4 == 1) parts.push(WORK);
@@ -44,7 +43,7 @@ module.exports = {
   },
   makeZergling: function(homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [ATTACK,MOVE];
+    var parts = [MOVE,ATTACK];
     var level =1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING+Game.time,{dryRun: true});
     if(canMake != 0) return -1;

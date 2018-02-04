@@ -32,6 +32,11 @@ module.exports =
   spawnRepairman: function(spawner, workRoom, maxRepairmen, maxLevel)
   {
     if(maxRepairmen == 0) return true;
+
+    var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom);
+    if(damagedStructures.length == 0) return true;
+
+
     var repairmen = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN) && util.getWorkRoom(creep) == workRoom));
 
     if(repairmen.length < maxRepairmen)
@@ -278,7 +283,7 @@ module.exports =
     for(var i =0; i< sources.length; ++i )
     {
       var ttspd = 40;
-      if(spawner.room!= workRoom) ttspd = 200;
+      if(spawner.room!= workRoom) ttspd = 100;
       var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > ttspd));
       if(harvesters2.length <1)
       {

@@ -5,7 +5,6 @@ var roleRepairman =
 {
     run: function(creep)
     {
-      console.log("NEW REPAIRMAN RUNNING");
       if(creep.carry.energy == 0)
       {
         creep.memory.targetID = -1;

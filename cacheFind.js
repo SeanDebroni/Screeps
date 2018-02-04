@@ -7,6 +7,11 @@ module.exports = {
 
   findCached: function(whatToFind, room)
   {
+    if(room == null || room == undefined)
+    {
+      return [];
+    }
+
     var key = whatToFind+ " " + room.name;
     if(cache.has(key))
     {
@@ -17,12 +22,27 @@ module.exports = {
     {
       case CONST.CACHEFIND_DAMAGEDSTRUCTURES:
 
+        /*var max = CONST.VAL_MAXSTRUCTUREHITS;
+        var a = [];
+        while(a.length ==0)
+        {
+          a = (room.find(FIND_STRUCTURES, {
+            filter: (structure) =>
+            {
+                return (structure.hits < structure.hitsMax && structure.hits < max);
+            }
+          }));
+          max = max*2;
+        }*/
+
         var a = (room.find(FIND_STRUCTURES, {
           filter: (structure) =>
           {
               return (structure.hits < structure.hitsMax && structure.hits < CONST.VAL_MAXSTRUCTUREHITS);
           }
         }));
+
+
         console.log(room.name + " has " + a.length + " damaged structures.");
         cache.set(key,a);
         break;

@@ -6,7 +6,7 @@ module.exports = {
 
   cacheMoveTo: function(creep, to)
   {
-      var err11 =creep.moveTo(to, {reusePath: 50});
+      var err11 =creep.moveTo(to, {reusePath: 10});
       return err11;
     var key = creep.room.name + creep.pos.x + " " + creep.pos.y + " " + to.room.name + to.pos.x + " " + to.pos.y;
 
