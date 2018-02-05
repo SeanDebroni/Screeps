@@ -297,9 +297,10 @@ module.exports = {
       else
       {
         var level = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, false);
+        console.log(level);
         for (var k = 0; k < harvesters2.length; ++k)
         {
-          if (level > harvesters2[k].memory.lvl)
+          if ((level > harvesters2[k].memory.lvl + 1) || (level >= 4 && level > harvesters2[k].memory.lvl))
           {
             console.log("UPGRADING HARV");
             makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);

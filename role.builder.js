@@ -7,7 +7,7 @@ var roleBuilder = {
   {
 
     if (cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.homeRoom])
-      .length == 0)
+      .length == 0 && creep.carry.energy == 0)
     {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)

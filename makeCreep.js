@@ -100,7 +100,7 @@ module.exports = {
   },
   makeBestReserver: function (homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [MOVE, CLAIM];
+    var parts = [MOVE, CLAIM, MOVE, CLAIM];
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_RESERVER + Game.time,
     {
@@ -214,7 +214,7 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0 && level < 5)
+    while (canMake == 0 && level < 6)
     {
       parts.push(WORK);
       level = level + 1;
@@ -225,18 +225,21 @@ module.exports = {
     }
     parts.pop();
 
-    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HARVESTER + Game.time,
+    if (makeCreep)
     {
-      memory:
+      Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HARVESTER + Game.time,
       {
-        homeRoom: homeRoom.name,
-        workRoom: workRoom.name,
-        role: CONST.ROLE_HARVESTER,
-        task: CONST.TASK_SPAWNING,
-        sID: sourceID,
-        lvl: level - 1
-      }
-    });
+        memory:
+        {
+          homeRoom: homeRoom.name,
+          workRoom: workRoom.name,
+          role: CONST.ROLE_HARVESTER,
+          task: CONST.TASK_SPAWNING,
+          sID: sourceID,
+          lvl: level - 1
+        }
+      });
+    }
     return level - 1;
   },
   makeBestUpgrader: function (homeRoom, workRoom, spawner, makeCreep)

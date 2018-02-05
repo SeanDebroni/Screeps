@@ -100,17 +100,18 @@ function runMainRoom(mainRoom)
   var curSpawn = 0;
   var notBusySpawns = util.getNotBusySpawns(mainRoom);
 
+  var spawnsToRec = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, mainRoom);
+  for (var i = 0; i < spawnsToRec.length; ++i)
+  {
+    intelligentSpawner.recycleCreeps(spawnsToRec[i]);
+  }
   if (notBusySpawns.length == 0)
   {
     //console.log("All spawns are spawning.");
     return;
   }
 
-  //TODO ALLOW SPAWNS TO RECYCLE WHILE BUSY
-  for (var i = 0; i < notBusySpawns.length; ++i)
-  {
-    intelligentSpawner.recycleCreeps(notBusySpawns[i]);
-  }
+
 
   var didntMakeCreep;
 

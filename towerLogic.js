@@ -19,6 +19,9 @@ module.exports = {
       {
         tower.attack(closestHostile);
       }
+
+      if (tower.energyCapacity * 0.50 > tower.energy) return;
+
       if (toRepair)
       {
         tower.repair(toRepair);

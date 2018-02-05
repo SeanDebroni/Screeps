@@ -4,8 +4,10 @@ var cacheFind = require('cacheFind');
 var roleRepairman = {
   run: function (creep)
   {
+    var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
+
     if (cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.homeRoom])
-      .length == 0)
+      .length == 0 && (creep.carry.energy == 0 || damagedStructures.length == 0))
     {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
@@ -24,7 +26,6 @@ var roleRepairman = {
     }
     else
     {
-      var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
 
       if (damagedStructures.length == 0)
       {
