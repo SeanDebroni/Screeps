@@ -283,7 +283,7 @@ module.exports = {
     for (var i = 0; i < sources.length; ++i)
     {
       var ttspd = 40;
-      if (spawner.room != workRoom) ttspd = 100;
+      if (spawner.room != workRoom) ttspd = 150;
       var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > ttspd));
       if (harvesters2.length < 1)
       {
@@ -297,7 +297,6 @@ module.exports = {
       else
       {
         var level = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, false);
-        console.log(level);
         for (var k = 0; k < harvesters2.length; ++k)
         {
           if ((level > harvesters2[k].memory.lvl + 1) || (level >= 4 && level > harvesters2[k].memory.lvl))

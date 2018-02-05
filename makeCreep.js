@@ -108,7 +108,7 @@ module.exports = {
     });
     if (canMake != 0) return -1;
 
-    while (canMake == 0 && level < 3)
+    while (canMake == 0 && level < 2)
     {
       parts.push(CLAIM);
       parts.push(MOVE);

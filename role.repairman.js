@@ -29,7 +29,7 @@ var roleRepairman = {
 
       if (damagedStructures.length == 0)
       {
-
+        creep.memory.task = CONST.TASK_UPGRADEROOM;
         return;
       }
 
