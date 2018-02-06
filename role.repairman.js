@@ -1,5 +1,6 @@
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
+var util = require('util');
 
 var roleRepairman = {
   run: function (creep)
@@ -29,7 +30,10 @@ var roleRepairman = {
 
       if (damagedStructures.length == 0)
       {
-        creep.memory.task = CONST.TASK_UPGRADEROOM;
+          if(util.getWorkRoom(creep)==util.getHomeRoom(creep))
+          {
+            creep.memory.task = CONST.TASK_UPGRADEROOM;
+          }
         return;
       }
 
