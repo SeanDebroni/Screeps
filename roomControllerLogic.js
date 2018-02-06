@@ -166,7 +166,7 @@ function runAttackRoom(attackRoom, mainRoom)
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
-  if (hostileCreeps.length > 0 || hostileBuildings.length > 0)
+  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable)
   {
     for (var z = 0; z < 3; ++z)
     {
@@ -207,7 +207,7 @@ function runExtensionRoom(extRoom, mainRoom)
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
-  if (hostileCreeps.length > 0 || hostileBuildings.length > 0)
+  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable)
   {
     for (var z = 0; z < 3; ++z)
     {
@@ -315,6 +315,25 @@ module.exports = {
 
     //  console.log("RUNNING MAIN ROOM");
     runMainRoom(mainBaseRoom);
+
+    //MAINBASEFIRST CODE
+    var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == mainBaseRoom));
+    var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && util.getWorkRoom(creep) == mainBaseRoom));
+    if (harvesters.length < 2 || haulers.length < 2)
+    {
+      return;
+    }
+    var levelSum = 0;
+    for (var i = 0; i < harvesters.length; ++i)
+    {
+      levelSum = levelSum + harvesters[i].memory.lvl;
+    }
+    if (levelSum / harvesters.length < 5)
+    {
+      return;
+    }
+    //END OF MAINBASEFIRST CODE
+
 
     for (var i = 0; i < rooms.length; ++i)
     {
