@@ -55,7 +55,7 @@ function runColonyRoom(colonyRoom, mainRoom)
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
-  if (hostileCreeps.length > 0 || hostileBuildings.length > 0)
+  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
   {
     for (var z = 0; z < 3; ++z)
     {
@@ -128,6 +128,26 @@ function runMainRoom(mainRoom)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return;
 
+  //MAINBASEFIRST CODE
+  var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == mainRoom));
+  var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && util.getWorkRoom(creep) == mainRoom));
+  if (harvesters.length < 2 || haulers.length < 2)
+  {
+    return;
+  }
+  var levelSum = 0;
+  for (var i = 0; i < harvesters.length; ++i)
+  {
+    levelSum = levelSum + harvesters[i].memory.lvl;
+  }
+  if (levelSum / harvesters.length < 5)
+  {
+    return;
+  }
+  //END OF MAINBASEFIRST CODE
+
+
+
   didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 2);
 
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -166,7 +186,7 @@ function runAttackRoom(attackRoom, mainRoom)
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
-  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable)
+  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
   {
     for (var z = 0; z < 3; ++z)
     {
@@ -207,7 +227,7 @@ function runExtensionRoom(extRoom, mainRoom)
   var didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
-  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable)
+  if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
   {
     for (var z = 0; z < 3; ++z)
     {

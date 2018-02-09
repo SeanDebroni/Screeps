@@ -277,7 +277,7 @@ module.exports = {
   },
   makeBestHauler: function (homeRoom, workRoom, spawner, makeCreep, assSourceID)
   {
-    var parts = [CARRY, CARRY, MOVE];
+    var parts = [CARRY, MOVE];
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HAULER + Game.time,
     {
@@ -286,8 +286,8 @@ module.exports = {
     if (canMake != 0) return -1;
     while (canMake == 0 && level < 14)
     {
-      if (level % 3 == 1) parts.push(MOVE);
-      else if (level % 3 == 2) parts.push(CARRY);
+      if (level % 3 == 2) parts.push(MOVE);
+      else if (level % 3 == 1) parts.push(CARRY);
       else if (level % 3 == 0) parts.push(CARRY);
       level = level + 1;
       canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_HAULER + Game.time,
