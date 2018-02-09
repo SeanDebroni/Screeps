@@ -84,14 +84,15 @@ var taskFillBase = {
         if (!haveTarget) haveTarget = taskFillBaseUtil.fillTowersAndStructures(creep, util.getHomeRoom(creep));
         if (!haveTarget)
         {
-          var target = Game.flags["idlespot"];
-          if (target)
+          var flag = Game.flags[creep.memory.homeRoom + "idle"];
+          if (flag != undefined && flag != null)
           {
-            var err = creep.moveTo(target,
+            creep.moveTo(flag,
             {
-              rememberPath: 50
+              reusePath: 10
             });
           }
+
         }
 
       }

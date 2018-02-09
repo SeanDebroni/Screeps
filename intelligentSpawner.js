@@ -183,7 +183,6 @@ module.exports = {
     var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && creep.ticksToLive > 50));
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
 
-
     var sumCapac = 0;
     var droppedSum = 0;
 
@@ -243,8 +242,8 @@ module.exports = {
           sourceLeastCount = count;
         }
       }
-      console.log(sourceLeastCount + " SLC0");
-      console.log(sourceLeastID + " ID")
+      //console.log(sourceLeastCount + " SLC0");
+      //console.log(sourceLeastID + " ID")
       if (sourceLeastCount < maxHaulersPerSource)
       {
         //console.log("NEW HAULER");
@@ -299,7 +298,7 @@ module.exports = {
         var level = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, false);
         for (var k = 0; k < harvesters2.length; ++k)
         {
-          if ((level > harvesters2[k].memory.lvl + 1) || (level >= 4 && level > harvesters2[k].memory.lvl))
+          if ((level > harvesters2[k].memory.lvl + 1) || (level > harvesters2[k].memory.lvl && harvesters2[k].memory.level == 1) || (level >= 4 && level > harvesters2[k].memory.lvl))
           {
             console.log("UPGRADING HARV");
             makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);

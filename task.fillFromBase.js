@@ -15,6 +15,11 @@ var taskFillFromBase = {
       if (creep.memory.targetID != -1)
       {
         var target = Game.getObjectById(creep.memory.targetID);
+        if (target == null)
+        {
+          creep.memory.targetID = -1;
+          return;
+        }
         var err = util.withdrawEnergyFrom(creep, target, true);
         return;
       }
@@ -60,6 +65,7 @@ var taskFillFromBase = {
     }
     else
     {
+      creep.memory.targetID = -1;
       creep.memory.task = creep.memory.role;
     }
   }

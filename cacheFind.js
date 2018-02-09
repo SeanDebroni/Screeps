@@ -44,7 +44,7 @@ module.exports = {
       }));
 
 
-      console.log(room.name + " has " + a.length + " damaged structures.");
+      //console.log(room.name + " has " + a.length + " damaged structures.");
       cache.set(key, a);
       break;
 
@@ -120,7 +120,13 @@ module.exports = {
       cache.set(key, a);
       break;
     case CONST.CACHEFIND_CONSTRUCTIONSITES:
-      cache.set(key, room.find(FIND_CONSTRUCTION_SITES));
+      cache.set(key, room.find(FIND_CONSTRUCTION_SITES,
+      {
+        filter: (site) =>
+        {
+          return (site.my);
+        }
+      }));
       break;
     case CONST.CACHEFIND_STRUCTURESTOFILL:
 

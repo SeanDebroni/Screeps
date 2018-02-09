@@ -69,11 +69,11 @@ function runColonyRoom(colonyRoom, mainRoom)
   if (curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], colonyRoom, 0);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
-
-  //if(curSpawn >= notBusySpawns.length) return;
-  //didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], colonyRoom);
-  //if(!didntMakeCreep) curSpawn = curSpawn+1;
-
+  /*
+    if (curSpawn >= notBusySpawns.length) return;
+    didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], colonyRoom);
+    if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  */
   if (curSpawn >= notBusySpawns.length) return;
   didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], colonyRoom, 3);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -135,12 +135,14 @@ function runMainRoom(mainRoom)
   {
     return;
   }
+
   var levelSum = 0;
   for (var i = 0; i < harvesters.length; ++i)
   {
     levelSum = levelSum + harvesters[i].memory.lvl;
   }
-  if (levelSum / harvesters.length < 5)
+  //TODO FIX THIS FOR LOW LEVEL ROOMS
+  if (levelSum / harvesters.length < 5 && mainRoom.controller.level > 3)
   {
     return;
   }
@@ -348,7 +350,9 @@ module.exports = {
     {
       levelSum = levelSum + harvesters[i].memory.lvl;
     }
-    if (levelSum / harvesters.length < 5)
+
+    //TODO FIX FOR LOW LEVELS
+    if (levelSum / harvesters.length < 5 && mainBaseRoom.controller.level > 3)
     {
       return;
     }

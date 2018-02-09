@@ -25,7 +25,7 @@ module.exports = {
       });
     }
     parts.pop();
-    if (makeCreep) console.log(Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
+    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
     {
       memory:
       {
@@ -36,7 +36,7 @@ module.exports = {
         task: CONST.TASK_SPAWNING,
         lvl: level - 1
       }
-    }));
+    });
     return level - 1;
   },
   makeBestRepairman: function (homeRoom, workRoom, spawner, makeCreep, maxLevel)
@@ -244,7 +244,7 @@ module.exports = {
   },
   makeBestUpgrader: function (homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [WORK, WORK, CARRY, MOVE];
+    var parts = [WORK, CARRY, MOVE];
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER + Game.time,
     {
@@ -284,7 +284,7 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0 && level < 14)
+    while (canMake == 0 && level < 17)
     {
       if (level % 3 == 2) parts.push(MOVE);
       else if (level % 3 == 1) parts.push(CARRY);

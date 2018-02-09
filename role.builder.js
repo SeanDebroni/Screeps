@@ -42,6 +42,7 @@ var roleBuilder = {
         }
         else
         {
+          creep.memory.workRoom = creep.memory.homeRoom;
           creep.memory.task = CONST.TASK_UPGRADEROOM;
         }
       }
