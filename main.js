@@ -60,6 +60,8 @@ module.exports.loop = function ()
     {
       cacheMoveTo.cacheMoveToClear();
     }
+    cacheMoveTo.cacheMoveToLoad();
+
     var time = Game.time;
     var rand = Math.floor(Math.random() * 100);
 
@@ -190,7 +192,7 @@ module.exports.loop = function ()
     //console.log("CPU limit: "+ Game.cpu.limit);
     // console.log("CPU ticklimit: "+ Game.cpu.tickLimit);
     //console.log("CPU bucket: "+ Game.cpu.bucket);
-
+    cacheMoveTo.cacheMoveToSave();
     var end = new Date()
       .getTime();
     var time = end - start;

@@ -17,16 +17,23 @@ var roleReserver = {
     var err = creep.reserveController(controller);
     if (err == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
-        .controller);
+      creep.moveTo(util.getWorkRoom(creep)
+        .controller,
+        {
+          reusePath: 10
+        });
+
     }
     else if (err == ERR_NOT_OWNER || err == ERR_INVALID_TARGET)
     {
       err = creep.attackController(controller);
       if (err == ERR_NOT_IN_RANGE)
       {
-        cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
-          .controller);
+        creep.moveTo(util.getWorkRoom(creep)
+          .controller,
+          {
+            reusePath: 10
+          });
       }
       else
       {

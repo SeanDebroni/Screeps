@@ -112,7 +112,10 @@ module.exports = {
     var err = creep.transfer(target, RESOURCE_ENERGY);
     if (err == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, target);
+      creep.moveTo(target,
+      {
+        reusePath: 10
+      });
     }
     else if (err == ERR_INVALID_TARGET)
     {
@@ -159,7 +162,10 @@ module.exports = {
     var err = creep.transfer(target, RESOURCETYPE);
     if (err == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, target);
+      creep.moveTo(target,
+      {
+        reusePath: 10
+      });
     }
     return err;
   },
@@ -169,7 +175,10 @@ module.exports = {
     var result = creep.pickup(target);
     if (result == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, target);
+      creep.moveTo(target,
+      {
+        reusePath: 10
+      });
     }
     return result;
   },
@@ -205,7 +214,10 @@ module.exports = {
     var result = creep.withdraw(target, RESOURCE_ENERGY, Math.min(targetEnergy, creepSpace));
     if (result == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, target);
+      creep.moveTo(target,
+      {
+        reusePath: 10
+      });
     }
     else if (result == ERR_NOT_ENOUGH_RESOURCES || result == ERR_INVALID_TARGET || result == ERR_FULL || result == ERR_INVALID_ARGS)
     {
