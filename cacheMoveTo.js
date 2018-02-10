@@ -2,8 +2,55 @@ var utilMovement = require('util.movement');
 
 var cacheMoveToM = new Map();
 
+var cacheCostMatrix = new Map();
 
-var myDirPathDeserialize = function (serializedPath)
+
+
+function calcCostMatrix(roomName)
+{
+  if (cacheCostMatrix.has(roomName))
+  {
+    return cacheCostMatrix.get(roomName);
+  }
+  var costMatrix = new PathFinder.CostMatrix;
+
+  var room = Game.rooms[roomName];
+  if (room == undefined || room == null)
+  {
+    return;
+  }
+  // Avoid creeps in the room
+  room.find(FIND_CREEPS)
+    .forEach(function (creep)
+    {
+      costMatrix.set(creep.pos.x, creep.pos.y, 0xff);
+    });
+
+  room.find(FIND_STRUCTURES)
+    .forEach(function (struct)
+    {
+      if (struct.structureType === STRUCTURE_ROAD)
+      {
+        // Favor roads over plain tiles
+        costMatrix.set(struct.pos.x, struct.pos.y, 1);
+      }
+      else if (struct.structureType !== STRUCTURE_CONTAINER &&
+        (struct.structureType !== STRUCTURE_RAMPART ||
+          !struct.my))
+      {
+        // Can't walk through non-walkable buildings
+        costMatrix.set(struct.pos.x, struct.pos.y, 0xff);
+      }
+    });
+
+
+  cacheCostMatrix.set(roomName, costMatrix);
+  return costMatrix;
+}
+
+
+
+function myDirPathDeserialize(serializedPath)
 {
   var ret = [];
 
@@ -14,7 +61,7 @@ var myDirPathDeserialize = function (serializedPath)
   return ret;
 }
 
-var myDirPathSerialize = function (deserializedPath)
+function myDirPathSerialize(deserializedPath)
 {
   var ret = "";
   for (var i = 0; i < deserializedPath.length; ++i)
@@ -24,7 +71,7 @@ var myDirPathSerialize = function (deserializedPath)
   return ret;
 }
 
-myPathConvertToDirections(path, creep)
+function myPathConvertToDirections(path, creep)
 {
   var lastX = creep.pos.x;
   var lastY = creep.pos.y;
@@ -35,6 +82,7 @@ myPathConvertToDirections(path, creep)
 
   for (var i = 0; i < path.length; ++i)
   {
+
     nextX = path[i].x;
     nextY = path[i].y;
 
@@ -61,7 +109,7 @@ myPathConvertToDirections(path, creep)
       dY = 1;
     }
 
-    var rawDir = dX + 3 * (dY);
+    var rawDir = (dX + 1) + (3 * (dY + 2));
 
     switch (rawDir)
     {
@@ -94,41 +142,62 @@ myPathConvertToDirections(path, creep)
     lastX = nextX;
     lastY = nextY;
   }
-
+  return directionPath;
 }
 
 
 
-cacheLookupPath: function (creep, to, forceNew)
+function cacheLookupPath(creep, to, forceNew)
 {
+
   var key = creep.room.name + " " + creep.pos.x + " " + creep.pos.y + " " + to.room.name + " " + to.pos.x + " " + to.pos.y;
 
+  var pathFindingTarget = creep.memory.CPF_targetID;
+  var newTarget = to.room.name + " " + to.pos.x + " " + to.pos.y;
+
   var rand = Math.floor(Math.random() * 128);
-  if (cacheMoveToM.has(key) && rand > 0.05 && !forceNew)
+  if (cacheMoveToM.has(key) && rand > 0.05 && !forceNew && pathFindingTarget == newTarget)
   {
     return myDirPathDeserialize(cacheMoveToM.get(key));
   }
   else
   {
+    console.log(creep.pos.x + " " + creep.pos.y + " " + creep.room);
+    console.log(to.pos.x + " " + to.pos.y + " " + to.room);
     var ret = PathFinder.search(creep.pos,
     {
       pos: to.pos,
       range: 1
     },
     {
-      maxCost: 1500
+      maxCost: 3000,
+      plainCost: 2,
+      swampCost: 6,
+      roomCallback: function (roomName)
+      {
+        return calcCostMatrix(roomName);
+      }
     });
 
     if (ret.incomplete)
     {
-      console.log("PATHFINDING ERROR. UNABLE TO FIND PATH FROM: " + creep.pos.room + " " + creep.pos.x + " " + creep.pos.y + " " + " TO " + to.pos.room + " " + to.pos.x + " " + to.pos.y);
-      return -1;
+      console.log("PATHFINDING ERROR. UNABLE TO FIND PATH FROM: " + creep.room + " " + creep.pos.x + " " + creep.pos.y + " " + " TO " + to.room + " " + to.pos.x + " " + to.pos.y);
     }
+    /*  for (var i = 0; i < ret.path.length; ++i)
+      {
+        console.log(ret.path[i].x + " " + ret.path[i].y);
+      }*/
 
-    var path = myPathConvertToDirections(ret.path);
+    var path = myPathConvertToDirections(ret.path, creep);
 
-    cacheMoveToM.put(key, myDirPathSerialize(path));
+    /*  for (var i = 0; i < path.length; ++i)
+      {
+        console.log(path[i]);
+      }*/
 
+    cacheMoveToM.set(key, myDirPathSerialize(path));
+
+    creep.memory.CPF_targetID = newTarget;
     return path;
 
   }
@@ -139,18 +208,32 @@ module.exports = {
 
   cacheMoveTo: function (creep, to)
   {
+    //fallback, need to have room in site.
+    if (to.room == undefined || to.room == null)
+    {
+      return creep.moveTo(to,
+      {
+        reusePath: 50
+      });
+    }
+
+    if (Math.abs(creep.pos.x - to.pos.x) <= 1 && Math.abs(creep.pos.y - to.pos.y) <= 1 && creep.room.name == to.room.name)
+    {
+      console.log("ALREADY THERE");
+      return 0;
+    }
     var start = new Date()
       .getTime();
     console.log("STARTING PF CODE");
 
     var savedPath;
     var savedPathStep = creep.memory.CPF_mySavedPathStep;
-    var path = -1;
+    var path = [];
 
     if (savedPathStep == -1 || savedPathStep == null || savedPathStep == undefined)
     {
       path = cacheLookupPath(creep, to, false);
-      if (path == -1)
+      if (path.length == 0)
       {
         return;
       }
@@ -169,10 +252,10 @@ module.exports = {
     var lastYPos = creep.memory.CPF_lastYPos;
     var curXPos = creep.pos.x;
     var curYPos = creep.pos.y;
-    if (lastXPos == creep.pos.x && lastYPos = creep.memory.CPF_lastYPos)
+    if (lastXPos == curXPos && lastYPos == curYPos)
     {
       path = cacheLookupPath(creep, to, true);
-      if (path == -1)
+      if (path.length == 0)
       {
         return;
       }
@@ -188,6 +271,11 @@ module.exports = {
       return -1;
     }
 
+    if (path.length == 0)
+    {
+      return 0;
+    }
+    console.log("MOVING " + creep.name + " " + path[savedPathStep] + " " + creep.room);
     var res = creep.move(path[savedPathStep]);
     creep.memory.CPF_lastXPos = curXPos;
     creep.memory.CPF_lastYPos = curYPos;
@@ -198,7 +286,7 @@ module.exports = {
     var end = new Date()
       .getTime();
     console.log("ENDING PF CODE");
-    console.log("TIME: " + end - start);
+    console.log("TIME: " + (end - start));
     return res;
 
 
@@ -236,6 +324,8 @@ module.exports = {
         cacheMoveToM.set(tempArr[i], tempArr[i + 1]);
       }
     }
+
+    cacheCostMatrix = new Map();
 
 
 

@@ -1,3 +1,4 @@
+var cacheMove = require("cacheMoveTo");
 var taskMoveToTarget = {
   run: function (creep)
   {
@@ -5,15 +6,17 @@ var taskMoveToTarget = {
 
     if (target != undefined)
     {
-      if (target.pos.x == creep.pos.x && target.pos.y == creep.pos.y)
+      if (Math.abs(target.pos.x - creep.pos.x) <= 1 && Math.abs(target.pos.y - creep.pos.y) <= 1)
       {
         creep.memory.task = creep.memory.role;
       }
     }
-    var err = creep.moveTo(target,
+    var err = cacheMove.cacheMoveTo(creep, target);
+
+    /*var err = creep.moveTo(target,
     {
       rememberPath: 50
-    });
+    });*/
 
   }
 
