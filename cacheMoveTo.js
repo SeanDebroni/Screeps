@@ -156,14 +156,15 @@ function cacheLookupPath(creep, to, forceNew)
   var newTarget = to.room.name + " " + to.pos.x + " " + to.pos.y;
 
   var rand = Math.floor(Math.random() * 128);
-  if (cacheMoveToM.has(key) && rand > 0.05 && !forceNew && pathFindingTarget == newTarget)
+  if (cacheMoveToM.has(key) && rand > 10 && !forceNew && pathFindingTarget == newTarget)
   {
+    console.log("USED A SAVED PATH");
     return myDirPathDeserialize(cacheMoveToM.get(key));
   }
   else
   {
-    console.log(creep.pos.x + " " + creep.pos.y + " " + creep.room);
-    console.log(to.pos.x + " " + to.pos.y + " " + to.room);
+    //console.log(creep.pos.x + " " + creep.pos.y + " " + creep.room);
+    //console.log(to.pos.x + " " + to.pos.y + " " + to.room);
     var ret = PathFinder.search(creep.pos,
     {
       pos: to.pos,
@@ -198,6 +199,9 @@ function cacheLookupPath(creep, to, forceNew)
     cacheMoveToM.set(key, myDirPathSerialize(path));
 
     creep.memory.CPF_targetID = newTarget;
+
+    console.log("CALCD A PATH");
+
     return path;
 
   }
@@ -208,6 +212,15 @@ module.exports = {
 
   cacheMoveTo: function (creep, to)
   {
+    if (creep.fatigue > 0)
+    {
+      return ERR_TIRED;
+    }
+    var lastXPos = creep.memory.CPF_lastXPos;
+    var lastYPos = creep.memory.CPF_lastYPos;
+    var curXPos = creep.pos.x;
+    var curYPos = creep.pos.y;
+
     //fallback, need to have room in site.
     if (to.room == undefined || to.room == null)
     {
@@ -222,9 +235,8 @@ module.exports = {
       console.log("ALREADY THERE");
       return 0;
     }
-    var start = new Date()
-      .getTime();
-    console.log("STARTING PF CODE");
+
+    //console.log("STARTING PF CODE");
 
     var savedPath;
     var savedPathStep = creep.memory.CPF_mySavedPathStep;
@@ -235,9 +247,11 @@ module.exports = {
       path = cacheLookupPath(creep, to, false);
       if (path.length == 0)
       {
+        creep.memory.CPF_lastXPos = -1;
+        creep.memory.CPF_lastYPos = -1;
         return;
       }
-      console.log(myDirPathSerialize(path));
+      //console.log(myDirPathSerialize(path));
       savedPath = path;
       creep.memory.CPF_mySavedPath = myDirPathSerialize(path);
       savedPathStep = 0;
@@ -248,45 +262,55 @@ module.exports = {
       path = myDirPathDeserialize(creep.memory.CPF_mySavedPath);
     }
 
-    var lastXPos = creep.memory.CPF_lastXPos;
-    var lastYPos = creep.memory.CPF_lastYPos;
-    var curXPos = creep.pos.x;
-    var curYPos = creep.pos.y;
-    if (lastXPos == curXPos && lastYPos == curYPos)
+
+    if (lastXPos == curXPos && lastYPos == curYPos && savedPathStep != -1)
     {
-      path = cacheLookupPath(creep, to, true);
-      if (path.length == 0)
+
+      let rand = Math.floor(Math.random() * 8);
+      let rand2 = Math.floor(Math.random() * 100);
+      if (rand2 > 60)
       {
-        return;
+        console.log("antistuck");
+        let key = creep.room.name + " " + creep.pos.x + " " + creep.pos.y + " " + to.room.name + " " + to.pos.x + " " + to.pos.y;
+
+        //cacheMoveToM.delete(key);
+
+        savedPath = path;
+        creep.memory.CPF_mySavedPath = [];
+        creep.memory.CPF_mySavedPathStep = -1;
+        creep.move(rand + 1);
+        creep.memory.CPF_lastXPos = -1;
+        creep.memory.CPF_lastYPos = -1;
+        return ERR_NO_PATH;
       }
-      savedPath = path;
-      creep.memory.CPF_mySavedPath = myDirPathSerialize(path);
-      savedPathStep = 0;
+      else
+      {
+        return ERR_NO_PATH;
+      }
     }
 
     if (savedPathStep > path.length)
     {
       creep.memory.CPF_mySavedPathStep = -1;
       creep.memory.CPF_mySavedPath = undefined;
-      return -1;
+      creep.memory.CPF_lastXPos = -1;
+      creep.memory.CPF_lastYPos = -1;
+      return 0;
     }
 
     if (path.length == 0)
     {
       return 0;
     }
-    console.log("MOVING " + creep.name + " " + path[savedPathStep] + " " + creep.room);
+    //console.log("MOVING " + creep.name + " " + path[savedPathStep] + " " + creep.room);
     var res = creep.move(path[savedPathStep]);
     creep.memory.CPF_lastXPos = curXPos;
     creep.memory.CPF_lastYPos = curYPos;
+
     creep.memory.CPF_mySavedPathStep = savedPathStep + 1;
 
-
-
-    var end = new Date()
-      .getTime();
-    console.log("ENDING PF CODE");
-    console.log("TIME: " + (end - start));
+    //console.log("ENDING PF CODE");
+    //console.log("TIME: " + (end - start));
     return res;
 
 

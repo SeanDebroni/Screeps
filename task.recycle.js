@@ -33,10 +33,7 @@ var taskRecycle = {
       }
       else
       {
-        creep.moveTo(Game.getObjectById(creep.memory.targetID),
-        {
-          reusePath: 10
-        });
+        cacheMoveTo.cacheMoveTo(creep, Game.getObjectById(creep.memory.targetID));
       }
 
     }

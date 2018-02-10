@@ -7,10 +7,7 @@ var taskBuild = {
     var err = creep.build(target);
     if (err == ERR_NOT_IN_RANGE)
     {
-      creep.moveTo(target,
-      {
-        reusePath: 5
-      });
+      cacheMoveTo.cacheMoveTo(creep, target);
       //cacheMoveTo.cacheMoveTo(creep, target);
     }
     else if (err == ERR_NOT_ENOUGH_RESOURCES || err == ERR_INVALID_TARGET || err == ERR_RCL_NOT_ENOUGH)

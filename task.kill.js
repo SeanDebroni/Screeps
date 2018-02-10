@@ -1,3 +1,5 @@
+var cacheMoveTo = require('cacheMoveTo');
+
 var taskKill = {
   run: function (creep)
   {
@@ -10,10 +12,7 @@ var taskKill = {
     }
     if (creep.attack(target) != 0)
     {
-      creep.moveTo(target,
-      {
-        reusePath: 3
-      });
+      cacheMoveTo.cacheMoveTo(creep, target);
       creep.attack(target);
     }
   }

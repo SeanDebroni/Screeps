@@ -13,7 +13,7 @@ var taskMoveToTarget = {
     }
     var err = cacheMove.cacheMoveTo(creep, target);
 
-    /*var err = creep.moveTo(target,
+    /*var err = cacheMoveTo.cacheMoveTo(creep, target,
     {
       rememberPath: 50
     });*/

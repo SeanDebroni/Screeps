@@ -1,6 +1,8 @@
 var util = require('util');
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
+var cacheMoveTo = require('cacheMoveTo');
+
 
 var taskFillBaseUtil = {
   fillTowersAndStructures: function (creep, room)
@@ -42,8 +44,6 @@ var taskFillBaseUtil = {
       return true;
     }
 
-
-
     var containersToFill = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSTOFILL, room);
     if (containersToFill.length > 0)
     {
@@ -52,10 +52,6 @@ var taskFillBaseUtil = {
       util.moveEnergyTo(creep, containersToFill[rand], true);
       return true;
     }
-
-
-
-
 
     return false;
   }
@@ -87,10 +83,7 @@ var taskFillBase = {
           var flag = Game.flags[creep.memory.homeRoom + "idle"];
           if (flag != undefined && flag != null)
           {
-            creep.moveTo(flag,
-            {
-              reusePath: 10
-            });
+            cacheMoveTo.cacheMoveTo(creep, flag);
           }
 
         }

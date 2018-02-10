@@ -58,9 +58,14 @@ module.exports.loop = function ()
     var a = Game.time & 1023;
     if (a == 0)
     {
-      cacheMoveTo.cacheMoveToClear();
+      //cacheMoveTo.cacheMoveToClear();
     }
     cacheMoveTo.cacheMoveToLoad();
+
+    var end22 = new Date()
+      .getTime();
+    var time22 = end22 - start;
+    console.log("TIME LOADING: " + time22);
 
     var time = Game.time;
     var rand = Math.floor(Math.random() * 100);

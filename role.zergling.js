@@ -1,5 +1,7 @@
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
+var cacheMoveTo = require('cacheMoveTo');
+
 
 var roleZergling = {
 
@@ -19,7 +21,7 @@ var roleZergling = {
     {
       if (hostiles[0].structureType == STRUCTURE_CONTROLLER)
       {
-        if (creep.moveTo(hostiles[0] == ERR_NO_PATH))
+        if (cacheMoveTo.cacheMoveTo(creep, hostiles[0]) == ERR_NO_PATH)
         {
           var hostileWalls = cacheFind.findCached(CONST.CACHEFIND_WALLS, targRoom);
           creep.memory.targetID = hostileWalls[Math.floor(Math.random() * hostileWalls.length)].id;
