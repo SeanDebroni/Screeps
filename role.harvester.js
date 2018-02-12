@@ -9,11 +9,10 @@ var roleHarvester = {
 
     if (creep.harvest(source) != 0)
     {
-      cacheMoveTo.cacheMoveTo(creep, source);
-      /*cacheMoveTo.cacheMoveTo(creep, source,
+      creep.moveTo(source,
       {
         reusePath: 5
-      });*/
+      });
     }
     else
     {

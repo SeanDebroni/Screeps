@@ -1,5 +1,4 @@
 var CONST = require("CONSTANTS");
-var cacheMoveTo = require('cacheMoveTo');
 
 var roleDisassembleFlag = {
   run: function (creep)
@@ -16,11 +15,17 @@ var roleDisassembleFlag = {
 
     if (flag.room == undefined)
     {
-      var err = cacheMoveTo.cacheMoveTo(creep, target);
+      var err = creep.moveTo(target,
+      {
+        rememberPath: 5
+      });
     }
     else if (creep.room != flag.room)
     {
-      var err = cacheMoveTo.cacheMoveTo(creep, target);
+      var err = creep.moveTo(target,
+      {
+        rememberPath: 5
+      });
 
     }
     else
@@ -31,7 +36,10 @@ var roleDisassembleFlag = {
       }
       else
       {
-        var err = cacheMoveTo.cacheMoveTo(creep, target);
+        var err = creep.moveTo(target,
+        {
+          rememberPath: 5
+        });
       }
     }
   }

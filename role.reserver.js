@@ -19,7 +19,6 @@ var roleReserver = {
     {
       cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
         .controller);
-
     }
     else if (err == ERR_NOT_OWNER || err == ERR_INVALID_TARGET)
     {

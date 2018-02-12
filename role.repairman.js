@@ -1,8 +1,6 @@
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
 var util = require('util');
-var cacheMoveTo = require('cacheMoveTo');
-
 
 var roleRepairman = {
   run: function (creep)
@@ -15,7 +13,10 @@ var roleRepairman = {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
       {
-        cacheMoveTo.cacheMoveTo(creep, flag);
+        creep.moveTo(flag,
+        {
+          reusePath: 10
+        });
       }
     }
 
