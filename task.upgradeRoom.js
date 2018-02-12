@@ -10,9 +10,13 @@ var taskUpgradeRoom = {
     }
     else
     {
+      var err = creep.upgradeController(util.getWorkRoom(creep)
+        .controller);
+
       if (creep.upgradeController(util.getWorkRoom(creep)
           .controller) == ERR_NOT_IN_RANGE)
       {
+
         cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
           .controller);
       }

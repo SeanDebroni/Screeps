@@ -10,6 +10,13 @@ var taskRepair = {
     }
     var target = Game.getObjectById(creep.memory.targetID);
 
+    if (target == null || target == undefined)
+    {
+      creep.memory.task = creep.memory.role;
+      creep.memory.targetID = -1;
+      return;
+    }
+
     if (target.hits == target.hitsMax)
     {
       creep.memory.task = creep.memory.role;

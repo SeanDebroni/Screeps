@@ -143,7 +143,7 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0 && level < 3)
+    while (canMake == 0 && level < 2)
     {
       parts.push(MOVE);
       level = level + 1;
@@ -251,9 +251,11 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0 && level < 13)
+    while (canMake == 0 && level < 16)
     {
-      parts.push(WORK);
+      if (level % 5 == 3) parts.push(CARRY);
+      else parts.push(WORK);
+
       level = level + 1;
       canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER + Game.time,
       {
@@ -284,7 +286,7 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0 && level < 17)
+    while (canMake == 0 && level < 18)
     {
       if (level % 3 == 2) parts.push(MOVE);
       else if (level % 3 == 1) parts.push(CARRY);
@@ -321,7 +323,7 @@ module.exports = {
       dryRun: true
     });
     if (canMake != 0) return -1;
-    while (canMake == 0)
+    while (canMake == 0 && level < 21)
     {
       if (level % 3 == 2) parts.push(WORK);
       else if (level % 3 == 0) parts.push(CARRY);

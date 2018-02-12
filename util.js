@@ -4,6 +4,14 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  isAdjacent: function (pos1, pos2)
+  {
+    if (Math.abs(pos1.x - pos2.x) <= 1 && Math.abs(pos1.y - pos2.y) <= 1)
+    {
+      return true;
+    }
+    return false;
+  },
   isRoomFucked: function (room)
   {
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, room);
@@ -36,7 +44,7 @@ module.exports = {
   getWorkRoom: function (creep)
   {
     var ret = Game.rooms[creep.memory.workRoom];
-    if (ret == undefined)
+    if (ret == undefined && creep.memory.role != CONST.ROLE_RESERVER)
     {
       return creep.room;
     }
@@ -169,7 +177,11 @@ module.exports = {
     var result = creep.pickup(target);
     if (result == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, target);
+      var res2 = cacheMoveTo.cacheMoveTo(creep, target);
+      if (res2 = ERR_NO_PATH)
+      {
+        return res2;
+      }
     }
     return result;
   },

@@ -180,7 +180,7 @@ module.exports = {
   {
     if (maxHaulersPerSource == 0) return true;
 
-    var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && creep.ticksToLive > 50));
+    var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && (creep.ticksToLive > 50 || creep.ticksToLive == undefined)));
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
 
     var sumCapac = 0;
@@ -281,9 +281,12 @@ module.exports = {
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for (var i = 0; i < sources.length; ++i)
     {
-      var ttspd = 40;
-      if (spawner.room != workRoom) ttspd = 150;
-      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && creep.ticksToLive > ttspd));
+      var ttspd = 60;
+      if (spawner.room != workRoom) ttspd = 200;
+
+
+      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));
+
       if (harvesters2.length < 1)
       {
         console.log("adding harvester because source missing one");
