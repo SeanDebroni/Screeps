@@ -174,6 +174,7 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
+
   didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
@@ -264,6 +265,11 @@ module.exports = {
 
     let notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
 
+    while (notBusySpawns.length > 1)
+    {
+      notBusySpawns.pop();
+    }
+
     //if all spawns are spawning, no point in doing any of this.
     if (notBusySpawns.length == 0)
     {
@@ -288,7 +294,7 @@ module.exports = {
       }
       else
       {
-        let roomType = roomName.charAt(i);
+        let roomType = roomName.charAt(0);
         switch (roomType)
         {
         case "C":
