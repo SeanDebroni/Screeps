@@ -113,7 +113,7 @@ module.exports = {
       {
         filter: (structure) =>
         {
-          return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && (_.sum(structure.store) < structure.storeCapacity);
+          return (structure.structureType == STRUCTURE_TERMINAL || structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && (_.sum(structure.store) < structure.storeCapacity);
         }
       }));
 
@@ -155,7 +155,7 @@ module.exports = {
       {
         filter: (structure) =>
         {
-          return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && structure.store[RESOURCE_ENERGY] >= 50;
+          return (structure.structureType == STRUCTURE_TERMINAL || structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && structure.store[RESOURCE_ENERGY] >= 50;
         }
       });
       cache.set(key, a);

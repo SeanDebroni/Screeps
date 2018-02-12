@@ -76,8 +76,13 @@ var roleHauler = {
       }
       else if (creep.carry.energy == 0)
       {
-        creep.memory.task = CONST.TASK_FILLFROMBASE;
-        return;
+        if (util.getHomeRoom(creep)
+          .energyAvailable != util.getHomeRoom(creep)
+          .energyCapacityAvailable)
+        {
+          creep.memory.task = CONST.TASK_FILLFROMBASE;
+          return;
+        }
         var flag = Game.flags[creep.memory.homeRoom + "idle"];
         if (flag != undefined && flag != null)
         {
@@ -89,6 +94,7 @@ var roleHauler = {
       }
       else
       {
+
         creep.memory.targetID = -1;
         creep.memory.task = CONST.TASK_FILLBASE;
         return;

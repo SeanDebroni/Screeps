@@ -28,18 +28,42 @@ var taskFillFromBase = {
         var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
         if (baseContainers.length > 0)
         {
-          var rand = Math.floor(Math.random() * baseContainers.length)
-          creep.memory.targetID = baseContainers[0].id;
-          var target = Game.getObjectById(creep.memory.targetID);
+          var containerToFillFrom = -1;
+          for (var i = 0; i < baseContainers.length; ++i)
+          {
+            if (util.isAdjacent(creep.pos, baseContainers[i].pos))
+            {
+              containerToFillFrom = i;
+              break;
+            }
+          }
+          if (containerToFillFrom == -1)
+          {
+            containerToFillFrom = Math.floor(Math.random() * baseContainers.length);
+          }
+          creep.memory.targetID = baseContainers[containerToFillFrom].id;
+          var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
           util.withdrawEnergyFrom(creep, target, true);
           return;
         }
         baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
         if (baseContainers.length > 0)
         {
-          var rand = Math.floor(Math.random() * baseContainers.length)
-          creep.memory.targetID = baseContainers[0].id;
-          var target = Game.getObjectById(creep.memory.targetID);
+          var containerToFillFrom = -1;
+          for (var i = 0; i < baseContainers.length; ++i)
+          {
+            if (util.isAdjacent(creep.pos, baseContainers[i].pos))
+            {
+              containerToFillFrom = i;
+              break;
+            }
+          }
+          if (containerToFillFrom == -1)
+          {
+            containerToFillFrom = Math.floor(Math.random() * baseContainers.length);
+          }
+          creep.memory.targetID = baseContainers[containerToFillFrom].id;
+          var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
           util.withdrawEnergyFrom(creep, target, true);
           return;
         }

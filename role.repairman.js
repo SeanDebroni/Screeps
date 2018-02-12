@@ -30,10 +30,10 @@ var roleRepairman = {
 
       if (damagedStructures.length == 0)
       {
-          if(util.getWorkRoom(creep)==util.getHomeRoom(creep))
-          {
-            creep.memory.task = CONST.TASK_UPGRADEROOM;
-          }
+        if (util.getWorkRoom(creep) == util.getHomeRoom(creep))
+        {
+          creep.memory.task = CONST.TASK_UPGRADEROOM;
+        }
         return;
       }
 
