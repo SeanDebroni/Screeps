@@ -5,6 +5,11 @@ var cacheMoveTo = require("cacheMoveTo");
 var roleReserver = {
   run: function (creep)
   {
+    var workRoom = util.getWorkRoom(creep);
+    if (workRoom == undefined || workRoom == null)
+    {
+      return;
+    }
     var controller = util.getWorkRoom(creep)
       .controller;
 

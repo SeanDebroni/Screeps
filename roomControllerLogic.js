@@ -2,8 +2,59 @@ var intelligentSpawner = require("intelligentSpawner");
 var util = require("util");
 var cacheFind = require("cacheFind");
 const CONST = require('CONSTANTS');
+const BLUEPRINTS = require("BLUEPRINTS");
 
+function getMainBlueprint(mainRoom)
+{
 
+  switch (mainRoom.controller.level)
+  {
+  case 1:
+    return BLUEPRINTS.RCL_ONE_MAIN_CREEP;
+  case 2:
+    return BLUEPRINTS.RCL_TWO_MAIN_CREEP;
+  case 3:
+    return BLUEPRINTS.RCL_THREE_MAIN_CREEP;
+  case 4:
+    return BLUEPRINTS.RCL_FOUR_MAIN_CREEP;
+  case 5:
+    return BLUEPRINTS.RCL_FIVE_MAIN_CREEP;
+  case 6:
+    return BLUEPRINTS.RCL_SIX_MAIN_CREEP;
+  case 7:
+    return BLUEPRINTS.RCL_SEVEN_MAIN_CREEP;
+  case 8:
+    return BLUEPRINTS.RCL_EIGHT_MAIN_CREEP;
+
+  }
+  console.log("invalid controller level in blueprint");
+  return undefined;
+}
+
+function getExtBlueprint(mainRoom)
+{
+  switch (mainRoom.controller.level)
+  {
+  case 1:
+    return BLUEPRINTS.RCL_ONE_EXT_CREEP;
+  case 2:
+    return BLUEPRINTS.RCL_TWO_EXT_CREEP;
+  case 3:
+    return BLUEPRINTS.RCL_THREE_EXT_CREEP;
+  case 4:
+    return BLUEPRINTS.RCL_FOUR_EXT_CREEP;
+  case 5:
+    return BLUEPRINTS.RCL_FIVE_EXT_CREEP;
+  case 6:
+    return BLUEPRINTS.RCL_SIX_EXT_CREEP;
+  case 7:
+    return BLUEPRINTS.RCL_SEVEN_EXT_CREEP;
+  case 8:
+    return BLUEPRINTS.RCL_EIGHT_EXT_CREEP;
+  }
+  console.log("invalid controller level in blueprint");
+  return undefined;
+}
 //Done
 function recycleCreeps(mainRoom)
 {
@@ -17,9 +68,7 @@ function recycleCreeps(mainRoom)
 //Done
 function makeScoutForFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 {
-
   didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
-
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
 
   return curSpawn;
@@ -41,6 +90,7 @@ function runDisassemblyFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 
 function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 {
+  let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, colonyRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, colonyRoom);
   var didntMakeCreep;
@@ -50,7 +100,7 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], colonyRoom, 10);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], colonyRoom, 1);
       if (!didntMakeCreep) curSpawn = curSpawn + 1;
       if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
@@ -60,11 +110,12 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 
 function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], colonyRoom, 3);
+  let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
+  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], colonyRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnReserver(notBusySpawns[curSpawn], colonyRoom, 1);
+  didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], colonyRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -74,11 +125,13 @@ function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 //done
 function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], mainRoom, 2);
+  let blueprint = getMainBlueprint(mainRoom);
+
+  didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], mainRoom);
+  didntMakeCreep = intelligentSpawner.spawnHarvester(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -107,15 +160,17 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
 //done
 function runMainRoomPriorityTwo(mainRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], mainRoom, 2);
+  let blueprint = getMainBlueprint(mainRoom);
+
+  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnUpgrader(notBusySpawns[curSpawn], mainRoom, 3);
+  didntMakeCreep = intelligentSpawner.spawnUpgrader(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], mainRoom, 1, 17);
+  didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -136,7 +191,7 @@ function runAttackRoom(attackRoom, mainRoom, notBusySpawns, curSpawn)
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 10);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 1);
       if (!didntMakeCreep) curSpawn = curSpawn + 1;
       if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
@@ -149,6 +204,7 @@ function runAttackRoom(attackRoom, mainRoom, notBusySpawns, curSpawn)
 //Defense
 function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn)
 {
+  let blueprint = getExtBlueprint(mainRoom);
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, extRoom);
 
@@ -157,7 +213,7 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 10);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1);
       if (!didntMakeCreep) curSpawn = curSpawn + 1;
       if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
@@ -170,16 +226,18 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
 //Harvesters + Haulers  + Reservers
 function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnHauler(notBusySpawns[curSpawn], extRoom, 2);
+  let blueprint = getExtBlueprint(mainRoom);
+
+  didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
 
-  didntMakeCreep = intelligentSpawner.spawnHarvester(notBusySpawns[curSpawn], extRoom);
+  didntMakeCreep = intelligentSpawner.spawnHarvester(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnReserver(notBusySpawns[curSpawn], extRoom, 1);
+  didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -188,11 +246,13 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
 //Upgraders + builders + repairers + ???
 function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnRepairman(notBusySpawns[curSpawn], extRoom, 1, 1);
+  let blueprint = getExtBlueprint(mainRoom);
+
+  didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnBuilder(notBusySpawns[curSpawn], extRoom, 2);
+  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 

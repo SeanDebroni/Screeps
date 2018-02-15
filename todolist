@@ -47,6 +47,9 @@ This would be builders, upgraders, haulers\
 
 step 1.8
 
+
+((((ceil((1*50)/x))*x) / ((ceil((1*50)/x))+2))*1500)/((x*100+1*50)+((((ceil((1*50)/x))*x) / ((ceil((1*50)/x))+2))*1500))
+
 make spawner check time to build each creep to use for crap, scale with type no just magic number
 
 Step 2 Make a room controller logic. Move all logic from spawner ( spawner should be dumb) to roomcontroller. roomcontroller should have a list of room, what type of room they are.

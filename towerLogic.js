@@ -18,6 +18,7 @@ module.exports = {
       if (closestHostile)
       {
         tower.attack(closestHostile);
+        return;
       }
 
       if (tower.energyCapacity * 0.50 > tower.energy) return;

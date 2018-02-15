@@ -1,8 +1,11 @@
 const CONST = require('CONSTANTS');
 var cacheFind = require("cacheFind");
+var _ = require('lodash');
 
 var makeCreep = require('makeCreep');
 var util = require('util');
+
+
 
 module.exports = {
   recycleCreeps: function (spawner)
@@ -28,8 +31,11 @@ module.exports = {
     }
     return true;
   },
-  spawnRepairman: function (spawner, workRoom, maxRepairmen, maxLevel)
+  spawnRepairman: function (blueprint, spawner, workRoom)
   {
+    let maxRepairmen = blueprint.ROLE_REPAIRMAN.maxCreeps;
+    let maxLevel = blueprint.ROLE_REPAIRMAN.maxLevel;
+
     if (maxRepairmen == 0) return true;
 
     var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom);
@@ -64,8 +70,9 @@ module.exports = {
     return true;
 
   },
-  spawnReserver: function (spawner, workRoom, maxReservers)
+  spawnReserver: function (blueprint, spawner, workRoom)
   {
+    let maxReservers = blueprint.ROLE_RESERVER.maxCreeps;
     if (maxReservers == 0) return true;
 
     if (workRoom.controller.level > 0) return true;
@@ -74,7 +81,6 @@ module.exports = {
     {
       if (workRoom.controller.reservation.ticksToEnd > 4500) return true;
     }
-
     var reservers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
     if (reservers.length < maxReservers)
     {
@@ -109,10 +115,14 @@ module.exports = {
     }
     return true;
   },
-  spawnUpgrader: function (spawner, workRoom, maxUpgraders)
+  spawnUpgrader: function (blueprint, spawner, workRoom)
   {
-    if (maxUpgraders == 0) return true;
+    let maxUpgraders = blueprint.ROLE_UPGRADER.maxCreeps;
+    if (spawner.room != workRoom) maxUpgraders = 0;
+    let makeExtra = blueprint.ROLE_UPGRADER.addExtraIfHaveEnergy;
 
+    if (maxUpgraders == 0) return true;
+    var level;
     var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == workRoom));
     if (upgraders.length < maxUpgraders)
     {
@@ -125,10 +135,10 @@ module.exports = {
     }
     else
     {
-      var level = makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, false);
+      level = makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, false);
       for (var i = 0; i < upgraders.length; ++i)
       {
-        if (level > upgraders[i].memory.lvl + 4)
+        if (level > upgraders[i].memory.lvl + 6)
         {
           console.log("Upgrading Upgrader: Old Level: " + upgraders[i].memory.lvl + " New Level: " + level);
           makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, true);
@@ -138,11 +148,38 @@ module.exports = {
         }
       }
     }
+
+    if (makeExtra)
+    {
+      var filledStructures = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, spawner.room);
+      var sum = _.sum(filledStructures, function (a)
+      {
+        return a.store[RESOURCE_ENERGY];
+      });
+      //TODO - calc the val, instead of hardcoding 16000
+      let makeLevel = makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, false);
+      if (makeLevel == -1) return true;
+      let sumLevels = 0;
+      for (let i = 0; i < upgraders.length; ++i)
+      {
+        sumLevels = sumLevels + upgraders[i].memory.lvl;
+      }
+      sumLevels = sumLevels + makeLevel;
+
+      if ((sumLevels * 1000) < sum)
+      {
+        makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, true);
+        return false;
+      }
+    }
     return true;
   },
 
-  spawnBuilder: function (spawner, workRoom, maxBuilders)
+  spawnBuilder: function (blueprint, spawner, workRoom)
   {
+    let builderBlueprint = blueprint.ROLE_BUILDER;
+    let maxBuilders = builderBlueprint.maxCreeps;
+
     if (maxBuilders == 0) return true;
 
     if (cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, workRoom)
@@ -152,20 +189,29 @@ module.exports = {
 
     if (builders.length < maxBuilders)
     {
-      var res = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
+      let mem = {};
+      mem.role = CONST.ROLE_BUILDER;
+      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, builderBlueprint.blueprint, mem, builderBlueprint.maxLevel, true);
+      //  var res = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
       if (res != -1)
       {
         return false;
       }
     }
-    else if (builders.length > 0)
+    else if (builders.length > 0 && builderBlueprint.upgradeCreeps)
     {
-      var level = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, false);
+      var level = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, builderBlueprint.blueprint,
+      {}, builderBlueprint.maxLevel, false);
+      //var level = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, false);
       for (var i = 0; i < builders.length; ++i)
       {
         if (level > builders[i].memory.lvl + 4)
         {
-          makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
+          let mem = {};
+          mem.role = CONST.ROLE_BUILDER;
+          makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, builderBlueprint.blueprint, mem, builderBlueprint.maxLevel, true);
+          //  var res = makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
+          //makeCreep.makeBestBuilder(spawner.room, workRoom, spawner, true);
           builders[i].memory.targetID = -1;
           builders[i].memory.task = CONST.TASK_RECYCLE;
           builders[i].memory.role = CONST.TASK_RECYCLE;
@@ -176,8 +222,10 @@ module.exports = {
     return true;
 
   },
-  spawnHauler: function (spawner, workRoom, maxHaulersPerSource)
+  spawnHauler: function (blueprint, spawner, workRoom)
   {
+    let haulerBlueprint = blueprint.ROLE_HAULER;
+    let maxHaulersPerSource = haulerBlueprint.maxCreepPerHarvester;
     if (maxHaulersPerSource == 0) return true;
 
     var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && (creep.ticksToLive > 50 || creep.ticksToLive == undefined)));
@@ -246,7 +294,11 @@ module.exports = {
       //console.log(sourceLeastID + " ID")
       if (sourceLeastCount < maxHaulersPerSource)
       {
-        //console.log("NEW HAULER");
+        console.log("NEW HAULER");
+        let mem = {};
+        mem.role = CONST.ROLE_HAULER;
+        mem.assignedSourceID = sourceLeastID;
+        var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, haulerBlueprint.blueprint, mem, haulerBlueprint.maxLevel, true);
         var res = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, sourceLeastID);
         if (res != -1)
         {
@@ -256,12 +308,19 @@ module.exports = {
       else
       {
         //console.log("UPDATED HAULER");
-        var level = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, false, 0);
+        var level = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, haulerBlueprint.blueprint,
+        {}, haulerBlueprint.maxLevel, false);
+        //var level = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, false, 0);
         for (var i = 0; i < haulers.length; ++i)
         {
-          if (level > haulers[i].memory.lvl + 4)
+          if (level > haulers[i].memory.lvl + 4 || (level > haulers[i].memory.lvl && spawner.room.controller.level < 4))
           {
-            if (makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, haulers[i].assignedSourceID) != -1)
+            let mem = {};
+            mem.role = CONST.ROLE_HAULER;
+            mem.assignedSourceID = haulers[i].memory.assignedSourceID;
+            var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, haulerBlueprint.blueprint, mem, haulerBlueprint.maxLevel, true);
+            //if (makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, haulers[i].assignedSourceID) != -1)
+            if (res != -1)
             {
               haulers[i].memory.targetID = -1;
               haulers[i].memory.task = CONST.TASK_RECYCLE;
@@ -276,8 +335,10 @@ module.exports = {
     return true;
 
   },
-  spawnHarvester: function (spawner, workRoom)
+  spawnHarvester: function (blueprint, spawner, workRoom)
   {
+    var harvBlueprint = blueprint.ROLE_HARVESTER;
+
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for (var i = 0; i < sources.length; ++i)
     {
@@ -287,10 +348,14 @@ module.exports = {
 
       var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));
 
-      if (harvesters2.length < 1)
+      if (harvesters2.length < harvBlueprint.maxCreepPerSource)
       {
         console.log("adding harvester because source missing one");
-        var res = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
+        let mem = {};
+        mem.role = CONST.ROLE_HARVESTER;
+        mem.sID = sources[i].id;
+        var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, harvBlueprint.blueprint, mem, harvBlueprint.maxLevel, true);
+        //var res = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
         if (res != -1)
         {
           return false;
@@ -298,13 +363,19 @@ module.exports = {
       }
       else
       {
-        var level = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, false);
+        var level = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, harvBlueprint.blueprint,
+        {}, harvBlueprint.maxLevel, false);
+        //var level = makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, false);
         for (var k = 0; k < harvesters2.length; ++k)
         {
-          if ((level > harvesters2[k].memory.lvl + 1) || (level > harvesters2[k].memory.lvl && harvesters2[k].memory.level == 1) || (level >= 4 && level > harvesters2[k].memory.lvl))
+          if ((level > harvesters2[k].memory.lvl + 1) || (level > harvesters2[k].memory.lvl && harvesters2[k].memory.level == 1) || (level >= harvBlueprint.maxLevel - 1 && level > harvesters2[k].memory.lvl))
           {
             console.log("UPGRADING HARV");
-            makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
+            let mem = {};
+            mem.role = CONST.ROLE_HARVESTER;
+            mem.sID = sources[i].id;
+            makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, harvBlueprint.blueprint, mem, harvBlueprint.maxLevel, true);
+            //makeCreep.makeBestHarvester(spawner.room, workRoom, spawner, sources[i].id, true);
             harvesters2[k].memory.targetID = -1;
             harvesters2[k].memory.task = CONST.TASK_RECYCLE;
             harvesters2[k].memory.role = CONST.TASK_RECYCLE;
