@@ -33,20 +33,23 @@ module.exports = {
   },
   spawnRepairman: function (blueprint, spawner, workRoom)
   {
-    let maxRepairmen = blueprint.ROLE_REPAIRMAN.maxCreeps;
-    let maxLevel = blueprint.ROLE_REPAIRMAN.maxLevel;
+    let repairBlueprint = blueprint.ROLE_REPAIRMAN;
+    let maxRepairmen = repairBlueprint.maxCreeps;
+    let maxLevel = repairBlueprint.maxLevel;
 
     if (maxRepairmen == 0) return true;
-
-    var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom);
-    if (damagedStructures.length == 0) return true;
-
 
     var repairmen = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN) && util.getWorkRoom(creep) == workRoom));
 
     if (repairmen.length < maxRepairmen)
     {
-      var res = makeCreep.makeBestRepairman(spawner.room, workRoom, spawner, true, maxLevel);
+      var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom), (structure) => (structure.hits < structure.hitsMax * 0.9));
+      if (damagedStructures.length == 0) return true;
+
+      var mem = {};
+      mem.role = CONST.ROLE_REPAIRMAN;
+      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, repairBlueprint.blueprint, mem, repairBlueprint.maxLevel, true);
+      //var res = makeCreep.makeBestRepairman(spawner.room, workRoom, spawner, true, maxLevel);
       if (res != -1)
       {
         return false;
@@ -72,19 +75,23 @@ module.exports = {
   },
   spawnReserver: function (blueprint, spawner, workRoom)
   {
-    let maxReservers = blueprint.ROLE_RESERVER.maxCreeps;
+    let reserverBlueprint = blueprint.ROLE_RESERVER;
+    let maxReservers = reserverBlueprint.maxCreeps;
     if (maxReservers == 0) return true;
 
     if (workRoom.controller.level > 0) return true;
 
     if (workRoom.controller.reservation != undefined)
     {
-      if (workRoom.controller.reservation.ticksToEnd > 4500) return true;
+      if (workRoom.controller.reservation.ticksToEnd > 4100) return true;
     }
     var reservers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
     if (reservers.length < maxReservers)
     {
-      var res = makeCreep.makeBestReserver(spawner.room, workRoom, spawner, true);
+      var mem = {};
+      mem.role = CONST.ROLE_RESERVER;
+      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, reserverBlueprint.blueprint, mem, reserverBlueprint.maxLevel, true);
+      //var res = makeCreep.makeBestReserver(spawner.room, workRoom, spawner, true);
       if (res != -1)
       {
         return false;
@@ -228,7 +235,9 @@ module.exports = {
     let maxHaulersPerSource = haulerBlueprint.maxCreepPerHarvester;
     if (maxHaulersPerSource == 0) return true;
 
-    var haulers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER) && util.getWorkRoom(creep) == workRoom && (creep.ticksToLive > 50 || creep.ticksToLive == undefined)));
+    var unfilteredHaulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, workRoom);
+    var haulers = _.filter(unfilteredHaulers, (creep) => (creep.ticksToLive > 50 || creep.ticksToLive == undefined));
+
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
 
     var sumCapac = 0;
@@ -263,7 +272,7 @@ module.exports = {
     {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
-    console.log("DROPPED ENERGY: " + droppedSum);
+    //console.log("DROPPED ENERGY: " + droppedSum);
 
     //if we have too much shit on the ground, make a new hauler
     if (droppedSum > sumCapac)
@@ -299,7 +308,7 @@ module.exports = {
         mem.role = CONST.ROLE_HAULER;
         mem.assignedSourceID = sourceLeastID;
         var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, haulerBlueprint.blueprint, mem, haulerBlueprint.maxLevel, true);
-        var res = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, sourceLeastID);
+        //var res = makeCreep.makeBestHauler(spawner.room, workRoom, spawner, true, sourceLeastID);
         if (res != -1)
         {
           return false;
@@ -345,8 +354,8 @@ module.exports = {
       var ttspd = 60;
       if (spawner.room != workRoom) ttspd = 200;
 
-
-      var harvesters2 = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == workRoom && creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));
+      var unfilteredHarvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, workRoom);
+      var harvesters2 = _.filter(unfilteredHarvesters, (creep) => (creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));
 
       if (harvesters2.length < harvBlueprint.maxCreepPerSource)
       {

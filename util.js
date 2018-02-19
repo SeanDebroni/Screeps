@@ -4,6 +4,14 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  moveToRoom(creep, roomName)
+  {
+    const pos = new RoomPosition(25, 25, roomName);
+    return creep.moveTo(pos,
+    {
+      reusePath: 10
+    });
+  },
   isAdjacent: function (pos1, pos2)
   {
     if (Math.abs(pos1.x - pos2.x) <= 1 && Math.abs(pos1.y - pos2.y) <= 1)
@@ -15,7 +23,8 @@ module.exports = {
   isRoomFucked: function (room)
   {
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, room);
-    var harvesters = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && room == util.getWorkRoom(creepA)));
+    //var harvesters = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && room == util.getWorkRoom(creepA)));
+    var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, room);
 
   },
   getNotBusySpawns: function (room)

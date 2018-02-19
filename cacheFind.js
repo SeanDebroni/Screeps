@@ -20,6 +20,14 @@ module.exports = {
 
     switch (whatToFind)
     {
+    case CONST.CACHEFIND_FINDHAULERS:
+      var a = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HAULER && room.name == creep.memory.workRoom));
+      cache.set(key, a);
+      break;
+    case CONST.CACHEFIND_FINDHARVESTERS:
+      var a = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && room.name == creep.memory.workRoom));
+      cache.set(key, a);
+      break;
     case CONST.CACHEFIND_DAMAGEDSTRUCTURES:
 
       /*var max = CONST.VAL_MAXSTRUCTUREHITS;

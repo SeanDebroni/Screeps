@@ -57,10 +57,10 @@ const RCL_ONE_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -131,10 +131,10 @@ const RCL_TWO_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -205,10 +205,10 @@ const RCL_THREE_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -279,17 +279,17 @@ const RCL_FOUR_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 17,
+    maxLevel: 10,
     blueprint:
     {
       base: [CARRY, WORK, MOVE, MOVE],
@@ -353,10 +353,10 @@ const RCL_FIVE_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -427,10 +427,10 @@ const RCL_SIX_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -501,10 +501,10 @@ const RCL_SEVEN_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -575,10 +575,10 @@ const RCL_EIGHT_MAIN_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -650,10 +650,10 @@ const RCL_ONE_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -673,7 +673,7 @@ const RCL_TWO_EXT_CREEP = {
   ROLE_HARVESTER:
   {
     maxCreepPerSource: 1,
-    maxLevel: 9,
+    maxLevel: 5,
     blueprint:
     {
       base: [MOVE, WORK],
@@ -725,10 +725,10 @@ const RCL_TWO_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -747,7 +747,7 @@ const RCL_THREE_EXT_CREEP = {
   ROLE_HARVESTER:
   {
     maxCreepPerSource: 1,
-    maxLevel: 9,
+    maxLevel: 5,
     blueprint:
     {
       base: [MOVE, WORK],
@@ -799,10 +799,10 @@ const RCL_THREE_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -821,16 +821,16 @@ const RCL_FOUR_EXT_CREEP = {
   ROLE_HARVESTER:
   {
     maxCreepPerSource: 1,
-    maxLevel: 5,
+    maxLevel: 7,
     blueprint:
     {
       base: [MOVE, WORK],
-      levelUp: [WORK]
+      levelUp: [WORK, MOVE, WORK]
     }
   },
   ROLE_UPGRADER:
   {
-    maxCreeps: 2,
+    maxCreeps: 0,
     maxLevel: 15,
     blueprint:
     {
@@ -842,8 +842,8 @@ const RCL_FOUR_EXT_CREEP = {
   ROLE_BUILDER:
   {
     upgradeCreeps: true,
-    maxCreeps: 2,
-    maxLevel: 20,
+    maxCreeps: 1,
+    maxLevel: 10,
     blueprint:
     {
       base: [MOVE, CARRY, WORK],
@@ -853,7 +853,7 @@ const RCL_FOUR_EXT_CREEP = {
   ROLE_HAULER:
   {
     maxCreepPerHarvester: 2,
-    maxLevel: 17,
+    maxLevel: 19,
     blueprint:
     {
       base: [CARRY, MOVE],
@@ -873,10 +873,10 @@ const RCL_FOUR_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 1,
-    maxLevel: 2,
+    maxLevel: 1,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, MOVE, CLAIM],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -947,17 +947,17 @@ const RCL_FIVE_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 1,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 1,
+    maxLevel: 9,
     blueprint:
     {
       base: [CARRY, WORK, MOVE, MOVE],
@@ -1021,17 +1021,17 @@ const RCL_SIX_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 1,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 1,
+    maxLevel: 9,
     blueprint:
     {
       base: [CARRY, WORK, MOVE, MOVE],
@@ -1095,17 +1095,17 @@ const RCL_SEVEN_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 1,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 1,
+    maxLevel: 9,
     blueprint:
     {
       base: [CARRY, WORK, MOVE, MOVE],
@@ -1169,10 +1169,10 @@ const RCL_EIGHT_EXT_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 1,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
@@ -1191,10 +1191,10 @@ const RCL_ALL_COL_CREEP = {
   ROLE_RESERVER:
   {
     maxCreeps: 0,
-    maxLevel: 2,
+    maxLevel: 3,
     blueprint:
     {
-      base: [MOVE, CLAIM],
+      base: [MOVE, CLAIM, CLAIM, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },

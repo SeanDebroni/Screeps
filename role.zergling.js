@@ -8,6 +8,17 @@ var roleZergling = {
     var targRoom = Game.rooms[creep.memory.workRoom];
     if (targRoom == undefined)
     {
+      if (creep.memory.roomFlag != undefined)
+      {
+        var target = Game.flags[creep.memory.roomFlag];
+        if (target != undefined)
+        {
+          creep.moveTo(target,
+          {
+            reusePath: 10
+          });
+        }
+      }
       return;
     }
     var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, targRoom);

@@ -136,9 +136,11 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
   //if main base is fucked, fix it first
-  var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == mainRoom));
-  var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && util.getWorkRoom(creep) == mainRoom));
-  if (harvesters.length < 2 || haulers.length < 2)
+  var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, mainRoom);
+  var haulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, mainRoom);
+  //var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == mainRoom));
+  //var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && util.getWorkRoom(creep) == mainRoom));
+  if (harvesters.length < 1 || haulers.length < 1)
   {
     return notBusySpawns.length;
   }
@@ -228,6 +230,9 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = getExtBlueprint(mainRoom);
 
+  var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
+  if (hostileCreeps.length > 0) return curSpawn;
+
   didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
@@ -247,6 +252,9 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
 function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = getExtBlueprint(mainRoom);
+
+  var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
+  if (hostileCreeps.length > 0) return curSpawn;
 
   didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -428,7 +436,7 @@ module.exports = {
       if (curSpawn >= notBusySpawns.length) return;
     }
 
-    console.log(mainBaseRoom + " Had nothing to spawn");
+    //console.log(mainBaseRoom + " Had nothing to spawn");
     return;
 
   }

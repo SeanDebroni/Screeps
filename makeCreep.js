@@ -19,7 +19,7 @@ module.exports = {
   makeBestCreepFromBlueprint: function (spawner, workRoom, blueprint, creepMemory, maxLevel, makeCreep)
   {
     creepMemory = genericCreepGetMemoryToSet(spawner, workRoom, creepMemory);
-
+    let rand = Math.floor(Math.random() * 1024);
     let parts = [];
     for (let i = 0; i < blueprint.base.length; ++i)
     {
@@ -28,16 +28,17 @@ module.exports = {
 
     let level = 1;
 
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + Game.time,
+    var canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
     {
       dryRun: true
     });
+
     if (canMake != 0) return -1;
 
     do {
       parts.push(blueprint.levelUp[(level - 1) % blueprint.levelUp.length]);
       level = level + 1;
-      canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + Game.time,
+      canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
       {
         dryRun: true
       });
@@ -50,7 +51,7 @@ module.exports = {
     {
       console.log("setting these mem values to made creep");
       console.log(Object.keys(creepMemory));
-      Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + Game.time,
+      Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
       {
         memory: creepMemory
       });
@@ -133,7 +134,7 @@ module.exports = {
   },
   makeZergling: function (homeRoom, workRoom, spawner, makeCreep)
   {
-    var parts = [MOVE, ATTACK];
+    var parts = [MOVE, MOVE, ATTACK];
     var level = 1;
     var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
     {
@@ -143,8 +144,9 @@ module.exports = {
 
     while (canMake == 0)
     {
+      if (level % 2 == 1) parts.push(RANGED_ATTACK)
+      if (level % 2 == 0) parts.push(ATTACK)
       parts.push(MOVE);
-      parts.push(ATTACK);
       var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
       {
         dryRun: true
@@ -162,9 +164,12 @@ module.exports = {
     }
     for (let i = 0; i < Math.floor(len / 2); ++i)
     {
-      parts2.push(ATTACK);
+      if (i % 2 == 0)
+        parts2.push(ATTACK);
+      else
+        parts2.push(RANGED_ATTACK);
     }
-
+    parts2.push(MOVE);
     if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts2, CONST.ROLE_ZERGLING + Game.time,
     {
       memory:

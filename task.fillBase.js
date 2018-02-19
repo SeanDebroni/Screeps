@@ -5,14 +5,13 @@ var cacheFind = require('cacheFind');
 var taskFillBaseUtil = {
   fillTowersAndStructures: function (creep, room)
   {
-    var towersToFill = cacheFind.findCached(CONST.CACHEFIND_TOWERSTOFILL, room);
-
-    var harvesters2 = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && util.getHomeRoom(creep) == util.getWorkRoom(creep)));
-    if (harvesters2.length == 0) towersToFill = [];
-
-
     //var baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
     //This only works if creep is in same room. Hmmmmmm.HRM. TODO find path to room, then entrance would use, then from that entrance find closest to fill.
+    if (creep.room.name != creep.memory.homeRoom)
+    {
+      util.moveToRoom(creep, creep.memory.homeRoom);
+      return true;
+    }
     var baseToFill = (creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
     {
       filter: (structure) =>
@@ -34,6 +33,11 @@ var taskFillBaseUtil = {
       util.moveEnergyTo(creep, baseToFill, true);
       return true;
     }
+
+    var towersToFill = cacheFind.findCached(CONST.CACHEFIND_TOWERSTOFILL, room);
+    var harvesters2 = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, Game.rooms[creep.memory.homeRoom]);
+    //var harvesters2 = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && util.getHomeRoom(creep) == util.getWorkRoom(creep)));
+    if (harvesters2.length == 0) towersToFill = [];
     if (towersToFill.length > 0)
     {
       var rand = Math.floor(Math.random() * towersToFill.length);
@@ -68,6 +72,7 @@ var taskFillBase = {
     {
       creep.memory.task = creep.memory.role;
       creep.memory.targetID = -1;
+      return;
     }
     else
     {
@@ -75,12 +80,13 @@ var taskFillBase = {
       {
         var target = Game.getObjectById(creep.memory.targetID);
         var err = util.moveEnergyTo(creep, target, true);
+        return;
 
       }
       else
       {
         var haveTarget = false;
-        if (!haveTarget) haveTarget = taskFillBaseUtil.fillTowersAndStructures(creep, util.getWorkRoom(creep));
+        //if (!haveTarget) haveTarget = taskFillBaseUtil.fillTowersAndStructures(creep, util.getWorkRoom(creep));
         if (!haveTarget) haveTarget = taskFillBaseUtil.fillTowersAndStructures(creep, util.getHomeRoom(creep));
         if (!haveTarget)
         {
