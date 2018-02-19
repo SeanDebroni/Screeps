@@ -26,30 +26,24 @@ var taskKill = require('task.kill');
 var taskDisassemble = require('task.disassemble');
 var taskRepair = require('task.repair');
 
-const profiler = require('profiler');
-
-
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
 var roomControllerLogic = require('roomControllerLogic');
-var dumbSpawner = require('dumbSpawner');
 var util = require('util');
 
 var cacheFind = require('cacheFind');
 var cacheMoveTo = require('cacheMoveTo');
 
-//profiler.enable();
-
+console.log("Reloaded script XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 module.exports.loop = function ()
 {
-  //profiler.wrap(function ()
-  //{
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
   var cpuUsedNew = Game.cpu.getUsed();
-  console.log("Baseline used: " + (cpuUsedNew - cpuUsedOld));
+  console.log("Baseline used: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -65,7 +59,8 @@ module.exports.loop = function ()
   util.cleanUpDeadCreeps();
 
   cpuUsedNew = Game.cpu.getUsed();
-  console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -79,7 +74,8 @@ module.exports.loop = function ()
     }
   }
   cpuUsedNew = Game.cpu.getUsed();
-  console.log("CPU used for Towers: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Towers: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -94,7 +90,8 @@ module.exports.loop = function ()
   }
 
   cpuUsedNew = Game.cpu.getUsed();
-  console.log("CPU used for spawning logic: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for spawning logic: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -152,7 +149,8 @@ module.exports.loop = function ()
   }
 
   cpuUsedNew = Game.cpu.getUsed();
-  console.log("CPU used for Roles: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Roles: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
   var taskTimes = {};
@@ -239,17 +237,19 @@ module.exports.loop = function ()
   let debugKeys = Object.keys(taskTimes);
   for (let i = 0; i < debugKeys.length; ++i)
   {
-    console.log("Time Average for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
+    console.log("Time Average|Sum for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
+      .toFixed(3) + "|" + (taskTimes[debugKeys[i]])
       .toFixed(3));
   }
   cpuUsedNew = Game.cpu.getUsed();
-  console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
-  console.log("CPU used Total: " + cpuUsedNew);
-  console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
+  console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
+  console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr))
+    .toFixed(3));
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   cpuUsedOld = cpuUsedNew;
 
-  //});
 
 }

@@ -20,13 +20,6 @@ module.exports = {
     }
     return false;
   },
-  isRoomFucked: function (room)
-  {
-    var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, room);
-    //var harvesters = _.filter(Game.creeps, (creepA) => (creepA.memory.role == CONST.ROLE_HARVESTER && room == util.getWorkRoom(creepA)));
-    var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, room);
-
-  },
   getNotBusySpawns: function (room)
   {
     var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, room);
@@ -58,53 +51,6 @@ module.exports = {
       return creep.room;
     }
     return ret;
-  },
-  isCreepStuck: function (creep, direction)
-  {
-    var posToLook = new RoomPosition();
-    var cPos = creep.pos;
-    posToLook.x = cPos.x;
-    posToLook.y = cPos.y;
-    switch (direction)
-    {
-    case TOP:
-      posToLook.y = cPos.y - 1;
-      break;
-    case TOP_RIGHT:
-      posToLook.y = cPos.y - 1;
-      posToLook.x = cPos.x + 1;
-      break;
-    case RIGHT:
-      posToLook.x = cPos.x + 1;
-      break;
-    case BOTTOM_RIGHT:
-      posToLook.y = cPos.y + 1;
-      posToLook.x = cPos.x + 1;
-      break;
-    case BOTTOM:
-      posToLook.y = cPos.y + 1;
-      break;
-    case BOTTOM_LEFT:
-      posToLook.y = cPos.y + 1;
-      posToLook.x = cPos.x - 1;
-      break;
-    case LEFT:
-      posToLook.x = cPos.x - 1;
-      break;
-    case TOP_LEFT:
-      posToLook.y = cPos.y - 1;
-      posToLook.x = cPos.x - 1;
-      break;
-    }
-    var whatsThere = creep.lookAt(posToLook);
-    for (var i = 0; i < whatsThere.length; ++i)
-    {
-      if (whatsThere[i].type === 'creep')
-      {
-        return true;
-      }
-    }
-    return false;
   },
   cleanUpDeadCreeps: function ()
   {
