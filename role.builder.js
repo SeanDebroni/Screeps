@@ -6,6 +6,7 @@ var roleBuilder = {
   run: function (creep)
   {
 
+    //If there is no energy to be used in room, and no energy on the builder, go idle.
     if (cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.homeRoom])
       .length == 0 && creep.carry.energy == 0)
     {
@@ -20,6 +21,7 @@ var roleBuilder = {
       }
     }
 
+    //If builder needs energy, fill it up.
     if (creep.carry.energy < creep.carryCapacity * 0.1)
     {
       creep.memory.targetID = -1;
@@ -27,6 +29,7 @@ var roleBuilder = {
       return;
     }
 
+    //if there is a target to build, build it.
     var targets = cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, util.getWorkRoom(creep));
     if (targets.length > 0)
     {
@@ -35,6 +38,7 @@ var roleBuilder = {
       return;
     }
 
+    //if there is a target to repair, repair it.
     var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
     if (damagedStructures.length > 0)
     {
@@ -43,8 +47,10 @@ var roleBuilder = {
       return;
     }
 
-    creep.memory.workRoom = creep.memory.homeRoom;
-    creep.memory.task = CONST.TASK_UPGRADEROOM;
+    //recycle the builder.
+    creep.memory.role = CONST.TASK_RECYCLE;
+    creep.memory.task = CONST.TASK_RECYCLE;
+    creep.memory.targetID = -1;
     return;
 
   }

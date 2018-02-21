@@ -11,39 +11,32 @@ var roleDisassembleFlag = {
       creep.suicide();
       return;
     }
-    var target = Game.flags[creep.memory.targetID];
 
-    if (flag.room == undefined)
+    //Not in same room, just move there.
+    if (flag.room == undefined || creep.room != flag.room)
     {
-      var err = creep.moveTo(target,
+      var err = creep.moveTo(flag,
       {
         rememberPath: 5
       });
+      return;
     }
-    else if (creep.room != flag.room)
-    {
-      var err = creep.moveTo(target,
-      {
-        rememberPath: 5
-      });
 
-    }
-    else
+    //If adjacent, start working
+    if (Math.abs(creep.pos.x - flag.pos.x) <= 1 && Math.abs(creep.pos.y - flag.pos.y) <= 1)
     {
-      if (Math.abs(creep.pos.x - flag.pos.x) <= 1 && Math.abs(creep.pos.y - flag.pos.y) <= 1)
-      {
-        creep.memory.task = CONST.TASK_DISASSEMBLE;
-      }
-      else
-      {
-        var err = creep.moveTo(target,
-        {
-          rememberPath: 5
-        });
-      }
+      creep.memory.task = CONST.TASK_DISASSEMBLE;
+      return;
     }
+
+    //otherwise, just move to it.
+    var err = creep.moveTo(flag,
+    {
+      rememberPath: 5
+    });
+    return;
+
   }
-
-
 }
+
 module.exports = roleDisassembleFlag;

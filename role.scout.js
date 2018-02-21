@@ -1,26 +1,22 @@
 const CONST = require('CONSTANTS');
 
-//Create with memory s which is the id of the source to harvest
 var roleScout = {
   run: function (creep)
   {
-    //hmm
-
+    //if you have a target, move to it.
     if (creep.memory.targetID != undefined)
     {
       creep.memory.task = CONST.TASK_MOVETOTARGET;
       return;
     }
 
+    //if there is a scout flag, move to it.
     var flags = Game.flags;
     if (flags["scout"] != undefined)
     {
       creep.memory.targetID = flags["scout"].name;
       creep.memory.task = CONST.TASK_MOVETOTARGET;
-    }
-    if (flags["hi"] != undefined)
-    {
-      //creep.say("Hi!", true);
+      return;
     }
 
   }
