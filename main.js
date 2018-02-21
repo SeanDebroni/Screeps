@@ -33,6 +33,7 @@ var util = require('util');
 
 var cacheFind = require('cacheFind');
 var cacheMoveTo = require('cacheMoveTo');
+var cachedGetDistance = require('cachedGetDistance');
 
 module.exports.loop = function ()
 {
@@ -40,17 +41,17 @@ module.exports.loop = function ()
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
   var cpuUsedNew = Game.cpu.getUsed();
-  //console.log("Baseline used: " + (cpuUsedNew - cpuUsedOld));
+  console.log("Baseline used: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
   var rand = Math.floor(Math.random() * 100);
-
+  cachedGetDistance.cachedGetDistanceLoad();
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
 
   cpuUsedNew = Game.cpu.getUsed();
-  //console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -64,7 +65,7 @@ module.exports.loop = function ()
     }
   }
   cpuUsedNew = Game.cpu.getUsed();
-  //console.log("CPU used for Towers: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Towers: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -79,7 +80,7 @@ module.exports.loop = function ()
   }
 
   cpuUsedNew = Game.cpu.getUsed();
-  //console.log("CPU used for spawning logic: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for spawning logic: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
@@ -137,7 +138,7 @@ module.exports.loop = function ()
   }
 
   cpuUsedNew = Game.cpu.getUsed();
-  //console.log("CPU used for Roles: " + (cpuUsedNew - cpuUsedOld));
+  console.log("CPU used for Roles: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
   var taskTimes = {};
@@ -214,6 +215,8 @@ module.exports.loop = function ()
       }
     }
   }
+  cachedGetDistance.cachedGetDistanceSave();
+
   ////console.log("Time for task " + creep.memory.task + ": " + (taskEnd - taskStart));
   /*let debugKeysR = Object.keys(roleTimes);
   for (let i = 0; i < debugKeysR.length; ++i)
@@ -229,11 +232,12 @@ module.exports.loop = function ()
     //.toFixed(3));
   }
   cpuUsedNew = Game.cpu.getUsed();
-  //console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)////.toFixed(3));
+  console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)
+    .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
-  //console.log("CPU used Total: " + cpuUsedNew//.toFixed(3));
-  //console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
-  //console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
+  console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   cpuUsedOld = cpuUsedNew;
 
 }

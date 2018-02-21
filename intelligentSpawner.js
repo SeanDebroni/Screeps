@@ -5,6 +5,7 @@ var _ = require('lodash');
 var makeCreep = require('makeCreep');
 var util = require('util');
 
+var cachedGetDistance = require('cachedGetDistance');
 
 
 module.exports = {
@@ -273,7 +274,7 @@ module.exports = {
     {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
-    console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);
+    //console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);
 
     //if we have too much shit on the ground, make a new hauler
     if (droppedSum > sumCapac)
@@ -349,8 +350,8 @@ module.exports = {
     var sources = cacheFind.findCached(CONST.CACHEFIND_SOURCES, workRoom);
     for (var i = 0; i < sources.length; ++i)
     {
-      var ttspd = 60;
-      if (spawner.room != workRoom) ttspd = 200;
+      //takes 3 ticks to move one space on road for current harvesters TODO make this dynamic
+      var ttspd = cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos) * 3;
 
       var unfilteredHarvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, workRoom);
       var harvesters2 = _.filter(unfilteredHarvesters, (creep) => (creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));

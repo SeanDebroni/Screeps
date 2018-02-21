@@ -36,24 +36,11 @@ var roleRepairman = {
 
       //if its an ext roleRepairman
 
-      //refill first
-      if (creep.carry.energy < creep.carryCapacity)
-      {
-        creep.memory.targetID = -1;
-        creep.memory.task = CONST.TASK_FILLFROMBASE;
-        return;
-      }
-
-      //Then idle.
-      var flag = Game.flags[creep.memory.homeRoom + "idle"];
-      if (flag != undefined && flag != null)
-      {
-        creep.moveTo(flag,
-        {
-          reusePath: 10
-        });
-        return;
-      }
+      //Go recycle yourself.
+      creep.memory.task = CONST.TASK_RECYCLE;
+      creep.memory.role = CONST.TASK_RECYCLE;
+      creep.memory.targetID = -1;
+      return;
     }
 
     return;

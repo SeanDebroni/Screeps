@@ -78,11 +78,10 @@ var roleHauler = {
       return;
     }
 
-    //If the hauler is empty, and there is no dropped energy to pick up, and the spawner/extensions need energy:
-    //  Then fill the hauler from storage and use that to fill the spawn/extensions.
-    //  If hauler is empty, no energy to pickup, and base is full - then idle.
+    //If the hauler is empty, and there is no dropped energy to pick up
     if (creep.carry.energy == 0)
     {
+      //If spawns need energy, then fill from storage.
       if (util.getHomeRoom(creep)
         .energyAvailable != util.getHomeRoom(creep)
         .energyCapacityAvailable)
@@ -90,7 +89,7 @@ var roleHauler = {
         creep.memory.task = CONST.TASK_FILLFROMBASE;
         return;
       }
-
+      //otherwise idle.
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
       {
@@ -108,8 +107,6 @@ var roleHauler = {
       creep.memory.task = CONST.TASK_FILLBASE;
       return;
     }
-
-
   }
 
 };

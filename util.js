@@ -4,6 +4,51 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  getDistance(startPos, endPos)
+  {
+    let path = startPos.findPathTo(endPos,
+    {
+      ignoreCreeps: true,
+      ignoreRoads: true,
+      range: 1
+    });
+    let pathLength = path.length;
+
+    if (startPos.roomName == endPos.roomName)
+    {
+      return pathLength;
+    }
+
+    let route = Game.map.findRoute(startPos.roomName, endPos.roomName);
+    let curPos;
+    for (let i = 0; i < route.length; ++i)
+    {
+      curPos = new RoomPosition(path[path.length - 1].x, path[path.length - 1].y, route[i].room);
+      switch (route[i].exit)
+      {
+      case FIND_EXIT_BOTTOM:
+        curPos.y = 0;
+        break;
+      case FIND_EXIT_RIGHT:
+        curPos.x = 0;
+        break;
+      case FIND_EXIT_LEFT:
+        curPos.x = 49;
+        break;
+      case FIND_EXIT_TOP:
+        curPos.y = 49;
+        break;
+      }
+      path = curPos.findPathTo(endPos,
+      {
+        ignoreCreeps: true,
+        ignoreRoads: true,
+        range: 1
+      });
+      pathLength = pathLength + path.length;
+    }
+    return pathLength;
+  },
   moveToRoom(creep, roomName)
   {
     const pos = new RoomPosition(25, 25, roomName);
