@@ -226,12 +226,18 @@ module.exports = {
   },
   spawnHauler: function (blueprint, spawner, workRoom)
   {
+
     let haulerBlueprint = blueprint.ROLE_HAULER;
     let maxHaulersPerSource = haulerBlueprint.maxCreepPerHarvester;
     if (maxHaulersPerSource == 0) return true;
 
+    let ticksToLive = 50;
+    if (workRoom.name != spawner.room.name)
+    {
+      ticksToLive = 120;
+    }
     var unfilteredHaulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, workRoom);
-    var haulers = _.filter(unfilteredHaulers, (creep) => (creep.ticksToLive > 50 || creep.ticksToLive == undefined));
+    var haulers = _.filter(unfilteredHaulers, (creep) => (creep.ticksToLive > ticksToLive || creep.ticksToLive == undefined));
 
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, workRoom);
 
@@ -267,7 +273,7 @@ module.exports = {
     {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
-    //console.log("DROPPED ENERGY: " + droppedSum);
+    console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);
 
     //if we have too much shit on the ground, make a new hauler
     if (droppedSum > sumCapac)
@@ -296,7 +302,7 @@ module.exports = {
       }
       //console.log(sourceLeastCount + " SLC0");
       //console.log(sourceLeastID + " ID")
-      if (sourceLeastCount < maxHaulersPerSource)
+      if (sourceLeastCount < maxHaulersPerSource || (droppedSum > sumCapac * 2 && spawner.room.name != workRoom.name))
       {
         console.log("NEW HAULER");
         let mem = {};

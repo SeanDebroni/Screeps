@@ -1,11 +1,17 @@
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
+var util = require('util');
 
 var roleZergling = {
 
   run: function (creep)
   {
     var targRoom = Game.rooms[creep.memory.workRoom];
+    if (creep.room.name != creep.memory.workRoom && (targRoom == undefined || targRoom == null))
+    {
+      util.moveToRoom(creep, creep.memory.workRoom);
+      return;
+    }
     if (targRoom == undefined)
     {
       if (creep.memory.roomFlag != undefined)
@@ -47,7 +53,10 @@ var roleZergling = {
     }
     else
     {
-      creep.suicide();
+      creep.memory.targetID = -1;
+      creep.memory.task = CONST.TASK_RECYCLE;
+      creep.memory.role = CONST.TASK_RECYCLE;
+      //creep.suicide();
     }
   }
 };

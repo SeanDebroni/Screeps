@@ -9,7 +9,7 @@ module.exports = {
     const pos = new RoomPosition(25, 25, roomName);
     return creep.moveTo(pos,
     {
-      reusePath: 10
+      reusePath: 17
     });
   },
   isAdjacent: function (pos1, pos2)

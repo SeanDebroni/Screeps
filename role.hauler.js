@@ -56,7 +56,7 @@ var roleHauler = {
         var whatsThere = source.room.lookAtArea(source.pos.y - 1, source.pos.x - 1, source.pos.y + 1, source.pos.x + 1, true);
         for (var i = 0; i < whatsThere.length; ++i)
         {
-          if (whatsThere[i].type == 'creep')
+          if (whatsThere[i].type == 'creep' && whatsThere[i].my)
           {
             if (whatsThere[i].creep.memory.task == CONST.TASK_MINEENERGY)
             {

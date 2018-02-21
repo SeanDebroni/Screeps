@@ -19,7 +19,7 @@ var roleHarvester = {
     {
       creep.moveTo(source,
       {
-        reusePath: 20
+        reusePath: 5
       });
     }
     else

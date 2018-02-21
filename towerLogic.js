@@ -8,8 +8,17 @@ module.exports = {
   {
     if (tower)
     {
-      var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+      var closestHostile; // = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
+      var hostiles = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, tower.room);
+      if (hostiles.length == 0)
+      {
+        closestHostile = false;
+      }
+      else
+      {
+        closestHostile = hostiles[0];
+      }
 
       var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, tower.room);
       var toRepair = damagedStructures[Math.floor(Math.random() * damagedStructures.length)];

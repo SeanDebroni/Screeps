@@ -18,6 +18,7 @@ module.exports = {
   //memory must have role. blueprint must be valid
   makeBestCreepFromBlueprint: function (spawner, workRoom, blueprint, creepMemory, maxLevel, makeCreep)
   {
+
     creepMemory = genericCreepGetMemoryToSet(spawner, workRoom, creepMemory);
     let rand = Math.floor(Math.random() * 1024);
     let parts = [];

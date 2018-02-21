@@ -4,6 +4,11 @@ var taskBuild = {
   run: function (creep)
   {
     var target = Game.getObjectById(creep.memory.targetID);
+    if (creep.room.name != creep.memory.workRoom && target == undefined)
+    {
+      util.moveToRoom(creep, creep.memory.workRoom);
+      return;
+    }
     var err = creep.build(target);
     if (err == ERR_NOT_IN_RANGE)
     {

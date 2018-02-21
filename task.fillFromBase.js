@@ -3,10 +3,6 @@ var util = require("util");
 const CONST = require("CONSTANTS");
 var cacheFind = require("cacheFind");
 
-var taskFillFromBaseUtil = {
-
-}
-
 var taskFillFromBase = {
   run: function (creep)
   {
@@ -25,6 +21,7 @@ var taskFillFromBase = {
       }
       else
       {
+        /*
         var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
         if (baseContainers.length > 0)
         {
@@ -45,19 +42,27 @@ var taskFillFromBase = {
           var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
           util.withdrawEnergyFrom(creep, target, true);
           return;
-        }
-        baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
+        }*/
+        var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
         if (baseContainers.length > 0)
         {
           var containerToFillFrom = -1;
-          for (var i = 0; i < baseContainers.length; ++i)
+          var minDistance = 99999;
+          var minDistIndex = -1;
+          if (creep.room.name == creep.memory.homeRoom)
           {
-            if (util.isAdjacent(creep.pos, baseContainers[i].pos))
+            for (var i = 0; i < baseContainers.length; ++i)
             {
-              containerToFillFrom = i;
-              break;
+              var dist = creep.pos.getRangeTo(baseContainers[i].pos);
+              if (dist < minDistance)
+              {
+                minDistance = dist;
+                minDistIndex = i;
+              }
+              if (minDistance == 1) break;
             }
           }
+          containerToFillFrom = minDistIndex;
           if (containerToFillFrom == -1)
           {
             containerToFillFrom = Math.floor(Math.random() * baseContainers.length);

@@ -80,7 +80,7 @@ function runDisassemblyFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 {
   var didntMakeCreep;
 
-  if (curSpawn > 0) return;
+  if (curSpawn > 0) return curSpawn;
   didntMakeCreep = intelligentSpawner.spawnDisassembleFlag(notBusySpawns[curSpawn], Game.flags[flagName].room, 5, flagName);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
 
@@ -100,9 +100,9 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], colonyRoom, 1);
-      if (!didntMakeCreep) curSpawn = curSpawn + 1;
-      if (curSpawn >= notBusySpawns.length) return curSpawn;
+      //didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], colonyRoom, 1);
+      //if (!didntMakeCreep) curSpawn = curSpawn + 1;
+      //if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
   }
   return curSpawn;
@@ -126,6 +126,8 @@ function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = getMainBlueprint(mainRoom);
+
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
 
   didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -233,16 +235,27 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   if (hostileCreeps.length > 0) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
+  var didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
-
 
   didntMakeCreep = intelligentSpawner.spawnHarvester(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], extRoom);
+
+
+  return curSpawn;
+}
+
+function runExtensionRoomPriorityReservers(extRoom, mainRoom, notBusySpawns, curSpawn)
+{
+  let blueprint = getExtBlueprint(mainRoom);
+
+  var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
+  if (hostileCreeps.length > 0) return curSpawn;
+
+  var didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -256,7 +269,7 @@ function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   if (hostileCreeps.length > 0) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom);
+  var didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -337,10 +350,21 @@ module.exports = {
     {
       notBusySpawns.pop();
     }
-
     //if all spawns are spawning, no point in doing any of this.
     if (notBusySpawns.length == 0)
     {
+      return;
+    }
+    //SOMEONE PLEASE TELL ME WHY I NEEDED TO ADD THIS CHECK. AS FAR AS I KNOW IT SHOULD NEVER EVER EVER MATTER. BUT ONCE EVERY 10 HOURS IT DOES.
+    if (notBusySpawns[0] == undefined || notBusySpawns[0] == null)
+    {
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
+      console.log("@#%$#%@#%@#^$@%@#&*(%@#%@%^*@#%#%%@#@#@#%@#%@#$&*(@#$@#%$))");
       return;
     }
     //only do one spawn at time for now.
@@ -382,20 +406,27 @@ module.exports = {
       }
     }
     recycleCreeps(mainBaseRoom);
-    //Run Priority Zero - Defense
+    //Run Priority Zero - Defense + haulers
     for (let i = 0; i < extensionRooms.length; ++i)
     {
       curSpawn = runExtensionRoomPriorityZero(extensionRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
 
-    //Run Priority One Spawns - Haulers + Harvester + Reservers
+    //Run Priority One Spawns - Haulers + Harvester
     curSpawn = runMainRoomPriorityOne(mainBaseRoom, notBusySpawns, curSpawn);
     if (curSpawn >= notBusySpawns.length) return;
 
     for (let i = 0; i < extensionRooms.length; ++i)
     {
       curSpawn = runExtensionRoomPriorityOne(extensionRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
+      if (curSpawn >= notBusySpawns.length) return;
+    }
+
+    //run Reservers
+    for (let i = 0; i < extensionRooms.length; ++i)
+    {
+      curSpawn = runExtensionRoomPriorityReservers(extensionRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
 
@@ -411,6 +442,7 @@ module.exports = {
       curSpawn = runAttackRoom(attackRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
+
 
     //Run Priority Two Spawns - Builders/Repairmen/upgraders
     curSpawn = runMainRoomPriorityTwo(mainBaseRoom, notBusySpawns, curSpawn);
