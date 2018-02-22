@@ -186,43 +186,6 @@ module.exports = {
     return level - 1;
 
 
-  },
-
-  makeBestUpgrader: function (homeRoom, workRoom, spawner, makeCreep)
-  {
-    var parts = [WORK, CARRY, MOVE];
-    var level = 1;
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER + Game.time,
-    {
-      dryRun: true
-    });
-    if (canMake != 0) return -1;
-    while (canMake == 0 && level < 20)
-    {
-      if (level % 6 == 5) parts.push(CARRY);
-      else if (level % 6 == 0) parts.push(MOVE);
-      else parts.push(WORK);
-
-      level = level + 1;
-      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER + Game.time,
-      {
-        dryRun: true
-      });
-    }
-    parts.pop();
-
-    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_UPGRADER + Game.time,
-    {
-      memory:
-      {
-        homeRoom: homeRoom.name,
-        workRoom: workRoom.name,
-        role: CONST.ROLE_UPGRADER,
-        task: CONST.TASK_SPAWNING,
-        lvl: level - 1
-      }
-    });
-    return level - 1;
   }
 
 }

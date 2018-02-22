@@ -19,7 +19,7 @@ const RCL_ONE_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -93,7 +93,7 @@ const RCL_TWO_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -167,7 +167,7 @@ const RCL_THREE_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -241,7 +241,7 @@ const RCL_FOUR_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -315,7 +315,7 @@ const RCL_FIVE_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -389,7 +389,7 @@ const RCL_SIX_MAIN_CREEP = {
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -459,11 +459,11 @@ const RCL_SEVEN_MAIN_CREEP = {
   ROLE_UPGRADER:
   {
     maxCreeps: 1,
-    maxLevel: 15,
+    maxLevel: 21,
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },
@@ -533,11 +533,11 @@ const RCL_EIGHT_MAIN_CREEP = {
   ROLE_UPGRADER:
   {
     maxCreeps: 1,
-    maxLevel: 15,
+    maxLevel: 21,
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
-      levelUp: [WORK, WORK, CARRY, WORK, WORK]
+      levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
     addExtraIfHaveEnergy: true
   },

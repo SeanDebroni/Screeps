@@ -1,13 +1,21 @@
 let cacheGetDistanceMap = new Map();
 var util = require('util');
 
+
+function getKeyFromRoomPositions(startPos, endPos)
+{
+
+  return startPos.x + "" + startPos.roomName + "" +
+    startPos.y + " " + endPos.x + "" + endPos.roomName + "" +
+    endPos.y;
+}
+
 module.exports = {
 
+  //NOTE - ONLY USE THIS FOR FIXED LOCATIONS. USING IT FOR DYNAMIC LOCATIONS WILL CLOG MEMORY.
   cachedGetDistance(startPos, endPos)
   {
-    var key = startPos.x + "" + startPos.roomName + "" +
-      startPos.y + " " + endPos.x + "" + endPos.roomName + "" +
-      endPos.y;
+    var key = getKeyFromRoomPositions(startPos, endPos);
     if (cacheGetDistanceMap.has(key))
     {
       return cacheGetDistanceMap.get(key);
