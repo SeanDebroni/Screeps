@@ -1,4 +1,5 @@
 var cacheMoveTo = require('cacheMoveTo');
+var util = require('util');
 
 var taskBuild = {
   run: function (creep)

@@ -50,6 +50,36 @@ module.exports.loop = function ()
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
 
+  /*
+    var cenU = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER)));
+    var cenB = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER)));
+    var cenH = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER)));
+    var cenHarv = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HARVESTER)));
+    var cenZerg = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_ZERGLING)));
+    var cenScout = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
+    var cenR = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN)));
+    var cenRes = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER)));
+    var cenOther = _.filter(Game.creeps, (creep) => ((creep.memory.role != CONST.ROLE_RESERVER &&
+      creep.memory.role != CONST.ROLE_REPAIRMAN &&
+      creep.memory.role != CONST.ROLE_SCOUT &&
+      creep.memory.role != CONST.ROLE_ZERGLING &&
+      creep.memory.role != CONST.ROLE_HARVESTER &&
+      creep.memory.role != CONST.ROLE_HAULER &&
+      creep.memory.role != CONST.ROLE_BUILDER &&
+      creep.memory.role != CONST.ROLE_UPGRADER
+    )));
+    console.log("sum : " + (cenOther.length + cenHarv.length + cenU.length + cenB.length + cenH.length + cenZerg.length + cenScout.length + cenR.length + cenRes.length));
+    console.log("Num weird: " + cenOther.length);
+    console.log("Num Harvesters: " + cenHarv.length);
+    console.log("Num Upgraderss: " + cenU.length);
+    console.log("Num Builders: " + cenB.length);
+    console.log("Num Haulers: " + cenH.length);
+    console.log("Num Zerg: " + cenZerg.length);
+    console.log("Num Scout: " + cenScout.length);
+    console.log("Num Repairman: " + cenR.length);
+    console.log("num reser: " + cenRes.length);*/
+
+
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);

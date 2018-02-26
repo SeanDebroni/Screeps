@@ -183,7 +183,7 @@ module.exports = {
       }
       sumLevels = sumLevels + makeLevel;
 
-      if ((sumLevels * 1000) < sum)
+      if (((sumLevels * 1000) < sum && spawner.room.controller.level <= 4) || ((sumLevels * 1000) + TERMINAL_CAPACITY < sum && spawner.room.controller.level >= 5))
       {
         makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint, mem, upgraderBlueprint.maxLevel, true);
         return false;
@@ -298,7 +298,6 @@ module.exports = {
       var sourceLeastCount = 99;
       for (var i = 0; i < sources.length; ++i)
       {
-
         var count = sourcesCount.get(sources[i].id);
         //console.log(sources[i].id);
         //console.log(count);

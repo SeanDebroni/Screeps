@@ -48,6 +48,11 @@ var roleHauler = {
       var source = Game.getObjectById(creep.memory.assignedSourceID);
       if (source == undefined || source == null)
       {
+        if (Game.rooms[creep.memory.workRoom] == undefined)
+        {
+          util.moveToRoom(creep, creep.memory.workRoom);
+          return;
+        }
         console.log(creep.memory.assignedSourceID);
         console.log("ERRRRRRRRRRRRRRRRRR");
         var source = cacheFind.findCached(CONST.CACHEFIND_SOURCES, util.getWorkRoom(creep));

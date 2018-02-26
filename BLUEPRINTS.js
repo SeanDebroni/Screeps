@@ -162,7 +162,7 @@ const RCL_THREE_MAIN_CREEP = {
   },
   ROLE_UPGRADER:
   {
-    maxCreeps: 3,
+    maxCreeps: 5,
     maxLevel: 15,
     blueprint:
     {
@@ -533,13 +533,13 @@ const RCL_EIGHT_MAIN_CREEP = {
   ROLE_UPGRADER:
   {
     maxCreeps: 1,
-    maxLevel: 21,
+    maxLevel: 22,
     blueprint:
     {
       base: [WORK, CARRY, MOVE],
       levelUp: [WORK, WORK, CARRY, WORK, WORK, MOVE]
     },
-    addExtraIfHaveEnergy: true
+    addExtraIfHaveEnergy: false
   },
   ROLE_BUILDER:
   {
@@ -585,7 +585,7 @@ const RCL_EIGHT_MAIN_CREEP = {
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 17,
+    maxLevel: 50,
     blueprint:
     {
       base: [CARRY, WORK, MOVE, MOVE],
@@ -1201,7 +1201,7 @@ const RCL_ALL_COL_CREEP = {
   ROLE_BUILDER:
   {
     upgradeCreeps: false,
-    maxCreeps: 3,
+    maxCreeps: 6,
     maxLevel: 50,
     blueprint:
     {

@@ -125,11 +125,11 @@ module.exports = {
     let len = parts.length / 2;
 
     let parts2 = [];
-    for (let i = 0; i < Math.floor(len / 2); ++i)
+    for (let i = 0; i < Math.floor(len / 1.5); ++i)
     {
       parts2.push(MOVE);
     }
-    for (let i = 0; i < Math.floor(len / 2); ++i)
+    for (let i = 0; i < Math.floor(len / 1.5); ++i)
     {
       if (i % 2 == 0)
         parts2.push(ATTACK);

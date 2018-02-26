@@ -13,6 +13,7 @@ var taskKill = {
       creep.memory.task = creep.memory.role;
 
     }
+
     creep.rangedAttack(target);
     if (creep.attack(target) != 0)
     {

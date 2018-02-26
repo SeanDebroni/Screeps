@@ -6,45 +6,64 @@ const CONST = require('CONSTANTS');
 module.exports = {
   getDistance(startPos, endPos)
   {
+
     let path = startPos.findPathTo(endPos,
     {
       ignoreCreeps: true,
       ignoreRoads: true,
       range: 1
     });
+    console.log("calc from")
+    console.log(startPos)
+    console.log(endPos);
+    console.log(path.length);
     let pathLength = path.length;
 
     if (startPos.roomName == endPos.roomName)
     {
       return pathLength;
     }
-
     let route = Game.map.findRoute(startPos.roomName, endPos.roomName);
     let curPos;
+    let roomAdj = Game.map.describeExits(startPos.roomName);
+
     for (let i = 0; i < route.length; ++i)
     {
-      curPos = new RoomPosition(path[path.length - 1].x, path[path.length - 1].y, route[i].room);
-      switch (route[i].exit)
+      curPos = new RoomPosition(path[path.length - 1].x, path[path.length - 1].y, startPos.roomName);
+      switch (curPos.x)
       {
-      case FIND_EXIT_BOTTOM:
-        curPos.y = 0;
-        break;
-      case FIND_EXIT_RIGHT:
-        curPos.x = 0;
-        break;
-      case FIND_EXIT_LEFT:
+      case 0:
         curPos.x = 49;
+        curPos.roomName = roomAdj[LEFT];
         break;
-      case FIND_EXIT_TOP:
-        curPos.y = 49;
+      case 49:
+        curPos.x = 0;
+        curPos.roomName = roomAdj[RIGHT];
         break;
       }
+      switch (curPos.y)
+      {
+      case 0:
+        curPos.y = 49;
+        curPos.roomName = roomAdj[TOP];
+        break;
+      case 49:
+        curPos.y = 0;
+        curPos.roomName = roomAdj[BOTTOM];
+        break;
+      }
+
+      roomAdj = Game.map.describeExits(curPos.roomName);
       path = curPos.findPathTo(endPos,
       {
         ignoreCreeps: true,
         ignoreRoads: true,
         range: 1
       });
+      console.log("calc from")
+      console.log(curPos)
+      console.log(endPos);
+      console.log(path.length);
       pathLength = pathLength + path.length;
     }
     return pathLength;

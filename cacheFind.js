@@ -42,12 +42,21 @@ module.exports = {
         }));
         max = max*2;
       }*/
+      let maxHits = CONST.VAL_MAXSTRUCTUREHITS;
+
+      if (room.controller != undefined && room.controller != null)
+      {
+        if (room.controller.level == 8)
+        {
+          maxHits = CONST.VAL_RCLEIGHTMAXSTRUCTUREHITS;
+        }
+      }
 
       var a = (room.find(FIND_STRUCTURES,
       {
         filter: (structure) =>
         {
-          return (structure.hits < structure.hitsMax && structure.hits < CONST.VAL_MAXSTRUCTUREHITS);
+          return (structure.hits < structure.hitsMax && structure.hits < maxHits);
         }
       }));
 
