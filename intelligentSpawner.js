@@ -32,11 +32,17 @@ module.exports = {
     }
     return true;
   },
-  spawnRepairman: function (blueprint, spawner, workRoom)
+  spawnRepairman: function (blueprint, spawner, workRoom, forceMake)
   {
     let repairBlueprint = blueprint.ROLE_REPAIRMAN;
     let maxRepairmen = repairBlueprint.maxCreeps;
     let maxLevel = repairBlueprint.maxLevel;
+
+    if (forceMake)
+    {
+      maxRepairmen = 10;
+      maxLevel = 50;
+    }
 
     if (maxRepairmen == 0) return true;
 
@@ -60,6 +66,7 @@ module.exports = {
   spawnZergling: function (spawner, workRoom, maxZerglings)
   {
     if (maxZerglings == 0) return true;
+    if (spawner == undefined) return true;
     var lings = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_ZERGLING) && util.getWorkRoom(creep) == workRoom));
 
     if (lings.length < maxZerglings)
@@ -122,11 +129,13 @@ module.exports = {
     }
     return true;
   },
-  spawnUpgrader: function (blueprint, spawner, workRoom)
+  spawnUpgrader: function (blueprint, spawner, workRoom, criticalOnly)
   {
     let upgraderBlueprint = blueprint.ROLE_UPGRADER;
     let makeExtra = upgraderBlueprint.addExtraIfHaveEnergy;
     let maxUpgraders = upgraderBlueprint.maxCreeps;
+
+
 
     let mem = {};
     mem.role = CONST.ROLE_UPGRADER;
@@ -136,6 +145,10 @@ module.exports = {
     if (maxUpgraders == 0) return true;
     var level;
     var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == workRoom));
+    if (criticalOnly)
+    {
+      if (upgraders.length != 0) return true;
+    }
     if (upgraders.length < maxUpgraders)
     {
       console.log("Making Upgrader since <3");
@@ -183,7 +196,7 @@ module.exports = {
       }
       sumLevels = sumLevels + makeLevel;
 
-      if (((sumLevels * 1000) < sum && spawner.room.controller.level <= 4) || ((sumLevels * 1000) + TERMINAL_CAPACITY < sum && spawner.room.controller.level >= 5))
+      if (((sumLevels * 1000) < sum && spawner.room.controller.level <= 3) || ((sumLevels * 1000) + (TERMINAL_CAPACITY + 100000) < sum && spawner.room.controller.level >= 4))
       {
         makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint, mem, upgraderBlueprint.maxLevel, true);
         return false;
@@ -192,7 +205,7 @@ module.exports = {
     return true;
   },
 
-  spawnBuilder: function (blueprint, spawner, workRoom)
+  spawnBuilder: function (blueprint, spawner, workRoom, criticalOnly)
   {
     let builderBlueprint = blueprint.ROLE_BUILDER;
     let maxBuilders = builderBlueprint.maxCreeps;
@@ -206,6 +219,11 @@ module.exports = {
       .length == 0) return true;
 
     var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
+
+    if (criticalOnly)
+    {
+      if (builders.length != 0) return true;
+    }
 
     if (builders.length < maxBuilders)
     {
@@ -382,7 +400,8 @@ module.exports = {
         {}, harvBlueprint.maxLevel, false);
         for (var k = 0; k < harvesters2.length; ++k)
         {
-          if ((level > harvesters2[k].memory.lvl + 1) || (level > harvesters2[k].memory.lvl && harvesters2[k].memory.level == 1) || (level >= harvBlueprint.maxLevel - 1 && level > harvesters2[k].memory.lvl))
+          //2 levels higher OR level 1 and higher OR almost max level
+          if ((level > harvesters2[k].memory.lvl + 1) || (level > harvesters2[k].memory.lvl && harvesters2[k].memory.level == 1) || (level == harvBlueprint.maxLevel - 2 && level > harvesters2[k].memory.lvl))
           {
             console.log("UPGRADING HARV");
             mem.sID = sources[i].id;

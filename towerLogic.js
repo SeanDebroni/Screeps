@@ -4,13 +4,14 @@ const cacheFind = require('cacheFind');
 
 module.exports = {
 
-  runTower: function (tower)
+  runTowers: function (towers)
   {
-    if (tower)
+    if (towers == undefined || towers == null) return;
+    if (towers.length > 0)
     {
       var closestHostile; // = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-
-      var hostiles = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, tower.room);
+      var room = towers[0].room;
+      var hostiles = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, room);
       if (hostiles.length == 0)
       {
         closestHostile = false;
@@ -20,21 +21,33 @@ module.exports = {
         closestHostile = hostiles[0];
       }
 
-      var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, tower.room);
+      var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, room), (structure) => (structure.hits < 100000));
       var toRepair = damagedStructures[Math.floor(Math.random() * damagedStructures.length)];
 
 
       if (closestHostile)
       {
-        tower.attack(closestHostile);
+        for (var i = 0; i < towers.length; ++i)
+        {
+          towers[i].attack(closestHostile);
+        }
         return;
       }
 
-      if (tower.energyCapacity * 0.50 > tower.energy) return;
-
       if (toRepair)
       {
-        tower.repair(toRepair);
+        for (var i = 0; i < towers.length; ++i)
+        {
+          if (towers[i].energyCapacity * 0.50 > towers[i].energy)
+          {
+            continue;
+          }
+          towers[i].repair(toRepair);
+          if (!(toRepair.hits * 2 < toRepair.hitsMax))
+          {
+            return;
+          }
+        }
       }
 
 

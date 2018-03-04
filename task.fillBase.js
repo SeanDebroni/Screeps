@@ -12,6 +12,7 @@ var taskFillBaseUtil = {
       util.moveToRoom(creep, creep.memory.homeRoom);
       return true;
     }
+
     var baseToFill = (creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
     {
       filter: (structure) =>
@@ -19,6 +20,7 @@ var taskFillBaseUtil = {
         return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && (structure.energy < structure.energyCapacity);
       }
     }));
+
     if (baseToFill == null)
     {
       baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);

@@ -34,7 +34,7 @@ var util = require('util');
 var cacheFind = require('cacheFind');
 var cacheMoveTo = require('cacheMoveTo');
 var cachedGetDistance = require('cachedGetDistance');
-
+console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 module.exports.loop = function ()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -88,11 +88,7 @@ module.exports.loop = function ()
   for (var room_name in Game.rooms)
   {
     var towers = cacheFind.findCached(CONST.CACHEFIND_MYTOWERS, Game.rooms[room_name]);
-
-    for (var i = 0; i < towers.length; ++i)
-    {
-      towerLogic.runTower(towers[i]);
-    }
+    towerLogic.runTowers(towers);
   }
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for Towers: " + (cpuUsedNew - cpuUsedOld));
