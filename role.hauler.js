@@ -83,6 +83,20 @@ var roleHauler = {
       return;
     }
 
+    //Find containers in EXTENSIONS
+    if (creep.workRoom != creep.homeRoom)
+    {
+      var energyContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
+
+      if (energyContainers.length > 0)
+      {
+        creep.memory.targetID = energyContainers[Math.floor(Math.random() * droppedEnergy.length)].id;
+        creep.memory.fillResourceType = RESOURCE_ENERGY;
+        creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+        return;
+      }
+    }
+
     //If the hauler is empty, and there is no dropped energy to pick up
     if (creep.carry.energy == 0)
     {

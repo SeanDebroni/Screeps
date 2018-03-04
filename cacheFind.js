@@ -120,7 +120,7 @@ module.exports = {
       {
         filter: (resource) =>
         {
-          return (resource.resourceType == RESOURCE_ENERGY && resource.amount > 5);
+          return (resource.resourceType == RESOURCE_ENERGY);
         }
       }));
       cache.set(key, d);

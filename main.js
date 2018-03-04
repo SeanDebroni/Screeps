@@ -25,6 +25,7 @@ var taskReserve = require('task.reserve');
 var taskKill = require('task.kill');
 var taskDisassemble = require('task.disassemble');
 var taskRepair = require('task.repair');
+var taskFillFromTargetStructure = require('task.fillFromTargetStructure');
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
@@ -221,6 +222,9 @@ module.exports.loop = function ()
       break;
     case CONST.TASK_RESERVE:
       taskReserve.run(creep);
+      break;
+    case CONST.TASK_FILLFROMTARGETSTRUCTURE:
+      taskFillFromTargetStructure.run(creep);
       break;
     default:
       isTask = false;
