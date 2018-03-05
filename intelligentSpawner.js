@@ -11,7 +11,7 @@ var cachedGetDistance = require('cachedGetDistance');
 module.exports = {
   recycleCreeps: function (spawner)
   {
-    var toRecycle = _.filter(Game.creeps, (creep) => ((creep.memory.task === CONST.TASK_WAITINGTOBERECYCLED) && creep.room == spawner.room));
+    var toRecycle = _.filter(Game.creeps, (creep) => ((creep.memory.task === CONST.TASK_WAITINGTOBERECYCLED) && creep.room.name == spawner.room.name));
     for (var i = 0; i < toRecycle.length; ++i)
     {
       spawner.recycleCreep(toRecycle[i]);
@@ -254,7 +254,6 @@ module.exports = {
   },
   spawnHauler: function (blueprint, spawner, workRoom)
   {
-
     let haulerBlueprint = blueprint.ROLE_HAULER;
     let maxHaulersPerSource = haulerBlueprint.maxCreepPerHarvester;
     if (maxHaulersPerSource == 0) return true;
@@ -304,8 +303,18 @@ module.exports = {
     {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
-    //console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);
+    if (spawner.room.name != workRoom.name)
+    {
 
+      let containers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, workRoom);
+      for (var j = 0; j < containers.length; ++j)
+      {
+        droppedSum = droppedSum + containers[j].store[RESOURCE_ENERGY];
+      }
+
+    }
+    //console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);
+    //console.log(workRoom.name + " " + droppedSum + " " + sumCapac);
     //if we have too much shit on the ground, make a new hauler
     if (droppedSum > sumCapac)
     {

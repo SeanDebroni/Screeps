@@ -961,7 +961,7 @@ const RCL_FIVE_EXT_CREEP = {
     blueprint:
     {
       base: [CARRY, WORK, MOVE],
-      levelUp: [WORK, CARRY, MOVE]
+      levelUp: [MOVE, WORK, CARRY]
     }
   }
 };
@@ -1035,7 +1035,7 @@ const RCL_SIX_EXT_CREEP = {
     blueprint:
     {
       base: [CARRY, WORK, MOVE],
-      levelUp: [WORK, CARRY, MOVE]
+      levelUp: [MOVE, WORK, CARRY]
     }
   }
 };
@@ -1105,11 +1105,11 @@ const RCL_SEVEN_EXT_CREEP = {
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 9,
+    maxLevel: 10,
     blueprint:
     {
       base: [CARRY, WORK, MOVE],
-      levelUp: [WORK, CARRY, MOVE]
+      levelUp: [MOVE, WORK, CARRY]
     }
   }
 };
@@ -1139,7 +1139,7 @@ const RCL_EIGHT_EXT_CREEP = {
   {
     upgradeCreeps: true,
     maxCreeps: 2,
-    maxLevel: 20,
+    maxLevel: 50,
     blueprint:
     {
       base: [MOVE, CARRY, WORK],
@@ -1179,11 +1179,11 @@ const RCL_EIGHT_EXT_CREEP = {
   ROLE_REPAIRMAN:
   {
     maxCreeps: 1,
-    maxLevel: 1,
+    maxLevel: 10,
     blueprint:
     {
       base: [CARRY, WORK, MOVE],
-      levelUp: [WORK, CARRY, MOVE]
+      levelUp: [MOVE, WORK, CARRY]
     }
   }
 };

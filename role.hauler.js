@@ -8,7 +8,8 @@ var roleHauler = {
   run: function (creep)
   {
     //If the hauler is full enough, return the energy to base.
-    if (creep.carry.energy > creep.carryCapacity * 0.8)
+    //IMPORTANT : Tied toa check in pickupenergy.
+    if (creep.carry.energy > creep.carryCapacity * 0.95)
     {
       creep.memory.targetID = -1;
       creep.memory.task = CONST.TASK_FILLBASE;
@@ -28,6 +29,16 @@ var roleHauler = {
         var whatsThere = harv.room.lookAt(harv.pos);
         for (var i = 0; i < whatsThere.length; ++i)
         {
+          if (whatsThere[i].type == 'structure' && whatsThere[i].structure.structureType == STRUCTURE_CONTAINER)
+          {
+            if (whatsThere[i].structure.store[RESOURCE_ENERGY] > 20)
+            {
+              creep.memory.targetID = whatsThere[i].structure.id;
+              creep.memory.fillResourceType = RESOURCE_ENERGY;
+              creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+              return;
+            }
+          }
           if (whatsThere[i].type === 'energy')
           {
             if (whatsThere[i].energy.amount > 20)
@@ -39,6 +50,10 @@ var roleHauler = {
             }
           }
         }
+      }
+      else
+      {
+        creep.memory.assignedHarvesterName = undefined;
       }
     }
 
@@ -62,7 +77,7 @@ var roleHauler = {
       var whatsThere = source.room.lookAtArea(source.pos.y - 1, source.pos.x - 1, source.pos.y + 1, source.pos.x + 1, true);
       for (var i = 0; i < whatsThere.length; ++i)
       {
-        if (whatsThere[i].type == 'creep' && whatsThere[i].my)
+        if (whatsThere[i].type == 'creep' && whatsThere[i].creep.my)
         {
           if (whatsThere[i].creep.memory.task == CONST.TASK_MINEENERGY)
           {

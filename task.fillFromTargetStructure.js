@@ -26,7 +26,7 @@ var taskFillFromTargetStructure = {
     var target = Game.getObjectById(targetID);
     if (target == undefined || target == null)
     {
-      if (creep.room != creep.memory.workRoom)
+      if (creep.room.name != creep.memory.workRoom)
       {
         util.moveToRoom(creep, creep.memory.workRoom);
         return;
@@ -42,7 +42,7 @@ var taskFillFromTargetStructure = {
     {
     case STRUCTURE_CONTAINER:
       var whatToFill = creep.memory.fillResourceType;
-      if (whatToFill == undefined || whatTofill == null)
+      if (whatToFill == undefined || whatToFill == null)
       {
         console.log("ERROR: type of resource to fill not set correctly.");
         wipeCreepMemory(creep);
@@ -55,7 +55,7 @@ var taskFillFromTargetStructure = {
         wipeCreepMemory(creep);
         return;
       }
-      var err = creep.withdraw(target, whatTofill);
+      var err = creep.withdraw(target, whatToFill);
       if (err == ERR_NOT_IN_RANGE)
       {
         creep.moveTo(target,

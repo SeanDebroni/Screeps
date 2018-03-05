@@ -30,16 +30,17 @@ var roleHarvester = {
         }
       }
     }
+
     if (creep.memory.isHarvesterContainer)
     {
-      if (creep.pos.x == creep.memory.harvesterContainerX && creep.pos.y == creep.memory.harvesterContainerY && creep.memory.room == creep.memory.workRoom)
+      if (creep.pos.x == creep.memory.harvesterContainerX && creep.pos.y == creep.memory.harvesterContainerY && creep.room.name == creep.memory.workRoom)
       {
         creep.harvest(source);
         creep.memory.task = CONST.TASK_MINEENERGY;
       }
       else
       {
-        creep.moveTo((new RoomPosition(creep.memory.harvesterContainerX, creep.memory.harvesterContainerY, util.getWorkRoom(creep))),
+        creep.moveTo((new RoomPosition(creep.memory.harvesterContainerX, creep.memory.harvesterContainerY, creep.memory.workRoom)),
         {
           reusePath: 6
         });

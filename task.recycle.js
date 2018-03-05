@@ -26,8 +26,8 @@ var taskRecycle = {
 
       var posSpawner = Game.getObjectById(creep.memory.targetID)
         .pos;
-      if (posCreep.x - posSpawner.x >= -1 && posCreep.x - posSpawner.x <= 1 && posCreep.y - posSpawner.y >= -1 && posCreep.y - posSpawner.y <= 1 && creep.room == Game.getObjectById(creep.memory.targetID)
-        .room)
+      if (posCreep.x - posSpawner.x >= -1 && posCreep.x - posSpawner.x <= 1 && posCreep.y - posSpawner.y >= -1 && posCreep.y - posSpawner.y <= 1 && creep.room.name == Game.getObjectById(creep.memory.targetID)
+        .room.name)
       {
         creep.memory.task = CONST.TASK_WAITINGTOBERECYCLED;
       }

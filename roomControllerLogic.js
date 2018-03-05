@@ -268,8 +268,6 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-
-
   return curSpawn;
 }
 
@@ -309,7 +307,6 @@ module.exports = {
   //TODO: save and load this at some point rather then remaking it every time.
   init: function ()
   {
-
     roomControllers = [];
 
     var flags = Game.flags;
@@ -443,6 +440,7 @@ module.exports = {
     }
     recycleCreeps(mainBaseRoom);
 
+
     //Run building code:
     for (let i = 0; i < buildRoads.length; ++i)
     {
@@ -458,6 +456,7 @@ module.exports = {
 
     for (let i = 0; i < lowPriorityExtensions.length; ++i)
     {
+
       curSpawn = runExtensionRoomPriorityZero(lowPriorityExtensions[i], mainBaseRoom, notBusySpawns, curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
@@ -466,8 +465,10 @@ module.exports = {
     curSpawn = runMainRoomPriorityOne(mainBaseRoom, notBusySpawns, curSpawn);
     if (curSpawn >= notBusySpawns.length) return;
 
+
     for (let i = 0; i < extensionRooms.length; ++i)
     {
+
       curSpawn = runExtensionRoomPriorityOne(extensionRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }

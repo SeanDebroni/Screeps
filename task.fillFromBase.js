@@ -21,29 +21,21 @@ var taskFillFromBase = {
       }
       else
       {
-        /*
-        var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
-        if (baseContainers.length > 0)
+        var baseContainers;
+        if (creep.memory.workRoom != creep.memory.homeRoom)
         {
-          var containerToFillFrom = -1;
-          for (var i = 0; i < baseContainers.length; ++i)
+          baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
+          if (baseContainers.length > 0)
           {
-            if (util.isAdjacent(creep.pos, baseContainers[i].pos))
-            {
-              containerToFillFrom = i;
-              break;
-            }
+            containerToFillFrom = 0;
+            creep.memory.targetID = baseContainers[containerToFillFrom].id;
+            var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
+            util.withdrawEnergyFrom(creep, target, true);
+            return;
           }
-          if (containerToFillFrom == -1)
-          {
-            containerToFillFrom = Math.floor(Math.random() * baseContainers.length);
-          }
-          creep.memory.targetID = baseContainers[containerToFillFrom].id;
-          var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
-          util.withdrawEnergyFrom(creep, target, true);
-          return;
-        }*/
-        var baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
+        }
+
+        baseContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getHomeRoom(creep));
         if (baseContainers.length > 0)
         {
           var containerToFillFrom = -1;

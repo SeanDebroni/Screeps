@@ -3,7 +3,8 @@ var util = require('util');
 var taskPickUpEnergy = {
   run: function (creep)
   {
-    if (creep.carry.energy > creep.carryCapacity * 0.8)
+    //IMPORTANT : Tied toa check in ROLE HAULER
+    if (creep.carry.energy > creep.carryCapacity * 0.95)
     {
       creep.memory.task = creep.memory.role;
       return;
