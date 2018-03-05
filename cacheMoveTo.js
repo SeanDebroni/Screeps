@@ -30,7 +30,6 @@ module.exports = {
   },
   cacheMoveToLoad: function ()
   {
-
     if (Memory.cacheMoveToM != undefined)
     {
       var temp = JSON.parse(Memory.cacheMoveToM);

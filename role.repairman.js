@@ -14,9 +14,22 @@ var roleRepairman = {
       creep.memory.task = CONST.TASK_FILLFROMBASE;
       return;
     }
-
     var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
 
+    //containers first
+    if (creep.memory.workRoom != creep.memory.homeRoom)
+    {
+      var containers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.workRoom]);
+      for (var i = 0; i < containers.length; ++i)
+      {
+        if (containers[i].hits < containers[i].hitsMax * 0.8)
+        {
+          creep.memory.targetID = containers[i].id;
+          creep.memory.task = CONST.TASK_REPAIR;
+          return;
+        }
+      }
+    }
     //if there is something to repair, repair it.
     if (damagedStructures.length > 0)
     {

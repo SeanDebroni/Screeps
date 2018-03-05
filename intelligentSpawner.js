@@ -180,11 +180,10 @@ module.exports = {
 
     if (makeExtra)
     {
-      var filledStructures = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, spawner.room);
-      var sum = _.sum(filledStructures, function (a)
-      {
-        return a.store[RESOURCE_ENERGY];
-      });
+      var sum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, spawner.room);
+
+      console.log(sum);
+
       //TODO - calc the val, instead of hardcoding 16000
       let makeLevel = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint,
       {}, upgraderBlueprint.maxLevel, false);
@@ -306,11 +305,9 @@ module.exports = {
     if (spawner.room.name != workRoom.name)
     {
 
-      let containers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, workRoom);
-      for (var j = 0; j < containers.length; ++j)
-      {
-        droppedSum = droppedSum + containers[j].store[RESOURCE_ENERGY];
-      }
+      let containerSum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, workRoom);
+      droppedSum = droppedSum + containerSum;
+
 
     }
     //console.log(workRoom.name + " DROPPED ENERGY: " + droppedSum);

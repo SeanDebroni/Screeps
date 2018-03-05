@@ -1,6 +1,7 @@
 let cacheGetDistanceMap = new Map();
 var util = require('util');
 
+var startSize;
 
 function getKeyFromRoomPositions(startPos, endPos)
 {
@@ -29,6 +30,10 @@ module.exports = {
   },
   cachedGetDistanceSave: function ()
   {
+    if (cacheGetDistanceMap.size == startSize)
+    {
+      return;
+    }
     if (cacheGetDistanceMap.size > 0)
     {
       Memory.cacheGetDistanceMapSize = cacheGetDistanceMap.size;
@@ -47,6 +52,11 @@ module.exports = {
 
   cachedGetDistanceLoad: function ()
   {
+    startSize = cacheGetDistanceMap.size;
+    if (startSize > 0)
+    {
+      return;
+    }
 
     if (Memory.cacheGetDistanceMap != undefined)
     {

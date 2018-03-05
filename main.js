@@ -36,6 +36,8 @@ var cacheFind = require('cacheFind');
 var cacheMoveTo = require('cacheMoveTo');
 var cachedGetDistance = require('cachedGetDistance');
 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+let codeAge = 0;
 module.exports.loop = function ()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -47,6 +49,7 @@ module.exports.loop = function ()
   cpuUsedOld = cpuUsedNew;
 
   var rand = Math.floor(Math.random() * 100);
+
   cachedGetDistance.cachedGetDistanceLoad();
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
@@ -267,7 +270,27 @@ module.exports.loop = function ()
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
   console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
+
+  var stats = (Game.cpu.getHeapStatistics());
+  var keys = Object.keys(stats);
+  for (var i = 0; i < keys.length; ++i)
+  {
+    console.log(keys[i] + ": " + (stats[keys[i]]));
+  }
+  console.log("Used " + (stats.total_heap_size / stats.heap_size_limit));
+  console.log("Age: " + codeAge);
+  var maxCodeAge = Memory.maxCodeAge;
+  if (maxCodeAge == undefined)
+  {
+    maxCodeAge = 0;
+  }
+  codeAge = codeAge + 1;
+  if (codeAge > maxCodeAge)
+  {
+    Memory.maxCodeAge = codeAge;
+  }
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   cpuUsedOld = cpuUsedNew;
+
 
 }
