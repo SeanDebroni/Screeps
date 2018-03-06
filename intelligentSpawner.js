@@ -183,8 +183,6 @@ module.exports = {
     {
       var sum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, spawner.room);
 
-      console.log(sum);
-
       //TODO - calc the val, instead of hardcoding 16000
       let makeLevel = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint,
       {}, upgraderBlueprint.maxLevel, false);
