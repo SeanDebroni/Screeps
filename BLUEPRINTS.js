@@ -1,3 +1,5 @@
+'use strict';
+
 const CONST = require('CONSTANTS');
 
 //300 max energy

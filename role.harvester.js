@@ -1,3 +1,4 @@
+'use strict';
 const CONST = require('CONSTANTS');
 var util = require('util');
 var cacheMoveTo = require('cacheMoveTo');

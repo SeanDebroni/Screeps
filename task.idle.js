@@ -1,3 +1,4 @@
+'use strict';
 var taskIdle = {
   run: function (creep)
   {

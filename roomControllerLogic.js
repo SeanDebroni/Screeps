@@ -1,3 +1,4 @@
+'use strict';
 var intelligentSpawner = require("intelligentSpawner");
 var util = require("util");
 var cacheFind = require("cacheFind");
@@ -69,7 +70,7 @@ function recycleCreeps(mainRoom)
 //Done
 function makeScoutForFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 {
-  didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
+  let didntMakeCreep = intelligentSpawner.spawnScout(notBusySpawns[0], mainBaseRoom, 1, flagName);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
 
   return curSpawn;
@@ -130,7 +131,7 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
 
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], mainRoom);
+  let didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], mainRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -176,7 +177,7 @@ function runMainRoomPriorityTwo(mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = getMainBlueprint(mainRoom);
 
-  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], mainRoom, false);
+  let didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], mainRoom, false);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -307,7 +308,7 @@ module.exports = {
   //TODO: save and load this at some point rather then remaking it every time.
   init: function ()
   {
-    roomControllers = [];
+    let roomControllers = [];
 
     var flags = Game.flags;
 

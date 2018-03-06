@@ -1,3 +1,4 @@
+'use strict';
 //fill up energy from base
 var util = require("util");
 const CONST = require("CONSTANTS");

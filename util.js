@@ -1,3 +1,4 @@
+'use strict';
 var cacheMoveTo = require('cacheMoveTo');
 var cacheFind = require('cacheFind');
 const CONST = require('CONSTANTS');

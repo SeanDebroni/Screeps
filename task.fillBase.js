@@ -1,3 +1,4 @@
+'use strict';
 var util = require('util');
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');

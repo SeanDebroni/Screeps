@@ -1,3 +1,4 @@
+'use strict';
 let cacheGetDistanceMap = new Map();
 var util = require('util');
 

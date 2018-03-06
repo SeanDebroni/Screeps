@@ -1,3 +1,4 @@
+'use strict';
 const CONST = require('CONSTANTS');
 
 var cache = new Map();
@@ -113,7 +114,7 @@ function findCachedInternal(whatToFind, room)
     {
         s= s.concat(Game.rooms[room_name].find(FIND_SOURCES));
     }*/
-    s = room.find(FIND_SOURCES);
+    let s = room.find(FIND_SOURCES);
     cache.set(key, s);
     break;
   case CONST.CACHEFIND_DROPPEDENERGY:

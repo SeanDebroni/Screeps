@@ -1,3 +1,4 @@
+'use strict';
 var taskSpawning = {
   run: function (creep)
   {

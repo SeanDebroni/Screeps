@@ -1,3 +1,4 @@
+'use strict';
 var taskWaitingToBeRecycled = {
   run: function (creep) {
 

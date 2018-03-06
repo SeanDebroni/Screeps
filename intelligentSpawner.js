@@ -1,3 +1,4 @@
+'use strict';
 const CONST = require('CONSTANTS');
 var cacheFind = require("cacheFind");
 var _ = require('lodash');
