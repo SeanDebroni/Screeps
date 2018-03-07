@@ -100,7 +100,7 @@ var roleHauler = {
     }
 
     //Find containers in EXTENSIONS
-    if (creep.workRoom != creep.homeRoom)
+    if (creep.memory.workRoom != creep.homeRoom)
     {
       var energyContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
 

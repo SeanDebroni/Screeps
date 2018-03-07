@@ -18,6 +18,19 @@ function findCachedInternal(whatToFind, room)
 
   switch (whatToFind)
   {
+  case CONST.CACHEFIND_RETIREDZERGLINGS:
+    let rz = _.filter(Game.creeps, (creepA) => creepA.memory.role == CONST.ROLE_ZERGLING && (creepA.memory.task == CONST.TASK_RECYCLE || creepA.memory.task == CONST.TASK_WAITINGTOBERECYCLED || creepA.memory.task == CONST.TASK_IDLE) && creepA.memory.homeRoom == room.name);
+    cache.set(key, rz);
+    break;
+  case CONST.CACHEFIND_NONCOMBATCREEPS:
+    let ncCreeps = _.filter(Game.creeps, (creepA) => creepA.memory.role != CONST.ROLE_ZERGLING && creepA.memory.workRoom == room.name);
+    cache.set(key, ncCreeps);
+    break;
+  case CONST.CACHEFIND_FINDDAMAGEDCREEPS:
+    let damagedCreeps = _.filter(Game.creeps, (creepA) => creepA.hits < creepA.hitsMax && creepA.memory.homeRoom == room.name);
+    cache.set(key, damagedCreeps);
+    break;
+
   case CONST.CACHEFIND_GETSTOREDENERGY:
     var structures = findCachedInternal(CONST.CACHEFIND_CONTAINERSWITHENERGY, room);
     let sum = 0;
@@ -28,11 +41,11 @@ function findCachedInternal(whatToFind, room)
     cache.set(key, sum);
     break;
   case CONST.CACHEFIND_FINDHAULERS:
-    var a = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HAULER && room.name == creep.memory.workRoom));
+    var a = _.filter(Game.creeps, (creep) => (room.name == creep.memory.workRoom && creep.memory.role == CONST.ROLE_HAULER));
     cache.set(key, a);
     break;
   case CONST.CACHEFIND_FINDHARVESTERS:
-    var a = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && room.name == creep.memory.workRoom));
+    var a = _.filter(Game.creeps, (creep) => (room.name == creep.memory.workRoom && creep.memory.role == CONST.ROLE_HARVESTER));
     cache.set(key, a);
     break;
   case CONST.CACHEFIND_DAMAGEDSTRUCTURES:

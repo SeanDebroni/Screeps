@@ -13,6 +13,25 @@ module.exports = {
       var closestHostile; // = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
       var room = towers[0].room;
       var hostiles = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, room);
+
+      /*
+            let indexs = [];
+            for (var i = 0; i < hostiles.length; ++i)
+            {
+              if (hostiles[i].owner.username == "Patrik")
+              {
+                var body = hostiles[i].body;
+                if (!(body.includes(WORK) || body.includes(ATTACK) || body.includes(RANGED_ATTACK)))
+                {
+                  indexs.push(i);
+                }
+              }
+            }
+            for (var k = indexs.length - 1; k >= 0; --k)
+            {
+              hostiles.splice(indexs[k], 1);
+            }*/
+
       if (hostiles.length == 0)
       {
         closestHostile = false;

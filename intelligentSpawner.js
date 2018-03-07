@@ -47,7 +47,7 @@ module.exports = {
 
     if (maxRepairmen == 0) return true;
 
-    var repairmen = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN) && util.getWorkRoom(creep) == workRoom));
+    var repairmen = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_REPAIRMAN)));
 
     if (repairmen.length < maxRepairmen)
     {
@@ -64,15 +64,25 @@ module.exports = {
     }
     return true;
   },
-  spawnZergling: function (spawner, workRoom, maxZerglings)
+  spawnZergling: function (spawner, workRoom, maxZerglings, goAllOut)
   {
     if (maxZerglings == 0) return true;
     if (spawner == undefined) return true;
-    var lings = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_ZERGLING) && util.getWorkRoom(creep) == workRoom));
-
+    var lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING));
     if (lings.length < maxZerglings)
     {
-      var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true);
+
+      let retiredLing = cacheFind.findCached(CONST.CACHEFIND_RETIREDZERGLINGS, spawner.room);
+      if (retiredLing.length > 0)
+      {
+        let ling = retiredLing[0];
+        ling.memory.task = ling.memory.role;
+        ling.memory.workRoom = workRoom.name;
+        ling.memory.targetID = -1;
+        return false;
+      }
+
+      var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true, goAllOut);
       if (res != -1)
       {
         return false;
@@ -93,7 +103,7 @@ module.exports = {
     {
       if (workRoom.controller.reservation.ticksToEnd > 4100) return true;
     }
-    var reservers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER) && util.getWorkRoom(creep) == workRoom));
+    var reservers = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_RESERVER)));
     if (reservers.length < maxReservers)
     {
       var mem = {};
@@ -145,7 +155,7 @@ module.exports = {
 
     if (maxUpgraders == 0) return true;
     var level;
-    var upgraders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER) && util.getWorkRoom(creep) == workRoom));
+    var upgraders = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_UPGRADER)));
     if (criticalOnly)
     {
       if (upgraders.length != 0) return true;
@@ -216,7 +226,7 @@ module.exports = {
     if (cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, workRoom)
       .length == 0) return true;
 
-    var builders = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER) && util.getWorkRoom(creep) == workRoom));
+    var builders = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_BUILDER)));
 
     if (criticalOnly)
     {
@@ -419,6 +429,38 @@ module.exports = {
         }
       }
     }
+    return true;
+
+  },
+
+  spawnBaseHealer: function (blueprint, spawner)
+  {
+    var baseHealBlueprint = blueprint.ROLE_BASEHEALER;
+    if (spawner == undefined || spawner == null) return true;
+
+    let homeRoom = spawner.room;
+
+    let mem = {};
+    mem.role = CONST.ROLE_BASEHEALER;
+
+    let maxBaseHealers = baseHealBlueprint.maxCreeps;
+    let maxLevel = baseHealBlueprint.maxLevel;
+
+    if (maxBaseHealers == 0) return true;
+
+    var baseHealers = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BASEHEALER && util.getHomeRoom(creep) == homeRoom)));
+    if (baseHealers.length >= maxBaseHealers) return true;
+
+    let damagedCreeps = cacheFind.findCached(CONST.CACHEFIND_FINDDAMAGEDCREEPS, spawner.room);
+    if (damagedCreeps.length == 0) return true;
+
+    var res = makeCreep.makeBestCreepFromBlueprint(spawner, homeRoom, baseHealBlueprint.blueprint, mem, maxLevel, true);
+    //  var res = makeCreep.makeBestUpgrader(spawner.room, workRoom, spawner, true);
+    if (res != -1)
+    {
+      return false;
+    }
+
     return true;
 
   }

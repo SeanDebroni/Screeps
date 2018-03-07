@@ -113,7 +113,7 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
-  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], colonyRoom, false);
+  let didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], colonyRoom, false);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -139,6 +139,10 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
+  didntMakeCreep = intelligentSpawner.spawnBaseHealer(blueprint, notBusySpawns[curSpawn]);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
   //only one
   didntMakeCreep = intelligentSpawner.spawnUpgrader(blueprint, notBusySpawns[curSpawn], mainRoom, true);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -151,8 +155,8 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
   //if main base is fucked, fix it first
   var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, mainRoom);
   var haulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, mainRoom);
-  //var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && util.getWorkRoom(creep) == mainRoom));
-  //var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && util.getWorkRoom(creep) == mainRoom));
+  //var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && Game.rooms[creep.memory.workRoom] == mainRoom));
+  //var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && Game.rooms[creep.memory.workRoom] == mainRoom));
   if (harvesters.length < 1 || haulers.length < 1)
   {
     return notBusySpawns.length;
@@ -221,7 +225,7 @@ function runAttackRoom(attackRoom, mainRoom, notBusySpawns, curSpawn)
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 1);
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], attackRoom, 1, false);
       if (!didntMakeCreep) curSpawn = curSpawn + 1;
       if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
@@ -243,9 +247,61 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
   {
     for (var z = 0; z < 3; ++z)
     {
-      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1);
-      if (!didntMakeCreep) curSpawn = curSpawn + 1;
-      if (curSpawn >= notBusySpawns.length) return curSpawn;
+      if (hostileCreeps[0].owner.username == "Invader")
+      {
+        var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
+
+        for (var v = 0; v < nonCombat.length; ++v)
+        {
+          nonCombat[v].memory.task = CONST.TASK_FLEE;
+        }
+
+        didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1, false);
+        if (!didntMakeCreep) curSpawn = curSpawn + 1;
+        if (curSpawn >= notBusySpawns.length) return curSpawn;
+      }
+      /*else if (hostileCreeps[0].owner.username == "Patrik")
+      {
+        for (var g = 0; g < hostileCreeps.length; ++g)
+        {
+          var body = hostileCreeps[g].body;
+          if (body.includes(ATTACK) || body.includes(RANGED_ATTACK))
+          {
+            didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
+            if (!didntMakeCreep) curSpawn = curSpawn + 1;
+            if (curSpawn >= notBusySpawns.length) return curSpawn;
+          }
+        }
+      }*/
+      else
+      {
+        var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
+        var isDangerous = false;
+        for (var v = 0; v < hostileCreeps.length; ++v)
+        {
+          var c = hostileCreeps[v];
+          if (_.filter(c.body, function (bp)
+            {
+              return (bp == ATTACK || bp == RANGED_ATTACK);
+            })
+            .length > 0)
+          {
+            isDangerous = true;
+            break;
+          }
+
+        }
+        if (isDangerous)
+        {
+          for (var v = 0; v < nonCombat.length; ++v)
+          {
+            nonCombat[v].memory.task = CONST.TASK_FLEE;
+          }
+        }
+        didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
+        if (!didntMakeCreep) curSpawn = curSpawn + 1;
+        if (curSpawn >= notBusySpawns.length) return curSpawn;
+      }
     }
   }
   return curSpawn;
@@ -367,7 +423,7 @@ module.exports = {
     let attackRooms = [];
     let disassembleFlags = [];
     let buildRoads = [];
-    let lowPriorityExtensions = [];
+    let outerWarningRooms = [];
 
     let notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
 
@@ -423,8 +479,8 @@ module.exports = {
         case "A":
           attackRooms.push(room);
           break;
-        case "L":
-          lowPriorityExtensions.push(room);
+        case "O":
+          outerWarningRooms.push(room);
           break;
         case "B":
           console.log("found flag");
@@ -441,7 +497,6 @@ module.exports = {
     }
     recycleCreeps(mainBaseRoom);
 
-
     //Run building code:
     for (let i = 0; i < buildRoads.length; ++i)
     {
@@ -455,14 +510,9 @@ module.exports = {
       if (curSpawn >= notBusySpawns.length) return;
     }
 
-    for (let i = 0; i < lowPriorityExtensions.length; ++i)
-    {
+    //run outer warning rooms
 
-      curSpawn = runExtensionRoomPriorityZero(lowPriorityExtensions[i], mainBaseRoom, notBusySpawns, curSpawn);
-      if (curSpawn >= notBusySpawns.length) return;
-    }
-
-    //Run Priority One Spawns - Haulers + Harvester
+    //Run Priority One Spawns - Haulers + Harvester + healer
     curSpawn = runMainRoomPriorityOne(mainBaseRoom, notBusySpawns, curSpawn);
     if (curSpawn >= notBusySpawns.length) return;
 
@@ -518,24 +568,8 @@ module.exports = {
       if (curSpawn >= notBusySpawns.length) return;
     }
 
-    //Run low Priority EXTENSIONS
 
-    //run Reservers
-    for (let i = 0; i < lowPriorityExtensions.length; ++i)
-    {
-      curSpawn = runExtensionRoomPriorityOne(lowPriorityExtensions[i], mainBaseRoom, notBusySpawns, curSpawn);
-      if (curSpawn >= notBusySpawns.length) return;
-    }
-    for (let i = 0; i < lowPriorityExtensions.length; ++i)
-    {
-      curSpawn = runExtensionRoomPriorityReservers(lowPriorityExtensions[i], mainBaseRoom, notBusySpawns, curSpawn);
-      if (curSpawn >= notBusySpawns.length) return;
-    }
-    for (let i = 0; i < lowPriorityExtensions.length; ++i)
-    {
-      curSpawn = runExtensionRoomPriorityTwo(lowPriorityExtensions[i], mainBaseRoom, notBusySpawns, curSpawn);
-      if (curSpawn >= notBusySpawns.length) return;
-    }
+
 
     //console.log(mainBaseRoom + " Had nothing to spawn");
     return;

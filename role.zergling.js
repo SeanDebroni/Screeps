@@ -13,6 +13,7 @@ var roleZergling = {
       util.moveToRoom(creep, creep.memory.workRoom);
       return;
     }
+
     if (targRoom == undefined)
     {
       if (creep.memory.roomFlag != undefined)
@@ -33,30 +34,31 @@ var roleZergling = {
 
     var hostiles = hostileCreeps.concat(hostileBuildings);
 
-    if (hostiles.length == 1)
-    {
-      if (hostiles[0].structureType == STRUCTURE_CONTROLLER)
-      {
-        if (creep.moveTo(hostiles[0] == ERR_NO_PATH))
+    /*    if (hostiles.length == 1)
         {
-          var hostileWalls = cacheFind.findCached(CONST.CACHEFIND_WALLS, targRoom);
-          creep.memory.targetID = hostileWalls[Math.floor(Math.random() * hostileWalls.length)].id;
-          creep.memory.task = CONST.TASK_KILL;
-          return;
-        }
-      }
-    }
+          if (hostiles[0].structureType == STRUCTURE_CONTROLLER)
+          {
+            if (creep.moveTo(hostiles[0] == ERR_NO_PATH))
+            {
+              var hostileWalls = cacheFind.findCached(CONST.CACHEFIND_WALLS, targRoom);
+              creep.memory.targetID = hostileWalls[Math.floor(Math.random() * hostileWalls.length)].id;
+              creep.memory.task = CONST.TASK_KILL;
+              return;
+            }
+          }
+        }*/
 
     if (hostiles.length > 0)
     {
       creep.memory.targetID = hostiles[Math.floor(Math.random() * hostiles.length)].id;
       creep.memory.task = CONST.TASK_KILL;
+      return;
     }
     else
     {
       creep.memory.targetID = -1;
-      creep.memory.task = CONST.TASK_RECYCLE;
-      creep.memory.role = CONST.TASK_RECYCLE;
+      creep.memory.task = CONST.TASK_IDLE;
+      creep.memory.workRoom = creep.memory.homeRoom;
       //creep.suicide();
     }
   }

@@ -10,6 +10,7 @@ var roleReserver = require('role.reserver');
 var roleZergling = require('role.zergling');
 var roleDisassembleFlag = require('role.disassembleFlag');
 var roleRepairman = require('role.repairman');
+var roleBaseHealer = require('role.baseHealer');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -27,6 +28,8 @@ var taskKill = require('task.kill');
 var taskDisassemble = require('task.disassemble');
 var taskRepair = require('task.repair');
 var taskFillFromTargetStructure = require('task.fillFromTargetStructure');
+var taskHealTarget = require('task.healTarget');
+var taskFlee = require('task.flee');
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
@@ -54,6 +57,7 @@ module.exports.loop = function ()
   cachedGetDistance.cachedGetDistanceLoad();
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
+
 
   /*
     var cenU = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER)));
@@ -83,7 +87,6 @@ module.exports.loop = function ()
     console.log("Num Scout: " + cenScout.length);
     console.log("Num Repairman: " + cenR.length);
     console.log("num reser: " + cenRes.length);*/
-
 
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
@@ -150,6 +153,9 @@ module.exports.loop = function ()
       break;
     case CONST.ROLE_ZERGLING:
       roleZergling.run(creep);
+      break;
+    case CONST.ROLE_BASEHEALER:
+      roleBaseHealer.run(creep);
       break;
     default:
       break;
@@ -230,6 +236,12 @@ module.exports.loop = function ()
     case CONST.TASK_FILLFROMTARGETSTRUCTURE:
       taskFillFromTargetStructure.run(creep);
       break;
+    case CONST.TASK_HEALTARGET:
+      taskHealTarget.run(creep);
+      break;
+    case CONST.TASK_FLEE:
+      taskFlee.run(creep);
+      break;
     default:
       isTask = false;
       break;
@@ -272,14 +284,20 @@ module.exports.loop = function ()
   console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
   console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
 
-  var stats = (Game.cpu.getHeapStatistics());
-  var keys = Object.keys(stats);
-  for (var i = 0; i < keys.length; ++i)
+  try
   {
-    console.log(keys[i] + ": " + (stats[keys[i]]));
+    var stats = (Game.cpu.getHeapStatistics());
+    var keys = Object.keys(stats);
+    for (var i = 0; i < keys.length; ++i)
+    {
+      console.log(keys[i] + ": " + (stats[keys[i]]));
+    }
+    console.log("Used " + (stats.total_heap_size / stats.heap_size_limit));
+    console.log("Other used:" + ((stats.total_heap_size + stats.externally_allocated_size) / stats.heap_size_limit));
+    console.log("Age: " + codeAge);
   }
-  console.log("Used " + (stats.total_heap_size / stats.heap_size_limit));
-  console.log("Age: " + codeAge);
+  catch (err)
+  {}
   var maxCodeAge = Memory.maxCodeAge;
   if (maxCodeAge == undefined)
   {

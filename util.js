@@ -14,10 +14,7 @@ module.exports = {
       ignoreRoads: true,
       range: 1
     });
-    console.log("calc from")
-    console.log(startPos)
-    console.log(endPos);
-    console.log(path.length);
+
     let pathLength = path.length;
 
     if (startPos.roomName == endPos.roomName)
@@ -61,10 +58,7 @@ module.exports = {
         ignoreRoads: true,
         range: 1
       });
-      console.log("calc from")
-      console.log(curPos)
-      console.log(endPos);
-      console.log(path.length);
+
       pathLength = pathLength + path.length;
     }
     return pathLength;

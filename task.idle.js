@@ -2,15 +2,14 @@
 var taskIdle = {
   run: function (creep)
   {
-    var time = creep.memory.idleTime;
-
-    if (time == 0)
+    var flag = Game.flags[creep.memory.homeRoom + "idle"];
+    if (flag != undefined && flag != null)
     {
-      creep.memory.task = creep.memory.role;
-    }
-    else
-    {
-      creep.memory.idleTime = time - 1;
+      creep.moveTo(flag,
+      {
+        reusePath: 10
+      });
+      return;
     }
 
   }

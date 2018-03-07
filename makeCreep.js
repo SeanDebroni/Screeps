@@ -100,7 +100,7 @@ module.exports = {
     return level - 1;
   },
 
-  makeZergling: function (homeRoom, workRoom, spawner, makeCreep)
+  makeZergling: function (homeRoom, workRoom, spawner, makeCreep, goAllOut)
   {
     var parts = [MOVE, MOVE, ATTACK];
     var level = 1;
@@ -124,13 +124,17 @@ module.exports = {
     parts.pop();
 
     let len = parts.length / 2;
-
+    let len2 = len;
+    if (!goAllOut)
+    {
+      len2 = Math.floor(len / 1.5);
+    }
     let parts2 = [];
-    for (let i = 0; i < Math.floor(len / 1.5); ++i)
+    for (let i = 0; i < len2 - 1; ++i)
     {
       parts2.push(MOVE);
     }
-    for (let i = 0; i < Math.floor(len / 1.5); ++i)
+    for (let i = 0; i < len2; ++i)
     {
       if (i % 2 == 0)
         parts2.push(ATTACK);

@@ -75,6 +75,16 @@ const RCL_ONE_MAIN_CREEP = {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
     }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
+    }
   }
 };
 const RCL_TWO_MAIN_CREEP = {
@@ -148,6 +158,16 @@ const RCL_TWO_MAIN_CREEP = {
     {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
+    }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
     }
   }
 };
@@ -223,6 +243,16 @@ const RCL_THREE_MAIN_CREEP = {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
     }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
+    }
   }
 };
 const RCL_FOUR_MAIN_CREEP = {
@@ -296,6 +326,16 @@ const RCL_FOUR_MAIN_CREEP = {
     {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
+    }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
     }
   }
 };
@@ -371,6 +411,16 @@ const RCL_FIVE_MAIN_CREEP = {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
     }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
+    }
   }
 };
 const RCL_SIX_MAIN_CREEP = {
@@ -444,6 +494,16 @@ const RCL_SIX_MAIN_CREEP = {
     {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
+    }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
     }
   }
 };
@@ -519,6 +579,16 @@ const RCL_SEVEN_MAIN_CREEP = {
       base: [CARRY, WORK, MOVE, MOVE],
       levelUp: [WORK, CARRY, MOVE, MOVE]
     }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
+    }
   }
 };
 const RCL_EIGHT_MAIN_CREEP = {
@@ -592,6 +662,16 @@ const RCL_EIGHT_MAIN_CREEP = {
     {
       base: [CARRY, WORK, MOVE],
       levelUp: [MOVE, WORK, CARRY]
+    }
+  },
+  ROLE_BASEHEALER:
+  {
+    maxCreeps: 1,
+    maxLevel: 1,
+    blueprint:
+    {
+      base: [MOVE, HEAL],
+      levelUp: [MOVE, HEAL]
     }
   }
 };
@@ -1203,7 +1283,7 @@ const RCL_ALL_COL_CREEP = {
   ROLE_BUILDER:
   {
     upgradeCreeps: false,
-    maxCreeps: 6,
+    maxCreeps: 2,
     maxLevel: 50,
     blueprint:
     {
