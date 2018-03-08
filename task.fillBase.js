@@ -98,7 +98,7 @@ var taskFillBase = {
           {
             creep.moveTo(flag,
             {
-              reusePath: 10
+              reusePath: 50
             });
           }
 

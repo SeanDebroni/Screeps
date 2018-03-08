@@ -17,7 +17,7 @@ var taskFlee = {
       {
         creep.moveTo(flag,
         {
-          reusePath: 10
+          reusePath: 50
         });
         return;
       }

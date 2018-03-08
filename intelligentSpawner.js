@@ -68,10 +68,10 @@ module.exports = {
   {
     if (maxZerglings == 0) return true;
     if (spawner == undefined) return true;
-    var lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING));
+    var lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && creep.memory.task != CONST.TASK_SPAWNING);
+
     if (lings.length < maxZerglings)
     {
-
       let retiredLing = cacheFind.findCached(CONST.CACHEFIND_RETIREDZERGLINGS, spawner.room);
       if (retiredLing.length > 0)
       {
@@ -82,10 +82,14 @@ module.exports = {
         return false;
       }
 
-      var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true, goAllOut);
-      if (res != -1)
+      var homeLings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.homeRoom] == spawner.room.name) && (creep.memory.role === CONST.ROLE_ZERGLING));
+      if (homeLings.length < 5)
       {
-        return false;
+        var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true, goAllOut);
+        if (res != -1)
+        {
+          return false;
+        }
       }
     }
     return true;

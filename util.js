@@ -5,6 +5,26 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  isDangerousCreep(creep)
+  {
+    var workcount = 0;
+    for (var i = 0; i < creep.body.length; ++i)
+    {
+      if (creep.body[i].type == ATTACK || creep.body[i].type == RANGED_ATTACK)
+      {
+        return true;
+      }
+      if (creep.body[i].type == WORK)
+      {
+        workcount = workcount + 1;
+      }
+    }
+    if (workcount > creep.body.length / 3)
+    {
+      return true;
+    }
+    return false;
+  },
   getDistance(startPos, endPos)
   {
 

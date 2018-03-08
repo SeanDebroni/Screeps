@@ -1,6 +1,7 @@
 'use strict';
 const CONST = require('CONSTANTS');
 const cacheFind = require('cacheFind');
+var util = require('util');
 
 
 module.exports = {
@@ -38,8 +39,21 @@ module.exports = {
       }
       else
       {
-        closestHostile = hostiles[0];
+        var target = false;
+        var i = 0;
+        while (i < hostiles.length)
+        {
+          if (util.isDangerousCreep(hostiles[i]))
+          {
+            closestHostile = hostiles[i];
+            target = true;
+          }
+          i = i + 1;
+
+        }
       }
+      if (!target) closestHostile = false;
+
 
       var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, room), (structure) => (structure.hits < 100000));
       var toRepair = damagedStructures[Math.floor(Math.random() * damagedStructures.length)];

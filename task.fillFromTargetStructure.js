@@ -80,6 +80,9 @@ var taskFillFromTargetStructure = {
       //Not handling other cases atm, only containers
     default:
       console.log("ERROR: trying to fill from unsupported structure type");
+      console.log(target);
+      console.log(whatToFill);
+      console.log(creep.memory.name);
       wipeCreepMemory(creep);
       return;
 
