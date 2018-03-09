@@ -22,10 +22,12 @@ function findCachedInternal(whatToFind, room)
     let rz = _.filter(Game.creeps, (creepA) => creepA.memory.role == CONST.ROLE_ZERGLING && (creepA.memory.task == CONST.TASK_RECYCLE || creepA.memory.task == CONST.TASK_WAITINGTOBERECYCLED || creepA.memory.task == CONST.TASK_IDLE) && creepA.memory.homeRoom == room.name);
     cache.set(key, rz);
     break;
+
   case CONST.CACHEFIND_NONCOMBATCREEPS:
     let ncCreeps = _.filter(Game.creeps, (creepA) => creepA.memory.role != CONST.ROLE_ZERGLING && creepA.memory.workRoom == room.name);
     cache.set(key, ncCreeps);
     break;
+
   case CONST.CACHEFIND_FINDDAMAGEDCREEPS:
     let damagedCreeps = _.filter(Game.creeps, (creepA) => creepA.hits < creepA.hitsMax && creepA.memory.homeRoom == room.name);
     cache.set(key, damagedCreeps);
@@ -40,30 +42,19 @@ function findCachedInternal(whatToFind, room)
     }
     cache.set(key, sum);
     break;
+
   case CONST.CACHEFIND_FINDHAULERS:
     var a = _.filter(Game.creeps, (creep) => (room.name == creep.memory.workRoom && creep.memory.role == CONST.ROLE_HAULER));
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_FINDHARVESTERS:
     var a = _.filter(Game.creeps, (creep) => (room.name == creep.memory.workRoom && creep.memory.role == CONST.ROLE_HARVESTER));
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_DAMAGEDSTRUCTURES:
-
-    /*var max = CONST.VAL_MAXSTRUCTUREHITS;
-    var a = [];
-    while(a.length ==0)
-    {
-      a = (room.find(FIND_STRUCTURES, {
-        filter: (structure) =>
-        {
-            return (structure.hits < structure.hitsMax && structure.hits < max);
-        }
-      }));
-      max = max*2;
-    }*/
     let maxHits = CONST.VAL_MAXSTRUCTUREHITS;
-
     if (room.controller != undefined && room.controller != null)
     {
       if (room.controller.level == 8)
@@ -71,7 +62,6 @@ function findCachedInternal(whatToFind, room)
         maxHits = CONST.VAL_RCLEIGHTMAXSTRUCTUREHITS;
       }
     }
-
     var a = (room.find(FIND_STRUCTURES,
     {
       filter: (structure) =>
@@ -79,9 +69,6 @@ function findCachedInternal(whatToFind, room)
         return (structure.hits < structure.hitsMax && structure.hits < maxHits);
       }
     }));
-
-
-    //console.log(room.name + " has " + a.length + " damaged structures.");
     cache.set(key, a);
     break;
 
@@ -95,6 +82,7 @@ function findCachedInternal(whatToFind, room)
     }));
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_HOSTILEBUILDINGS:
     var a = (room.find(FIND_HOSTILE_STRUCTURES,
     {
@@ -121,21 +109,13 @@ function findCachedInternal(whatToFind, room)
     });
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_SOURCES:
-    /*var s = [];
-    for(var room_name in Game.rooms)
-    {
-        s= s.concat(Game.rooms[room_name].find(FIND_SOURCES));
-    }*/
     let s = room.find(FIND_SOURCES);
     cache.set(key, s);
     break;
+
   case CONST.CACHEFIND_DROPPEDENERGY:
-    var d = [];
-    /*
-    for(var room_name in Game.rooms) {
-        d= d.concat(Game.rooms[room_name].find(FIND_DROPPED_RESOURCES));
-    }*/
     var d = (room.find(FIND_DROPPED_RESOURCES,
     {
       filter: (resource) =>
@@ -145,6 +125,7 @@ function findCachedInternal(whatToFind, room)
     }));
     cache.set(key, d);
     break;
+
   case CONST.CACHEFIND_CONTAINERSTOFILL:
     var a = (room.find(FIND_STRUCTURES,
     {
@@ -153,9 +134,9 @@ function findCachedInternal(whatToFind, room)
         return (structure.structureType == STRUCTURE_TERMINAL || structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE) && (_.sum(structure.store) < structure.storeCapacity);
       }
     }));
-
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_CONSTRUCTIONSITES:
     cache.set(key, room.find(FIND_CONSTRUCTION_SITES,
     {
@@ -165,8 +146,8 @@ function findCachedInternal(whatToFind, room)
       }
     }));
     break;
-  case CONST.CACHEFIND_STRUCTURESTOFILL:
 
+  case CONST.CACHEFIND_STRUCTURESTOFILL:
     var a = (room.find(FIND_MY_STRUCTURES,
     {
       filter: (structure) =>
@@ -174,9 +155,9 @@ function findCachedInternal(whatToFind, room)
         return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && (structure.energy < structure.energyCapacity);
       }
     }));
-
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_TOWERSTOFILL:
     var a = room.find(FIND_MY_STRUCTURES,
     {
@@ -187,6 +168,7 @@ function findCachedInternal(whatToFind, room)
     });
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_CONTAINERSWITHENERGY:
     var a = room.find(FIND_STRUCTURES,
     {
@@ -197,6 +179,7 @@ function findCachedInternal(whatToFind, room)
     });
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_STRUCTURESWITHENERGY:
     var a = room.find(FIND_MY_STRUCTURES,
     {
@@ -207,6 +190,7 @@ function findCachedInternal(whatToFind, room)
     });
     cache.set(key, a);
     break;
+
   case CONST.CACHEFIND_SPAWNS:
     var a = room.find(FIND_MY_STRUCTURES,
     {
@@ -217,14 +201,15 @@ function findCachedInternal(whatToFind, room)
     });
     cache.set(key, a);
     break;
+
   default:
     console.log("TRYING TO FIND SOMETHING UNSUPPROTED");
     return;
+
   }
   return cache.get(key);
-
-
 }
+
 module.exports = {
 
   findCached: function (whatToFind, room)
@@ -235,10 +220,6 @@ module.exports = {
   cacheFindClear: function ()
   {
     cache.clear();
-    //cache = new Map();
   }
-
-
-
 
 };

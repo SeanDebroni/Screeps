@@ -270,13 +270,13 @@ module.exports.loop = function ()
     //console.log("Time Average for role " + debugKeysR[i] + ": " + (roleTimes[debugKeysR[i]] / roleNums[debugKeysR[i]])
       //.toFixed(3));
   }*/
-  let debugKeys = Object.keys(taskTimes);
+  /*let debugKeys = Object.keys(taskTimes);
   for (let i = 0; i < debugKeys.length; ++i)
   {
     //console.log("Time Average|Sum for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
     //.toFixed(3) + "|" + (taskTimes[debugKeys[i]])
     //.toFixed(3));
-  }
+  }*/
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)
     .toFixed(3));
@@ -284,6 +284,7 @@ module.exports.loop = function ()
   console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
   console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
 
+  //Try catch is in case not on IVM, getHeapStatistics doesn't exist if not in IVM (isolated virtual machine)
   try
   {
     var stats = (Game.cpu.getHeapStatistics());
@@ -298,6 +299,7 @@ module.exports.loop = function ()
   }
   catch (err)
   {}
+
   var maxCodeAge = Memory.maxCodeAge;
   if (maxCodeAge == undefined)
   {
