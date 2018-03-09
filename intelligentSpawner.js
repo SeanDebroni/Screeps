@@ -68,8 +68,15 @@ module.exports = {
   {
     if (maxZerglings == 0) return true;
     if (spawner == undefined) return true;
-    var lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && creep.memory.task != CONST.TASK_SPAWNING);
-
+    var lings;
+    if (goAllOut)
+    {
+      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && creep.memory.task != CONST.TASK_SPAWNING);
+    }
+    else
+    {
+      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING));
+    }
     if (lings.length < maxZerglings)
     {
       let retiredLing = cacheFind.findCached(CONST.CACHEFIND_RETIREDZERGLINGS, spawner.room);
@@ -319,7 +326,7 @@ module.exports = {
     {
 
       let containerSum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, workRoom);
-      droppedSum = droppedSum + containerSum;
+      droppedSum = droppedSum + (containerSum * 0.7);
 
 
     }

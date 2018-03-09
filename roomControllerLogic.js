@@ -160,24 +160,24 @@ function runMainRoomPriorityOne(mainRoom, notBusySpawns, curSpawn)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  //if main base is fucked, fix it first
-  var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, mainRoom);
-  var haulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, mainRoom);
-  //var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && Game.rooms[creep.memory.workRoom] == mainRoom));
-  //var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && Game.rooms[creep.memory.workRoom] == mainRoom));
-  if (harvesters.length < 1 || haulers.length < 1)
-  {
-    return notBusySpawns.length;
-  }
-  var levelSum = 0;
-  for (var i = 0; i < harvesters.length; ++i)
-  {
-    levelSum = levelSum + harvesters[i].memory.lvl;
-  }
-  if ((levelSum / harvesters.length) + 2 < 5 && mainRoom.controller.level > 3)
-  {
-    return notBusySpawns.length;
-  }
+  /*  //if main base is fucked, fix it first
+    var harvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, mainRoom);
+    var haulers = cacheFind.findCached(CONST.CACHEFIND_FINDHAULERS, mainRoom);
+    //var harvesters = _.filter(Game.creeps, (creep) => (creep.memory.role == CONST.ROLE_HARVESTER && Game.rooms[creep.memory.workRoom] == mainRoom));
+    //var haulers = _.filter(Game.creeps, (creep) => (creep.memory.role === CONST.ROLE_HAULER && Game.rooms[creep.memory.workRoom] == mainRoom));
+    if (harvesters.length < 1 || haulers.length < 1)
+    {
+      return notBusySpawns.length;
+    }
+    var levelSum = 0;
+    for (var i = 0; i < harvesters.length; ++i)
+    {
+      levelSum = levelSum + harvesters[i].memory.lvl;
+    }
+    if ((levelSum / harvesters.length) + 2 < 5 && mainRoom.controller.level > 3)
+    {
+      return notBusySpawns.length;
+    }*/
 
 
   return curSpawn;
