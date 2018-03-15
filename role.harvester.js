@@ -1,7 +1,6 @@
 'use strict';
 const CONST = require('CONSTANTS');
 var util = require('util');
-var cacheMoveTo = require('cacheMoveTo');
 
 //Create with memory sID which is the id of the source to harvest
 var roleHarvester = {
@@ -41,10 +40,7 @@ var roleHarvester = {
       }
       else
       {
-        creep.moveTo((new RoomPosition(creep.memory.harvesterContainerX, creep.memory.harvesterContainerY, creep.memory.workRoom)),
-        {
-          reusePath: 6
-        });
+        util.moveToWalkable(creep, (new RoomPosition(creep.memory.harvesterContainerX, creep.memory.harvesterContainerY, creep.memory.workRoom)), 6);
       }
       return;
     }
@@ -54,10 +50,7 @@ var roleHarvester = {
     //If not successful, move to the Source
     if (res != 0)
     {
-      creep.moveTo(source,
-      {
-        reusePath: 5
-      });
+      util.moveToNonWalkable(creep, source, 5);
     }
     //If sucessful, sit there forever and mine.
     else

@@ -1,4 +1,5 @@
 'use strict';
+var util = require('util');
 var taskMoveToTarget = {
   run: function (creep)
   {
@@ -11,10 +12,7 @@ var taskMoveToTarget = {
         creep.memory.task = creep.memory.role;
       }
     }
-    var err = creep.moveTo(target,
-    {
-      rememberPath: 50
-    });
+    var err = util.moveToWalkable(creep, target, 50);
 
   }
 

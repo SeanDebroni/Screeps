@@ -45,7 +45,7 @@ module.exports = {
 
   cachedGetDistanceClear: function ()
   {
-    cacheMoveToM = new Map();
+    cacheGetDistanceMap = new Map();
     Memory.cacheGetDistanceMapSize = 0;
     Memory.cacheGetDistanceMap = undefined;
 

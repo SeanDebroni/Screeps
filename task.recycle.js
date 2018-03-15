@@ -1,7 +1,6 @@
 'use strict';
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
-var cacheMoveTo = require('cacheMoveTo');
 var util = require('util');
 
 var taskRecycle = {
@@ -34,7 +33,7 @@ var taskRecycle = {
       }
       else
       {
-        cacheMoveTo.cacheMoveTo(creep, Game.getObjectById(creep.memory.targetID));
+        util.moveToNonWalkable(creep, Game.getObjectById(creep.memory.targetID));
       }
 
     }

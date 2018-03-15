@@ -10,15 +10,12 @@ var taskFlee = {
   {
     var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, util.getWorkRoom(creep));
 
-    if (hostileCreeps.length > 0)
+    if (hostileCreeps.length > 0 || Game.rooms[creep.memory.workRoom] == undefined)
     {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
       {
-        creep.moveTo(flag,
-        {
-          reusePath: 50
-        });
+        util.moveToWalkable(creep, flag, 50);
         return;
       }
     }

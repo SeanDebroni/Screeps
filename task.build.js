@@ -1,5 +1,4 @@
 'use strict';
-var cacheMoveTo = require('cacheMoveTo');
 var util = require('util');
 
 var taskBuild = {
@@ -16,9 +15,9 @@ var taskBuild = {
     {
       creep.moveTo(target,
       {
-        reusePath: 5
+        reusePath: 5,
+        range: 3
       });
-      //cacheMoveTo.cacheMoveTo(creep, target);
     }
     else if (err == ERR_NOT_ENOUGH_RESOURCES || err == ERR_INVALID_TARGET || err == ERR_RCL_NOT_ENOUGH)
     {

@@ -14,10 +14,7 @@ var roleBuilder = {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
       {
-        creep.moveTo(flag,
-        {
-          reusePath: 50
-        });
+        util.moveToWalkable(creep, flag, 50);
         return;
       }
     }

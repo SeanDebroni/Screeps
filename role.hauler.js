@@ -91,11 +91,22 @@ var roleHauler = {
     //Find generic dropped energy in workRoom
     var droppedEnergy = cacheFind.findCached(CONST.CACHEFIND_DROPPEDENERGY, util.getWorkRoom(creep));
 
-    //If there is energy dropped in workRoom, randomly find a pile of it and go pick it up.
     if (droppedEnergy.length > 0)
     {
       creep.memory.targetID = droppedEnergy[Math.floor(Math.random() * droppedEnergy.length)].id;
       creep.memory.task = CONST.TASK_PICKUPENERGY;
+      return;
+    }
+
+    //Find energy in tombstones in workRoom
+    let tombstonesWithEnergy = cacheFind.findCached(CONST.CACHEFIND_TOMBSTONESWITHENERGY, util.getWorkRoom(creep));
+
+    if (tombstonesWithEnergy.length > 0)
+    {
+      console.log("HI THERE " + creep.memory.workRoom + " " + creep.name);
+      creep.memory.targetID = tombstonesWithEnergy[Math.floor(Math.random() * tombstonesWithEnergy.length)].id;
+      creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+      creep.memory.fillResourceType = RESOURCE_ENERGY;
       return;
     }
 
@@ -128,10 +139,7 @@ var roleHauler = {
       var flag = Game.flags[creep.memory.homeRoom + "idle"];
       if (flag != undefined && flag != null)
       {
-        creep.moveTo(flag,
-        {
-          reusePath: 50
-        });
+        util.moveToWalkable(creep, flag, 50);
         return;
       }
     }

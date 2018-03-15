@@ -11,6 +11,9 @@ var roleZergling = require('role.zergling');
 var roleDisassembleFlag = require('role.disassembleFlag');
 var roleRepairman = require('role.repairman');
 var roleBaseHealer = require('role.baseHealer');
+var roleUpgradeDancer = require('role.upgradeDancer');
+var roleEnergyTransferer = require('role.energyTransferer');
+var roleMineralMiner = require('role.mineralMiner');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -30,21 +33,42 @@ var taskRepair = require('task.repair');
 var taskFillFromTargetStructure = require('task.fillFromTargetStructure');
 var taskHealTarget = require('task.healTarget');
 var taskFlee = require('task.flee');
+var taskUpgradeDance = require('task.upgradeDance');
+var taskMineMineral = require('task.mineMineral');
+var taskFillTargetStructure = require('task.fillTargetStructure');
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
 var roomControllerLogic = require('roomControllerLogic');
 var util = require('util');
+var roadMaintainer = require('roadMaintainer');
 
 var cacheFind = require('cacheFind');
-var cacheMoveTo = require('cacheMoveTo');
 var cachedGetDistance = require('cachedGetDistance');
 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+
+//Credit to warinternal from screeps slack for this code
+//  lab recipes
+/*global.RECIPES = {};
+for (var a in REACTIONS)
+{
+  for (var b in REACTIONS[a])
+  {
+    RECIPES[REACTIONS[a][b]] = [a, b];
+  }
+}*/
+
+
 let codeAge = 0;
+let manualGC = 0;
 module.exports.loop = function ()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  let z = Object.keys(global);
+  console.log(z.length);
+
+
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
   var cpuUsedNew = Game.cpu.getUsed();
@@ -118,6 +142,18 @@ module.exports.loop = function ()
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
+  for (var i = 0; i < allRoomControllersKeys.length; ++i)
+  {
+    var roomController = allRoomControllers[allRoomControllersKeys[i]];
+    var didWork = roadMaintainer.maintainRoads(roomController, allRoomControllersKeys[i]);
+    if (didWork) break;
+  }
+
+  cpuUsedNew = Game.cpu.getUsed();
+  console.log("CPU used for roadMaintainance: " + (cpuUsedNew - cpuUsedOld));
+  cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
+  cpuUsedOld = cpuUsedNew;
+
   //var roleTimes = {};
   //var roleNums = {};
   for (var name in Game.creeps)
@@ -127,6 +163,9 @@ module.exports.loop = function ()
     var creep = Game.creeps[name];
     switch (creep.memory.task)
     {
+    case CONST.ROLE_MINERALMINER:
+      roleMineralMiner.run(creep);
+      break;
     case CONST.ROLE_REPAIRMAN:
       roleRepairman.run(creep);
       break;
@@ -156,6 +195,12 @@ module.exports.loop = function ()
       break;
     case CONST.ROLE_BASEHEALER:
       roleBaseHealer.run(creep);
+      break;
+    case CONST.ROLE_UPGRADEDANCER:
+      roleUpgradeDancer.run(creep);
+      break;
+    case CONST.ROLE_ENERGYTRANSFERER:
+      roleEnergyTransferer.run(creep);
       break;
     default:
       break;
@@ -188,6 +233,12 @@ module.exports.loop = function ()
     let task = creep.memory.task;
     switch (creep.memory.task)
     {
+    case CONST.TASK_FILLTARGETSTRUCTURE:
+      taskFillTargetStructure.run(creep);
+      break;
+    case CONST.TASK_MINEMINERAL:
+      taskMineMineral.run(creep);
+      break;
     case CONST.TASK_REPAIR:
       taskRepair.run(creep);
       break;
@@ -242,6 +293,9 @@ module.exports.loop = function ()
     case CONST.TASK_FLEE:
       taskFlee.run(creep);
       break;
+    case CONST.TASK_UPGRADEDANCE:
+      taskUpgradeDance.run(creep);
+      break;
     default:
       isTask = false;
       break;
@@ -282,23 +336,42 @@ module.exports.loop = function ()
     .toFixed(3));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   console.log("CPU used Total: " + cpuUsedNew.toFixed(3));
-  console.log("CPU used Sum: " + (_.sum(cpuTimesUsedArr)));
+  let cpuUsedSum = _.sum(cpuTimesUsedArr);
+  console.log("CPU used Sum: " + (cpuUsedSum));
 
   //Try catch is in case not on IVM, getHeapStatistics doesn't exist if not in IVM (isolated virtual machine)
   try
   {
     var stats = (Game.cpu.getHeapStatistics());
     var keys = Object.keys(stats);
-    for (var i = 0; i < keys.length; ++i)
+    /*for (var i = 0; i < keys.length; ++i)
     {
       console.log(keys[i] + ": " + (stats[keys[i]]));
-    }
+    }*/
     console.log("Used " + (stats.total_heap_size / stats.heap_size_limit));
-    console.log("Other used:" + ((stats.total_heap_size + stats.externally_allocated_size) / stats.heap_size_limit));
+    let otherUsed = ((stats.total_heap_size + stats.externally_allocated_size) / stats.heap_size_limit);
+    console.log("Other used:" + (otherUsed));
     console.log("Age: " + codeAge);
+
+    if (otherUsed > 0.4 && (cpuUsedSum / Game.cpu.limit) < 0.65 && (Game.cpu.tickLimit - cpuUsedSum) > 200)
+    {
+      let cpuUsedPreGC = Game.cpu.getUsed();
+      gc();
+      let cpuUsedPostGC = Game.cpu.getUsed();
+      console.log("USED " + (cpuUsedPostGC - cpuUsedPreGC) + " CPU on gc");
+      console.log("new sum is " + ((cpuUsedPostGC - cpuUsedPreGC) + cpuUsedSum));
+      manualGC = manualGC + 1;
+    }
+    console.log("ManGC: " + manualGC);
+
+
   }
   catch (err)
   {}
+
+
+
+
 
   var maxCodeAge = Memory.maxCodeAge;
   if (maxCodeAge == undefined)

@@ -1,5 +1,4 @@
 'use strict';
-var cacheMoveTo = require('cacheMoveTo');
 var util = require('util');
 
 var taskUpgradeRoom = {
@@ -17,9 +16,12 @@ var taskUpgradeRoom = {
       if (creep.upgradeController(util.getWorkRoom(creep)
           .controller) == ERR_NOT_IN_RANGE)
       {
-
-        cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
-          .controller);
+        creep.moveTo(util.getWorkRoom(creep)
+          .controller,
+          {
+            reusePath: 5,
+            range: 3
+          });
       }
     }
   }

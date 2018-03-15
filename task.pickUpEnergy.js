@@ -1,6 +1,20 @@
 'use strict';
 var util = require('util');
 
+function pickupEnergyFrom(creep, target)
+{
+  var result = creep.pickup(target);
+  if (result == ERR_NOT_IN_RANGE)
+  {
+    var res2 = util.moveToNonWalkable(creep, target);
+    if (res2 = ERR_NO_PATH)
+    {
+      return res2;
+    }
+  }
+  return result;
+}
+
 var taskPickUpEnergy = {
   run: function (creep)
   {
@@ -22,7 +36,7 @@ var taskPickUpEnergy = {
       util.moveToRoom(creep, creep.memory.workRoom);
       return;
     }
-    var result = util.pickupEnergyFrom(creep, target);
+    var result = pickupEnergyFrom(creep, target);
     if (result == OK || result == ERR_FULL)
     {
       creep.memory.task = creep.memory.role;

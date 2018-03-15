@@ -201,13 +201,18 @@ function runMainRoomPriorityTwo(mainRoom, notBusySpawns, curSpawn)
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-
+  if (mainRoom.controller.level >= 6)
+  {
+    didntMakeCreep = intelligentSpawner.spawnMineralMiner(blueprint, notBusySpawns[curSpawn], mainRoom);
+    if (!didntMakeCreep) curSpawn = curSpawn + 1;
+    if (curSpawn >= notBusySpawns.length) return curSpawn;
+  }
 
   //If storage is fullish, make a repairman. Should only apply to RCL 8 rooms.
   if (mainRoom.controller.level == 8)
   {
-    var containersToFill = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSTOFILL, mainRoom);
-    if (containersToFill.length == 0 || containersToFill.length == 1 && containersToFill[0].store > containersToFill[0].storeCapacity * 0.95)
+    var containersToFill = cacheFind.findCached(CONST.CACHEFIND_ENERGYCONTAINERSTOFILL, mainRoom);
+    if (containersToFill.length == 0 || containersToFill.length == 1 && containersToFill[0].store[RESOURCE_ENERGY] > containersToFill[0].storeCapacity * 0.45)
     {
       didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], mainRoom, true);
       if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -255,7 +260,7 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
   {
     for (var z = 0; z < 3; ++z)
     {
-      if (hostileCreeps[0].owner.username == "Invader")
+      if (hostileCreeps[0].owner.username == "Invader" || hostileCreeps[0].owner.username == "Screeps")
       {
         var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
 
@@ -472,6 +477,7 @@ module.exports = {
     let disassembleFlags = [];
     let buildRoads = [];
     let outerWarningRooms = [];
+    let powerlevelRooms = [];
 
     let notBusySpawns = util.getNotBusySpawns(mainBaseRoom);
 
@@ -518,6 +524,9 @@ module.exports = {
         let roomType = roomName.charAt(0);
         switch (roomType)
         {
+        case "P":
+          powerlevelRooms.push(room);
+          break;
         case "C":
           colonyRooms.push(room);
           break;

@@ -1,3 +1,75 @@
+Spam Upgrader rooms
+  overwrites normal extension flag. So, has to handle that code as well.
+
+
+blueprint code - make a new blueprint just for these. pass both ext/new blueprint.
+
+Precalc path.
+
+Make cost Matrix. if dist >4 cost = inf. else, cost = 1; (will be all roaded).
+
+Start bottom left. Go to top left. go to top right. go to bottom right. go to bottom left.
+
+After each step set the positions in the path to inf. Last step set range = 1;
+
+save path, pathlength. pathlength will be used in making the new upgraders. need to be able to do pathlength-5 moves without running out of energy.
+
+Roles
+  upgradeDancer - make from both supporting rooms. total number set, dont care what homeroom is.
+    -moves in a path around the controller, upgrading every tick
+    -refills from containers/storage at set points on the path.
+
+    has in memory. a path of directions, a current step on path, last tick fatigue.
+
+    check if moved. Use fatigue I guess? if fatigue > last tick fatigue. if not, dont advance path.
+    Roads on path.
+
+  EnergyTransferer - make from both supporting rooms. however, only have to go to/from one room?. Move terminal in supporting room to as close as possible.
+                        have flag be RC-000x-P-W32E53 ? ugly. RC-000x-P-000x. but i dont have access to that in the rc func. maybe pass whole RC and reduce it asap?
+
+    -fills from home room
+    -fills structures in work room.
+
+
+  Hauler - adjust hauler to not steal from upgrader container
+    new mem flag - creep.memory.pickupFromContainers
+                set to true Baseline
+                false if in one of these rooms.
+    will not look for containers if flag is false.
+
+  builder - at least 1
+  repairman - not sure how many needed, but some.
+    only from main supply room.
+    ONLY REPAIR CONTAINERS.
+
+General thoughts
+
+1 storage
+5 container
+
+wall around the path, to prevent pathfinding.
+
+one refill stretch by path. pitstop?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Step 0: Hauler assignment. DONE WAITING ON DEBUG.
 Haulers given strict jobs to prioritize first? (each one to a source?)
 Given a source.

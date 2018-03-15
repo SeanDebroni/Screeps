@@ -7,7 +7,14 @@ var taskKill = {
     var target = Game.getObjectById(creep.memory.targetID);
     if (creep.room.name != creep.memory.workRoom && (target == undefined || target == null))
     {
-      util.moveToRoom(creep, creep.memory.workRoom);
+      if (creep.memory.targetLastX != undefined)
+      {
+        util.moveToRoom(creep, creep.memory.workRoom, creep.memory.targetLastX, creep.memory.targetLastY);
+      }
+      else
+      {
+        util.moveToRoom(creep, creep.memory.workRoom);
+      }
       return;
     }
     else if (target == undefined || target == null)
@@ -20,16 +27,22 @@ var taskKill = {
     {
       creep.memory.workRoom = target.room.name;
     }
+    creep.memory.targetLastX = target.pos.x;
+    creep.memory.targetLastY = target.pos.y;
 
     creep.rangedAttack(target);
-    if (creep.attack(target) != 0)
+    creep.attack(target);
+    if (creep.pos.isNearTo(target.pos))
     {
-      creep.moveTo(target,
-      {
-        reusePath: 3
-      });
-      creep.attack(target);
+      creep.move(creep.pos.getDirectionTo(target.pos));
     }
+    else
+    {
+      util.moveToNonWalkable(creep, target, 3);
+    }
+
+    creep.attack(target);
+
   }
 }
 module.exports = taskKill;

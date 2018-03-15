@@ -1,10 +1,16 @@
 'use strict';
+var util = require('util');
 
 //Requires targetIDSet
 var taskHealTarget = {
 
   run: function (creep)
   {
+    if (creep.hits < creep.hitsMax)
+    {
+      creep.heal(creep);
+      return;
+    }
 
     var target = Game.getObjectById(creep.memory.targetID);
     if (target == undefined || target == null)
@@ -22,14 +28,17 @@ var taskHealTarget = {
     }
 
     creep.rangedHeal(target);
-    if (creep.heal(target) != 0)
+    creep.heal(target);
+    if (creep.pos.isNearTo(target.pos))
     {
-      creep.moveTo(target,
-      {
-        reusePath: 17
-      });
-      creep.heal(target);
+      creep.move(creep.pos.getDirectionTo(target.pos));
     }
+    else
+    {
+      util.moveToNonWalkable(creep, target, 17);
+    }
+    creep.heal(target);
+
   }
 }
 

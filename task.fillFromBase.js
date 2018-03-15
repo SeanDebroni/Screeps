@@ -4,6 +4,75 @@ var util = require("util");
 const CONST = require("CONSTANTS");
 var cacheFind = require("cacheFind");
 
+function withdrawEnergyFrom(creep, target, revertIfEmpty)
+{
+  //optional parameter
+  if (typeof revertIfEmpty === 'undefined')
+  {
+    revertIfEmpty = false;
+  }
+
+  var targetEnergy = 0;
+  var creepSpace = creep.carryCapacity - _.sum(creep.carry);
+
+  if (target == null || target == undefined)
+  {
+    return -67; //??????????????
+  }
+
+  switch (target.structureType)
+  {
+  case STRUCTURE_SPAWN:
+  case STRUCTURE_EXTENSION:
+  case STRUCTURE_TOWER:
+    targetEnergy = target.energy;
+    break;
+
+  case STRUCTURE_STORAGE:
+  case STRUCTURE_CONTAINER:
+  case STRUCTURE_TERMINAL:
+  case STRUCTURE_LAB:
+    targetEnergy = target.store[RESOURCE_ENERGY];
+    break;
+  default:
+    console.log(target.structureType + " IS NOT SUPPORTED FOR FILLING FROM");
+    break;
+  }
+
+  if (targetEnergy < 50)
+  {
+    return ERR_NOT_ENOUGH_RESOURCES;
+  }
+
+  var result = creep.withdraw(target, RESOURCE_ENERGY, Math.min(targetEnergy, creepSpace));
+  if (result == ERR_NOT_IN_RANGE)
+  {
+    util.moveToNonWalkable(creep, target);
+  }
+  else if (result == ERR_NOT_ENOUGH_RESOURCES || result == ERR_INVALID_TARGET || result == ERR_FULL || result == ERR_INVALID_ARGS)
+  {
+    console.log("withdraw err");
+    console.log(result);
+    creep.memory.targetID = -1;
+  }
+  else if (result == OK)
+  {
+    if (creepSpace >= targetEnergy)
+    {
+      creep.memory.targetID = -1;
+    }
+    //if creep will be full after this transfer
+    if ((creepSpace <= targetEnergy) && revertIfEmpty)
+    {
+      creep.memory.task = creep.memory.role;
+      creep.memory.targetID = -1;
+    }
+  }
+  return result;
+
+}
+
+
 var taskFillFromBase = {
   run: function (creep)
   {
@@ -17,7 +86,11 @@ var taskFillFromBase = {
           creep.memory.targetID = -1;
           return;
         }
-        var err = util.withdrawEnergyFrom(creep, target, true);
+        let err = withdrawEnergyFrom(creep, target, true);
+        if (err == ERR_NOT_ENOUGH_RESOURCES)
+        {
+          creep.memory.targetID = -1;
+        }
         return;
       }
       else
@@ -31,7 +104,11 @@ var taskFillFromBase = {
             containerToFillFrom = 0;
             creep.memory.targetID = baseContainers[containerToFillFrom].id;
             var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
-            util.withdrawEnergyFrom(creep, target, true);
+            let err = withdrawEnergyFrom(creep, target, true);
+            if (err == ERR_NOT_ENOUGH_RESOURCES)
+            {
+              creep.memory.targetID = -1;
+            }
             return;
           }
         }
@@ -62,7 +139,11 @@ var taskFillFromBase = {
           }
           creep.memory.targetID = baseContainers[containerToFillFrom].id;
           var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
-          util.withdrawEnergyFrom(creep, target, true);
+          let err = withdrawEnergyFrom(creep, target, true);
+          if (err == ERR_NOT_ENOUGH_RESOURCES)
+          {
+            creep.memory.targetID = -1;
+          }
           return;
         }
         creep.memory.targetID = -1;
@@ -75,7 +156,7 @@ var taskFillFromBase = {
             var rand = Math.floor(Math.random() * baseBuildings.length)
             creep.memory.targetID = baseBuildings[0].id;
             var target = Game.getObjectById(creep.memory.targetID);
-            util.withdrawEnergyFrom(creep, target);
+            withdrawEnergyFrom(creep, target);
           }
           else
           {

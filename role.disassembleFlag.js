@@ -1,5 +1,6 @@
 'use strict';
 var CONST = require("CONSTANTS");
+var util = require('util');
 
 var roleDisassembleFlag = {
   run: function (creep)
@@ -16,10 +17,8 @@ var roleDisassembleFlag = {
     //Not in same room, just move there.
     if (flag.room == undefined || creep.room != flag.room)
     {
-      var err = creep.moveTo(flag,
-      {
-        rememberPath: 5
-      });
+
+      var err = util.moveToWalkable(creep, flag, 5);
       return;
     }
 
@@ -31,10 +30,7 @@ var roleDisassembleFlag = {
     }
 
     //otherwise, just move to it.
-    var err = creep.moveTo(flag,
-    {
-      rememberPath: 5
-    });
+    var err = util.moveToWalkable(creep, flag, 5);
     return;
 
   }

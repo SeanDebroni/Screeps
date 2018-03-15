@@ -49,12 +49,18 @@ var roleRepairman = {
       }
 
       //if its an ext roleRepairman
-
-      //Go recycle yourself.
-      creep.memory.task = CONST.TASK_RECYCLE;
-      creep.memory.role = CONST.TASK_RECYCLE;
-      creep.memory.targetID = -1;
-      return;
+      if (Game.rooms[creep.memory.workRoom] != undefined)
+      {
+        //Go recycle yourself.
+        creep.memory.task = CONST.TASK_RECYCLE;
+        creep.memory.role = CONST.TASK_RECYCLE;
+        creep.memory.targetID = -1;
+        return;
+      }
+      else
+      {
+        util.moveToRoom(creep, creep.memory.workRoom);
+      }
     }
 
     return;

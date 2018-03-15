@@ -87,6 +87,7 @@ module.exports = {
       if (retiredLing.length > 0)
       {
         let ling = retiredLing[0];
+        ling.memory.atIdleSpot = false;
         ling.memory.task = ling.memory.role;
         ling.memory.workRoom = workRoom.name;
         ling.memory.targetID = -1;
@@ -159,7 +160,42 @@ module.exports = {
     }
     return true;
   },
+  spawnMineralMiner: function (blueprint, spawner, workRoom)
+  {
+    let mineralMinerBlueprint = blueprint.ROLE_MINERALMINER;
+    let maxMineralMiners = mineralMinerBlueprint.maxCreeps;
+    let maxLevel = mineralMinerBlueprint.maxLevel;
+    if (maxMineralMiners == 0) return true;
 
+    let mem = {};
+    mem.role = CONST.ROLE_MINERALMINER;
+
+    var extractors = cacheFind.findCached(CONST.CACHEFIND_FINDEXTRACTOR, workRoom);
+    if (extractors.length == 0) return true;
+
+    var minerals = cacheFind.findCached(CONST.CACHEFIND_FINDMINERALS, workRoom);
+    if (minerals.length == 0)
+    {
+      return true;
+    }
+    if (minerals[0].mineralAmount <= 0)
+    {
+      return true;
+    }
+    mem.extractorID = extractors[0].id;
+    let homeRoom = spawner.room;
+    var mineralMiners = _.filter(Game.creeps, (creep) => (util.getHomeRoom(creep) == homeRoom && creep.memory.role == CONST.ROLE_MINERALMINER));
+    if (mineralMiners.length >= maxMineralMiners) return true;
+
+    var res = makeCreep.makeBestCreepFromBlueprint(spawner, homeRoom, mineralMinerBlueprint.blueprint, mem, maxLevel, true);
+    if (res != -1)
+    {
+      return false;
+    }
+
+    return true;
+
+  },
   spawnUpgrader: function (blueprint, spawner, workRoom, criticalOnly)
   {
     let upgraderBlueprint = blueprint.ROLE_UPGRADER;
@@ -210,6 +246,8 @@ module.exports = {
 
     if (makeExtra)
     {
+      if (spawner.room.controller.level == 8 && upgraders.length >= 2) return true;
+
       var sum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, spawner.room);
 
       let makeLevel = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint,
@@ -224,7 +262,7 @@ module.exports = {
       sumLevels = sumLevels + makeLevel;
 
       //1000 is rouge estimate, 100000 is so if terminal is not near controller there will still be energy near controller, 4 is when storage is makeable.
-      if (((sumLevels * 1000) < sum && spawner.room.controller.level <= 3) || ((sumLevels * 1000) + (TERMINAL_CAPACITY + 100000) < sum && spawner.room.controller.level >= 4))
+      if (((sumLevels * 1000) < sum && spawner.room.controller.level <= 3) || ((sumLevels * 1000) + ( /*TERMINAL_CAPACITY/2*/ 150000 + 100000) < sum && spawner.room.controller.level >= 4))
       {
         makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, upgraderBlueprint.blueprint, mem, upgraderBlueprint.maxLevel, true);
         return false;

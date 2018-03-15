@@ -1,7 +1,6 @@
 'use strict';
 var CONST = require("CONSTANTS");
 var util = require("util");
-var cacheMoveTo = require("cacheMoveTo");
 
 var roleReserver = {
   run: function (creep)
@@ -27,7 +26,8 @@ var roleReserver = {
     //If out of range, move to it.
     if (err == ERR_NOT_IN_RANGE)
     {
-      cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
+
+      util.moveToNonWalkable(creep, util.getWorkRoom(creep)
         .controller);
       return;
     }
@@ -38,7 +38,7 @@ var roleReserver = {
       //if not in range to attack, move to it.
       if (err == ERR_NOT_IN_RANGE)
       {
-        cacheMoveTo.cacheMoveTo(creep, util.getWorkRoom(creep)
+        util.moveToNonWalkable(creep, util.getWorkRoom(creep)
           .controller);
         return;
       }

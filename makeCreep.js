@@ -19,7 +19,6 @@ module.exports = {
   //memory must have role. blueprint must be valid
   makeBestCreepFromBlueprint: function (spawner, workRoom, blueprint, creepMemory, maxLevel, makeCreep)
   {
-
     creepMemory = genericCreepGetMemoryToSet(spawner, workRoom, creepMemory);
     let rand = Math.floor(Math.random() * 1024);
     let parts = [];
@@ -30,7 +29,7 @@ module.exports = {
 
     let level = 1;
 
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
+    var canMake = spawner.spawnCreep(parts, creepMemory.role + (Game.time + rand),
     {
       dryRun: true
     });
@@ -40,7 +39,7 @@ module.exports = {
     do {
       parts.push(blueprint.levelUp[(level - 1) % blueprint.levelUp.length]);
       level = level + 1;
-      canMake = Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
+      canMake = spawner.spawnCreep(parts, creepMemory.role + (Game.time + rand),
       {
         dryRun: true
       });
@@ -53,7 +52,7 @@ module.exports = {
     {
       console.log("setting these mem values to made creep");
       console.log(Object.keys(creepMemory));
-      Game.spawns[spawner.name].spawnCreep(parts, creepMemory.role + (Game.time + rand),
+      spawner.spawnCreep(parts, creepMemory.role + (Game.time + rand),
       {
         memory: creepMemory
       });
@@ -67,7 +66,7 @@ module.exports = {
   {
     var parts = [WORK, WORK, MOVE];
     var level = 1;
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
+    var canMake = spawner.spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
     {
       dryRun: true
     });
@@ -79,13 +78,13 @@ module.exports = {
       if (level % 3 == 2) parts.push(WORK);
       if (level % 3 == 0) parts.push(WORK);
       level = level + 1;
-      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
+      canMake = spawner.spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
       {
         dryRun: true
       });
     }
     parts.pop();
-    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
+    if (makeCreep) spawner.spawnCreep(parts, CONST.ROLE_DISASSEMBLEFLAG + Game.time,
     {
       memory:
       {
@@ -104,7 +103,7 @@ module.exports = {
   {
     var parts = [MOVE, MOVE, ATTACK];
     var level = 1;
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
+    var canMake = spawner.spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
     {
       dryRun: true
     });
@@ -115,7 +114,7 @@ module.exports = {
       if (level % 2 == 1) parts.push(RANGED_ATTACK)
       if (level % 2 == 0) parts.push(ATTACK)
       parts.push(MOVE);
-      var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
+      var canMake = spawner.spawnCreep(parts, CONST.ROLE_ZERGLING + Game.time,
       {
         dryRun: true
       });
@@ -124,17 +123,16 @@ module.exports = {
     parts.pop();
 
     let len = parts.length / 2;
-    let len2 = len;
     if (!goAllOut)
     {
-      len2 = Math.floor(len / 1.5);
+      len = Math.floor(len / 1.5);
     }
     let parts2 = [];
-    for (let i = 0; i < len2 - 1; ++i)
+    for (let i = 0; i < len - 1; ++i)
     {
       parts2.push(MOVE);
     }
-    for (let i = 0; i < len2; ++i)
+    for (let i = 0; i < len; ++i)
     {
       if (i % 2 == 0)
         parts2.push(ATTACK);
@@ -142,7 +140,7 @@ module.exports = {
         parts2.push(RANGED_ATTACK);
     }
     parts2.push(MOVE);
-    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts2, CONST.ROLE_ZERGLING + Game.time,
+    if (makeCreep) spawner.spawnCreep(parts2, CONST.ROLE_ZERGLING + Game.time,
     {
       memory:
       {
@@ -160,7 +158,7 @@ module.exports = {
   {
     var parts = [MOVE];
     var level = 1;
-    var canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
+    var canMake = spawner.spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
     {
       dryRun: true
     });
@@ -169,14 +167,14 @@ module.exports = {
     {
       parts.push(MOVE);
       level = level + 1;
-      canMake = Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
+      canMake = spawner.spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
       {
         dryRun: true
       });
     }
     parts.pop();
 
-    if (makeCreep) Game.spawns[spawner.name].spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
+    if (makeCreep) spawner.spawnCreep(parts, CONST.ROLE_SCOUT + Game.time,
     {
       memory:
       {

@@ -3,6 +3,60 @@ var util = require('util');
 const CONST = require('CONSTANTS');
 var cacheFind = require('cacheFind');
 
+function moveEnergyTo(creep, target, revertIfEmpty)
+{
+  //optional parameter
+  if (typeof revertIfEmpty === 'undefined')
+  {
+    revertIfEmpty = false;
+  }
+
+  var err = creep.transfer(target, RESOURCE_ENERGY);
+  if (err == ERR_NOT_IN_RANGE)
+  {
+    util.moveToNonWalkable(creep, target);
+  }
+  else if (err == ERR_INVALID_TARGET)
+  {
+    console.log("Trying to move energy to an invalid target " + target);
+    creep.memory.targetID = -1;
+  }
+  else if (err == ERR_FULL)
+  {
+    creep.memory.targetID = -1;
+  }
+  else if (err == OK)
+  {
+    var creepEnergy = creep.carry[RESOURCE_ENERGY];
+    var targetSpace = -1;
+    switch (target.structureType)
+    {
+    case STRUCTURE_SPAWN:
+    case STRUCTURE_EXTENSION:
+    case STRUCTURE_TOWER:
+      targetSpace = target.energyCapacity - target.energy;
+      break;
+
+    case STRUCTURE_STORAGE:
+    case STRUCTURE_CONTAINER:
+      targetSpace = target.storeCapacity - _.sum(target.store);
+      break;
+    }
+
+    if (creepEnergy >= targetSpace)
+    {
+      creep.memory.targetID = -1;
+    }
+    //if creep will be empty after this transfer
+    if ((creepEnergy <= targetSpace) && revertIfEmpty)
+    {
+      creep.memory.task = creep.memory.role;
+      creep.memory.targetID = -1;
+    }
+  }
+  return err;
+}
+
 var taskFillBaseUtil = {
   fillTowersAndStructures: function (creep, room)
   {
@@ -33,7 +87,7 @@ var taskFillBaseUtil = {
     if (baseToFill)
     {
       creep.memory.targetID = baseToFill.id;
-      util.moveEnergyTo(creep, baseToFill, true);
+      moveEnergyTo(creep, baseToFill, true);
       return true;
     }
 
@@ -45,18 +99,18 @@ var taskFillBaseUtil = {
     {
       var rand = Math.floor(Math.random() * towersToFill.length);
       creep.memory.targetID = towersToFill[rand].id;
-      util.moveEnergyTo(creep, towersToFill[rand], true);
+      moveEnergyTo(creep, towersToFill[rand], true);
       return true;
     }
 
 
 
-    var containersToFill = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSTOFILL, room);
+    var containersToFill = cacheFind.findCached(CONST.CACHEFIND_ENERGYCONTAINERSTOFILL, room);
     if (containersToFill.length > 0)
     {
       var rand = Math.floor(Math.random() * containersToFill.length);
       creep.memory.targetID = containersToFill[rand].id;
-      util.moveEnergyTo(creep, containersToFill[rand], true);
+      moveEnergyTo(creep, containersToFill[rand], true);
       return true;
     }
 
@@ -82,7 +136,7 @@ var taskFillBase = {
       if (creep.memory.targetID != -1)
       {
         var target = Game.getObjectById(creep.memory.targetID);
-        var err = util.moveEnergyTo(creep, target, true);
+        var err = moveEnergyTo(creep, target, true);
         return;
 
       }
@@ -96,10 +150,7 @@ var taskFillBase = {
           var flag = Game.flags[creep.memory.homeRoom + "idle"];
           if (flag != undefined && flag != null)
           {
-            creep.moveTo(flag,
-            {
-              reusePath: 50
-            });
+            util.moveToWalkable(creep, flag, 50);
           }
 
         }

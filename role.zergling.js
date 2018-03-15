@@ -21,10 +21,7 @@ var roleZergling = {
         var target = Game.flags[creep.memory.roomFlag];
         if (target != undefined)
         {
-          creep.moveTo(target,
-          {
-            reusePath: 10
-          });
+          util.moveToWalkable(creep, target, 10);
         }
       }
       return;
@@ -50,7 +47,10 @@ var roleZergling = {
 
     if (hostiles.length > 0)
     {
-      creep.memory.targetID = hostiles[Math.floor(Math.random() * hostiles.length)].id;
+      let rand = Math.floor(Math.random() * hostiles.length);
+      creep.memory.targetID = hostiles[rand].id;
+      creep.memory.targetLastX = hostiles[rand].pos.x;
+      creep.memory.targetLastY = hostiles[rand].pos.y;
       creep.memory.task = CONST.TASK_KILL;
       return;
     }
@@ -58,6 +58,7 @@ var roleZergling = {
     {
       creep.memory.targetID = -1;
       creep.memory.task = CONST.TASK_IDLE;
+      creep.memory.atIdleSpot = false;
       creep.memory.workRoom = creep.memory.homeRoom;
       //creep.suicide();
     }
