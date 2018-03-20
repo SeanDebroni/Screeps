@@ -40,6 +40,8 @@ module.exports = {
     let maxRepairmen = repairBlueprint.maxCreeps;
     let maxLevel = repairBlueprint.maxLevel;
 
+    let makeExtra = repairBlueprint.makeExtra;
+
     if (forceMake)
     {
       maxRepairmen = 10;
@@ -48,7 +50,7 @@ module.exports = {
 
     if (maxRepairmen == 0) return true;
 
-    var repairmen = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_REPAIRMAN)));
+    var repairmen = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && creep.memory.role === CONST.ROLE_REPAIRMAN && (creep.ticksToLive > 75 || creep.ticksToLive == undefined)));
 
     if (repairmen.length < maxRepairmen)
     {
@@ -63,6 +65,13 @@ module.exports = {
       {
         return false;
       }
+    }
+    else if (makeExtra)
+    {
+      var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom), (struct) => (struct.structureType != STRUCTURE_WALL && struct.structureType != STRUCTURE_RAMPART));
+      let damage = _.sum(damagedStructures, (struct) => (struct.hitsMax - struct.hits));
+      let amountCanRepair = (((50 + Math.floor(maxLevel / 3) * 50)) * 100) * repairmen.length;
+
     }
     return true;
   },
@@ -136,6 +145,54 @@ module.exports = {
     return true;
 
   },
+  spawnClaimer: function (blueprint, spawner, workRoom)
+  {
+    let claimerBlueprint = blueprint.ROLE_CLAIMER;
+    let maxClaimers = claimerBlueprint.maxCreeps;
+    if (maxClaimers == 0) return true;
+
+    if (workRoom.controller.level > 0) return true;
+
+    let claimers = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && (creep.memory.role === CONST.ROLE_CLAIMER)));
+
+    if (claimers.length < maxClaimers)
+    {
+      let mem = {};
+      mem.role = CONST.ROLE_CLAIMER;
+      let res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, claimerBlueprint.blueprint, mem, claimerBlueprint.maxLevel, true);
+      if (res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+
+  },
+  spawnEnergyTransferer: function (blueprint, spawner, workRoom, maxCreeps, terminal)
+  {
+    let energyTransfererBlueprint = blueprint.ROLE_ENERGYTRANSFERER;
+    let maxEnergyTransferers = maxCreeps;
+    if (maxEnergyTransferers == 0) return true;
+    let maxLevel = energyTransfererBlueprint.maxLevel;
+
+    let energyTransferers = _.filter(Game.creeps, (creep) => (creep.memory.homeRoom == workRoom.name && (creep.memory.role === CONST.ROLE_ENERGYTRANSFERER)));
+    if (energyTransferers.length < maxEnergyTransferers)
+    {
+      let mem = {};
+      mem.role = CONST.ROLE_ENERGYTRANSFERER;
+      mem.workRoom = spawner.room.name;
+      mem.homeRoom = workRoom.name;
+      mem.structureToDrawFromID = terminal.id;
+
+      let res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, energyTransfererBlueprint.blueprint, mem, maxLevel, true);
+      if (res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+
+  },
   spawnScout: function (spawner, workRoom, maxScouts, flagTarget)
   {
     if (maxScouts == 0) return true;
@@ -196,16 +253,26 @@ module.exports = {
     return true;
 
   },
-  spawnUpgrader: function (blueprint, spawner, workRoom, criticalOnly)
+  spawnUpgrader: function (blueprint, spawner, workRoom, criticalOnly, maxToMake)
   {
     let upgraderBlueprint = blueprint.ROLE_UPGRADER;
     let makeExtra = upgraderBlueprint.addExtraIfHaveEnergy;
-    let maxUpgraders = upgraderBlueprint.maxCreeps;
+    let maxUpgraders = 0;
+    if (maxToMake == undefined)
+    {
+      maxUpgraders = upgraderBlueprint.maxCreeps;
+    }
+    else
+    {
+      maxUpgraders = maxToMake;
+    }
 
     let mem = {};
     mem.role = CONST.ROLE_UPGRADER;
+    mem.workRoom = workRoom.name;
+    mem.homeRoom = workRoom.name;
 
-    if (spawner.room != workRoom) maxUpgraders = 0;
+    //if (spawner.room != workRoom) maxUpgraders = 0;
 
     if (maxUpgraders == 0) return true;
 
@@ -373,7 +440,7 @@ module.exports = {
       droppedSum = droppedSum + droppedEnergy[i].amount;
     }
 
-    if (spawner.room.name != workRoom.name)
+    if (spawner.room.name != workRoom.name && (workRoom.storage == undefined || workRoom.storage == null))
     {
       let containerSum = cacheFind.findCached(CONST.CACHEFIND_GETSTOREDENERGY, workRoom);
       droppedSum = droppedSum + (containerSum * 0.7);

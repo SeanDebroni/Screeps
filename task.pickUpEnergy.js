@@ -30,11 +30,17 @@ var taskPickUpEnergy = {
         return;
       }*/
     var target = Game.getObjectById(creep.memory.targetID);
-    if (target == undefined || target == null)
+    if ((target == undefined || target == null) && creep.room.name != creep.memory.workRoom)
     {
       creep.memory.task = creep.memory.role;
       util.moveToRoom(creep, creep.memory.workRoom);
       return;
+    }
+    else if (target == undefined || target == null)
+    {
+      creep.memory.task = creep.memory.role;
+      return;
+
     }
     var result = pickupEnergyFrom(creep, target);
     if (result == OK || result == ERR_FULL)
@@ -47,7 +53,6 @@ var taskPickUpEnergy = {
       {
         creep.memory.task = creep.memory.role;
       }
-      util.moveToRoom(creep, creep.memory.workRoom);
     }
 
   }

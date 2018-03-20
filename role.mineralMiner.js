@@ -6,6 +6,16 @@ var roleMineralMiner = {
   {
     if (_.sum(creep.carry) == 0)
     {
+      let timeThreshold = Math.floor(creep.carryCapacity / (creep.memory.lvl / 2)) * 5 + 60;
+      console.log("!!!");
+      console.log(timeThreshold);
+      if (creep.ticksToLive < timeThreshold)
+      {
+        creep.memory.targetID = -1;
+        creep.memory.role = CONST.TASK_RECYCLE;
+        creep.memory.task = CONST.TASK_RECYCLE;
+        return;
+      }
       creep.memory.task = CONST.TASK_MINEMINERAL;
       return;
     }
@@ -19,7 +29,14 @@ var roleMineralMiner = {
         creep.memory.targetID = -1;
         return;
       }
-      var toFill = room.terminal;
+      var toFill = undefined;
+      if (room.terminal)
+      {
+        if (_.sum(room.terminal.store) - room.terminal.store[RESOURCE_ENERGY] < 150000)
+        {
+          toFill = room.terminal;
+        }
+      }
       if (toFill == undefined)
       {
         toFill = room.storage;

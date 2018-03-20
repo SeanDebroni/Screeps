@@ -15,7 +15,6 @@ var roleRepairman = {
       creep.memory.task = CONST.TASK_FILLFROMBASE;
       return;
     }
-    var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
 
     //containers first
     if (creep.memory.workRoom != creep.memory.homeRoom)
@@ -23,7 +22,7 @@ var roleRepairman = {
       var containers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.workRoom]);
       for (var i = 0; i < containers.length; ++i)
       {
-        if (containers[i].hits < containers[i].hitsMax * 0.8)
+        if (containers[i].hits < containers[i].hitsMax * 0.7)
         {
           creep.memory.targetID = containers[i].id;
           creep.memory.task = CONST.TASK_REPAIR;
@@ -31,10 +30,31 @@ var roleRepairman = {
         }
       }
     }
+    var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
+
     //if there is something to repair, repair it.
     if (damagedStructures.length > 0)
     {
-      creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+      if (creep.memory.homeRoom != creep.memory.workRoom && creep.room.name == creep.memory.workRoom)
+      {
+        let min = 1000;
+        let targ = -1;
+        for (let i = 0; i < damagedStructures.length; ++i)
+        {
+          let dist = creep.pos.getRangeTo(damagedStructures[i]);
+          if (dist < min)
+          {
+            targ = i;
+            min = dist;
+          }
+          if (min < 8) break;
+        }
+        creep.memory.targetID = damagedStructures[targ].id;
+      }
+      else
+      {
+        creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+      }
       creep.memory.task = CONST.TASK_REPAIR;
       return;
     }

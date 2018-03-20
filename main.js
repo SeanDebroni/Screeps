@@ -14,6 +14,7 @@ var roleBaseHealer = require('role.baseHealer');
 var roleUpgradeDancer = require('role.upgradeDancer');
 var roleEnergyTransferer = require('role.energyTransferer');
 var roleMineralMiner = require('role.mineralMiner');
+var roleClaimer = require('role.claimer');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -42,32 +43,23 @@ var intelligentSpawner = require('intelligentSpawner');
 var roomControllerLogic = require('roomControllerLogic');
 var util = require('util');
 var roadMaintainer = require('roadMaintainer');
+var terminalLogic = require('terminalLogic');
 
 var cacheFind = require('cacheFind');
 var cachedGetDistance = require('cachedGetDistance');
 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 
-//Credit to warinternal from screeps slack for this code
-//  lab recipes
-/*global.RECIPES = {};
-for (var a in REACTIONS)
-{
-  for (var b in REACTIONS[a])
-  {
-    RECIPES[REACTIONS[a][b]] = [a, b];
-  }
-}*/
-
-
+let gTaskAvg = {};
+let gTaskNum = {};
 let codeAge = 0;
 let manualGC = 0;
 module.exports.loop = function ()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-  let z = Object.keys(global);
-  console.log(z.length);
 
+  //let z = Object.keys(global);
+  //console.log(z.length);
 
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
@@ -154,11 +146,24 @@ module.exports.loop = function ()
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
-  //var roleTimes = {};
+  for (var i = 0; i < allRoomControllersKeys.length; ++i)
+  {
+    var roomController = allRoomControllers[allRoomControllersKeys[i]];
+    terminalLogic.update(roomController, allRoomControllersKeys[i]);
+  }
+  terminalLogic.doPowerLevelEnergyBalance();
+  terminalLogic.doSellMinerals();
+
+  cpuUsedNew = Game.cpu.getUsed();
+  console.log("CPU used for terminalLogic: " + (cpuUsedNew - cpuUsedOld));
+  cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
+  cpuUsedOld = cpuUsedNew;
+
+  //  var roleTimes = {};
   //var roleNums = {};
   for (var name in Game.creeps)
   {
-    //let roleStart = Game.cpu.getUsed();
+    let roleStart = Game.cpu.getUsed();
 
     var creep = Game.creeps[name];
     switch (creep.memory.task)
@@ -202,10 +207,14 @@ module.exports.loop = function ()
     case CONST.ROLE_ENERGYTRANSFERER:
       roleEnergyTransferer.run(creep);
       break;
+    case CONST.ROLE_CLAIMER:
+      roleClaimer.run(creep);
+      break;
     default:
       break;
     }
-    /*let roleEnd = Game.cpu.getUsed();
+    /*
+    let roleEnd = Game.cpu.getUsed();
     let role = creep.memory.task;
     if (roleNums[role] != undefined)
     {
@@ -225,12 +234,21 @@ module.exports.loop = function ()
   cpuUsedOld = cpuUsedNew;
   var taskTimes = {};
   var taskNums = {};
+  let taskEnd;
+  let taskStart;
   for (var name in Game.creeps)
   {
-    let taskStart = Game.cpu.getUsed();
+    taskStart = Game.cpu.getUsed();
     var creep = Game.creeps[name];
     var isTask = true;
     let task = creep.memory.task;
+    if (task == undefined)
+    {
+      console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+      console.log(creep.name);
+      console.log(creep.memory.role);
+      console.log(creep.memory.workRoom);
+    }
     switch (creep.memory.task)
     {
     case CONST.TASK_FILLTARGETSTRUCTURE:
@@ -302,7 +320,7 @@ module.exports.loop = function ()
     }
     if (isTask)
     {
-      let taskEnd = Game.cpu.getUsed();
+      taskEnd = Game.cpu.getUsed();
       if (taskNums[task] != undefined)
       {
         taskTimes[task] = taskTimes[task] + (taskEnd - taskStart);
@@ -316,21 +334,38 @@ module.exports.loop = function ()
     }
   }
   cachedGetDistance.cachedGetDistanceSave();
-
-  ////console.log("Time for task " + creep.memory.task + ": " + (taskEnd - taskStart));
   /*let debugKeysR = Object.keys(roleTimes);
   for (let i = 0; i < debugKeysR.length; ++i)
   {
-    //console.log("Time Average for role " + debugKeysR[i] + ": " + (roleTimes[debugKeysR[i]] / roleNums[debugKeysR[i]])
-      //.toFixed(3));
+    console.log("Time Average for role " + debugKeysR[i] + ": " + (roleTimes[debugKeysR[i]] / roleNums[debugKeysR[i]])
+      .toFixed(3));
   }*/
-  /*let debugKeys = Object.keys(taskTimes);
-  for (let i = 0; i < debugKeys.length; ++i)
-  {
-    //console.log("Time Average|Sum for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
-    //.toFixed(3) + "|" + (taskTimes[debugKeys[i]])
-    //.toFixed(3));
-  }*/
+  /*  let debugKeys = Object.keys(taskTimes);
+    for (let i = 0; i < debugKeys.length; ++i)
+    {
+      if (gTaskAvg[debugKeys[i]] == undefined)
+      {
+        gTaskAvg[debugKeys[i]] = taskTimes[debugKeys[i]] / taskNums[debugKeys[i]];
+        gTaskNum[debugKeys[i]] = taskNums[debugKeys[i]];
+      }
+      else
+      {
+        gTaskAvg[debugKeys[i]] = ((gTaskAvg[debugKeys[i]] * gTaskNum[debugKeys[i]]) + taskTimes[debugKeys[i]]) / (gTaskNum[debugKeys[i]] + taskNums[debugKeys[i]]);
+        gTaskNum[debugKeys[i]] = gTaskNum[debugKeys[i]] + taskNums[debugKeys[i]];
+      }
+
+
+      console.log("Time Average|Sum for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
+        .toFixed(3) + "|" + (taskTimes[debugKeys[i]])
+        .toFixed(3));
+    }
+
+    for (let i = 0; i < debugKeys.length; ++i)
+    {
+      console.log("global Time Average|Sum for task " + debugKeys[i] + ": " + (gTaskAvg[debugKeys[i]])
+        .toFixed(3) + "|" + (gTaskNum[debugKeys[i]] * gTaskAvg[debugKeys[i]])
+        .toFixed(3));
+    }*/
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)
     .toFixed(3));

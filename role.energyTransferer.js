@@ -16,7 +16,7 @@ var roleEnergyTransferer = {
   {
     if (creep.carry.energy < creep.carryCapacity)
     {
-      creep.memory.targetID = creep.memory.structureToDrawFrom;
+      creep.memory.targetID = creep.memory.structureToDrawFromID;
       creep.memory.fillResourceType = RESOURCE_ENERGY;
       creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
     }

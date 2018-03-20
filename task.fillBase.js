@@ -14,7 +14,7 @@ function moveEnergyTo(creep, target, revertIfEmpty)
   var err = creep.transfer(target, RESOURCE_ENERGY);
   if (err == ERR_NOT_IN_RANGE)
   {
-    util.moveToNonWalkable(creep, target);
+    util.moveToNonWalkable(creep, target, 5);
   }
   else if (err == ERR_INVALID_TARGET)
   {

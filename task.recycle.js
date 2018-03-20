@@ -6,18 +6,9 @@ var util = require('util');
 var taskRecycle = {
   run: function (creep)
   {
-    if (creep.memory.targetID != -1)
+    if (creep.memory.targetID != -1 && creep.memory.targetID != undefined)
     {
-      var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, util.getHomeRoom(creep));
-      if (spawns.length > 0)
-      {
-        creep.memory.targetID = spawns[0].id;
-      }
-      else
-      {
-        console.log("FIX YOUR DAMN RECYCLE CODE SO YOU CAN RECYCLE TO OTHER ROOMS");
-      }
-      if (creep == null || Game.getObjectById(creep.memory.targetID) == null)
+      if (Game.getObjectById(creep.memory.targetID) == null)
       {
         console.log("something darned fucked up with target of spawn");
         return;
@@ -26,8 +17,7 @@ var taskRecycle = {
 
       var posSpawner = Game.getObjectById(creep.memory.targetID)
         .pos;
-      if (posCreep.x - posSpawner.x >= -1 && posCreep.x - posSpawner.x <= 1 && posCreep.y - posSpawner.y >= -1 && posCreep.y - posSpawner.y <= 1 && creep.room.name == Game.getObjectById(creep.memory.targetID)
-        .room.name)
+      if (posCreep.isNearTo(posSpawner))
       {
         creep.memory.task = CONST.TASK_WAITINGTOBERECYCLED;
       }
@@ -43,6 +33,7 @@ var taskRecycle = {
       if (spawns.length > 0)
       {
         creep.memory.targetID = spawns[0].id;
+        util.moveToNonWalkable(creep, spawns[0]);
       }
     }
   }

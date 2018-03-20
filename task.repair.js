@@ -1,5 +1,5 @@
 'use strict';
-
+var util = require('util');
 var taskRepair = {
   run: function (creep)
   {
@@ -26,11 +26,19 @@ var taskRepair = {
     var err = creep.repair(target);
     if (err == ERR_NOT_IN_RANGE)
     {
-      creep.moveTo(target,
+      if (creep.room.name != target.room.name)
       {
-        reusePath: 5,
-        range: 3
-      });
+        util.moveToWalkable(creep, target, 17);
+      }
+      else
+      {
+        creep.moveTo(target,
+        {
+          reusePath: 5,
+          range: 3
+        });
+      }
+
     }
     else if (err == ERR_NOT_ENOUGH_RESOURCES || err == ERR_INVALID_TARGET || err == ERR_RCL_NOT_ENOUGH)
     {

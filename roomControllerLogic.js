@@ -5,6 +5,7 @@ var cacheFind = require("cacheFind");
 const CONST = require('CONSTANTS');
 const BLUEPRINTS = require("BLUEPRINTS");
 var roadBuilder = require('roadBuilder');
+var terminalLogic = require('terminalLogic');
 
 let roomControllers = [];
 let savedFlagLength = 0;
@@ -264,9 +265,12 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
       {
         var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
 
-        for (var v = 0; v < nonCombat.length; ++v)
+        if (!(extRoom.controller.level > 0))
         {
-          nonCombat[v].memory.task = CONST.TASK_FLEE;
+          for (var v = 0; v < nonCombat.length; ++v)
+          {
+            nonCombat[v].memory.task = CONST.TASK_FLEE;
+          }
         }
 
         didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1, false);
@@ -301,9 +305,12 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
         }
         if (isDangerous)
         {
-          for (var v = 0; v < nonCombat.length; ++v)
+          if (!(extRoom.controller.level > 0))
           {
-            nonCombat[v].memory.task = CONST.TASK_FLEE;
+            for (var v = 0; v < nonCombat.length; ++v)
+            {
+              nonCombat[v].memory.task = CONST.TASK_FLEE;
+            }
           }
           didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
           if (!didntMakeCreep) curSpawn = curSpawn + 1;
@@ -328,7 +335,6 @@ function runOuterDefenseRoom(outerRoom, mainRoom, notBusySpawns, curSpawn)
     {
       if (util.isDangerousCreep(hostileCreeps[i]))
       {
-        console.log('here');
         didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], outerRoom, 2, true);
         if (!didntMakeCreep) curSpawn = curSpawn + 1;
         if (curSpawn >= notBusySpawns.length) return curSpawn;
@@ -369,6 +375,68 @@ function runExtensionRoomPriorityReservers(extRoom, mainRoom, notBusySpawns, cur
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
   return curSpawn;
+}
+
+function runPowerlevelRoomPriorityZero(notBusySpawns, plRoom, curSpawn)
+{
+  let blueprint = BLUEPRINTS.RCL_ALL_PL_CREEP;
+
+  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], plRoom);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
+  return curSpawn;
+
+}
+
+function runPowerlevelRoomPriorityOne(notBusySpawns, plRoom, curSpawn)
+{
+  let blueprint = BLUEPRINTS.RCL_ALL_PL_CREEP;
+
+  let terminal = Game.getObjectById("5aa8b4592bf1663e2e9ca552");
+
+  let spareEnergy = terminalLogic.getSpareEnergy();
+  if (plRoom.storage && plRoom.storage.isActive())
+  {
+    console.log(plRoom.storage.store[RESOURCE_ENERGY]);
+    spareEnergy = plRoom.storage.store[RESOURCE_ENERGY] + spareEnergy;
+  }
+  let didntMakeCreep;
+  let maxUpgraders = Math.floor(spareEnergy / 44000);
+  console.log("SPARE: " + spareEnergy);
+  console.log(maxUpgraders);
+
+  if (terminal.store[RESOURCE_ENERGY] > 45000)
+  {
+    didntMakeCreep = intelligentSpawner.spawnEnergyTransferer(blueprint, notBusySpawns[curSpawn], plRoom, maxUpgraders, terminal);
+    if (!didntMakeCreep) curSpawn = curSpawn + 1;
+    if (curSpawn >= notBusySpawns.length) return curSpawn;
+  }
+  didntMakeCreep = intelligentSpawner.spawnUpgrader(blueprint, notBusySpawns[curSpawn], plRoom, false, maxUpgraders);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
+
+  return curSpawn;
+
+
+}
+
+function runPowerlevelRoomPriorityTwo(notBusySpawns, plRoom, curSpawn)
+{
+  let blueprint = BLUEPRINTS.RCL_ALL_PL_CREEP;
+
+  let didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], plRoom, false);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
+  didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], plRoom, false);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
+  return curSpawn;
+
+
 }
 //Upgraders + builders + repairers + ???
 function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
@@ -439,7 +507,7 @@ module.exports = {
         roomControllers[splitFlag[1]] = rc;
       }
     }
-    console.log(Object.keys(roomControllers));
+    //console.log(Object.keys(roomControllers));
     return roomControllers;
 
 
@@ -459,7 +527,7 @@ module.exports = {
 
     if (didNothingLast > 0)
     {
-      console.log(rcName + " " + didNothingLast);
+      //  console.log(rcName + " " + didNothingLast);
       didNothingLastTick[rcName] = didNothingLast - 1;
       return;
     }
@@ -566,6 +634,12 @@ module.exports = {
       if (curSpawn >= notBusySpawns.length) return;
     }
 
+    for (let i = 0; i < powerlevelRooms.length; ++i)
+    {
+      curSpawn = runPowerlevelRoomPriorityZero(notBusySpawns, powerlevelRooms[i], curSpawn);
+      if (curSpawn >= notBusySpawns.length) return;
+    }
+
     //run outer warning rooms
     for (let i = 0; i < outerWarningRooms.length; ++i)
     {
@@ -582,6 +656,12 @@ module.exports = {
     {
 
       curSpawn = runExtensionRoomPriorityOne(extensionRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
+      if (curSpawn >= notBusySpawns.length) return;
+    }
+
+    for (let i = 0; i < powerlevelRooms.length; ++i)
+    {
+      curSpawn = runPowerlevelRoomPriorityOne(notBusySpawns, powerlevelRooms[i], curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
 
@@ -620,6 +700,12 @@ module.exports = {
     for (let i = 0; i < colonyRooms.length; ++i)
     {
       curSpawn = runColonyRoomPriorityTwo(colonyRooms[i], mainBaseRoom, notBusySpawns, curSpawn);
+      if (curSpawn >= notBusySpawns.length) return;
+    }
+
+    for (let i = 0; i < powerlevelRooms.length; ++i)
+    {
+      curSpawn = runPowerlevelRoomPriorityTwo(notBusySpawns, powerlevelRooms[i], curSpawn);
       if (curSpawn >= notBusySpawns.length) return;
     }
 
