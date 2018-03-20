@@ -11,7 +11,7 @@ let globalTerminals = {};
 let sellMineralsTimer = 500;
 let PRICES = {
   "H": 0.325,
-  "O": 0.075,
+  "O": 0.085,
   "U": 0.25,
   "L": 0.21,
   "K": 0.26
