@@ -122,11 +122,12 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
-  let didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], colonyRoom, false);
+
+  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], colonyRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
-  didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], colonyRoom);
+  didntMakeCreep = intelligentSpawner.spawnColonist(blueprint, notBusySpawns[curSpawn], colonyRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 

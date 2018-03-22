@@ -1,0 +1,49 @@
+'use strict';
+var CONST = require("CONSTANTS");
+var util = require("util");
+var cacheFind = require("cacheFind");
+
+
+var roleColonist = {
+  run: function (creep)
+  {
+    //if not in work room, move to work room.
+    if (creep.room.name != creep.memory.workRoom)
+    {
+      util.moveToRoom(creep, creep.memory.workRoom);
+      return;
+    }
+
+    let room = creep.room;
+
+    //If at low energy, find a source with energy, and mine from it until full or no sources with energy.
+    // the 5 is mostly for upgrade room reuse
+    if (creep.carry[RESOURCE_ENERGY] <= 5)
+    {
+      let sources = _.filter(cacheFind.findCached(CONST.CACHEFIND_SOURCES, room), (source) => (source.energy > creep.carryCapacity));
+
+      if (sources.length > 0)
+      {
+        creep.memory.targetID = sources[0].id;
+        creep.memory.task = CONST.TASK_TEMPMINEENERGY;
+        return;
+      }
+
+      //if at > 0 energy, find a construction site, and build it.
+      let constructionSites = cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, room);
+      if (constructionSites.length > 0)
+      {
+        creep.memory.targetID = constructionSites[0].id;
+        creep.memory.task = CONST.TASK_BUILD;
+        return;
+      }
+
+      //if no construction sites, upgrade the room.
+      creep.memory.task = CONST.TASK_UPGRADEROOM;
+      return;
+
+    }
+
+  }
+}
+module.exports = roleColonist;

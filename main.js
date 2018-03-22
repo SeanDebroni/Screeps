@@ -15,6 +15,7 @@ var roleUpgradeDancer = require('role.upgradeDancer');
 var roleEnergyTransferer = require('role.energyTransferer');
 var roleMineralMiner = require('role.mineralMiner');
 var roleClaimer = require('role.claimer');
+var roleColonist = require('role.colonist');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -37,6 +38,7 @@ var taskFlee = require('task.flee');
 var taskUpgradeDance = require('task.upgradeDance');
 var taskMineMineral = require('task.mineMineral');
 var taskFillTargetStructure = require('task.fillTargetStructure');
+var taskTempMineEnergy = require('task.tempMineEnergy');
 
 var towerLogic = require('towerLogic');
 var intelligentSpawner = require('intelligentSpawner');
@@ -168,6 +170,9 @@ module.exports.loop = function ()
     var creep = Game.creeps[name];
     switch (creep.memory.task)
     {
+    case CONST.ROLE_COLONIST:
+      roleColonist.run(creep);
+      break;
     case CONST.ROLE_MINERALMINER:
       roleMineralMiner.run(creep);
       break;
@@ -251,6 +256,9 @@ module.exports.loop = function ()
     }
     switch (creep.memory.task)
     {
+    case CONST.TASK_TEMPMINEENERGY:
+      taskTempMineEnergy.run(creep);
+      break;
     case CONST.TASK_FILLTARGETSTRUCTURE:
       taskFillTargetStructure.run(creep);
       break;

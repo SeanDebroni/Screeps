@@ -33,7 +33,30 @@ module.exports = {
     }
     return true;
   },
+  spawnColonist: function (blueprint, spawner, workRoom)
+  {
+    let colonistBlueprint = blueprint.ROLE_COLONIST;
+    let maxColonists = colonistBlueprint.maxCreeps;
+    let maxLevel = colonistBlueprint.maxLevel;
 
+    if (maxColonist == 0) return true;
+
+    var colonists = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom && creep.memory.role === CONST.ROLE_COLONIST));
+
+    if (colonists.length < maxColonists)
+    {
+      var mem = {};
+      mem.role = CONST.ROLE_REPAIRMAN;
+
+      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, colonistBlueprint.blueprint, mem, maxLevel, true);
+      if (res != -1)
+      {
+        return false;
+      }
+    }
+    return true;
+
+  },
   spawnRepairman: function (blueprint, spawner, workRoom, forceMake)
   {
     let repairBlueprint = blueprint.ROLE_REPAIRMAN;
@@ -60,7 +83,7 @@ module.exports = {
 
       var mem = {};
       mem.role = CONST.ROLE_REPAIRMAN;
-      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, repairBlueprint.blueprint, mem, repairBlueprint.maxLevel, true);
+      var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, repairBlueprint.blueprint, mem, maxLevel, true);
       if (res != -1)
       {
         return false;
@@ -68,9 +91,10 @@ module.exports = {
     }
     else if (makeExtra)
     {
+      /*
       var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom), (struct) => (struct.structureType != STRUCTURE_WALL && struct.structureType != STRUCTURE_RAMPART));
       let damage = _.sum(damagedStructures, (struct) => (struct.hitsMax - struct.hits));
-      let amountCanRepair = (((50 + Math.floor(maxLevel / 3) * 50)) * 100) * repairmen.length;
+      let amountCanRepair = (((50 + Math.floor(maxLevel / 3) * 50)) * 100) * repairmen.length;*/
 
     }
     return true;

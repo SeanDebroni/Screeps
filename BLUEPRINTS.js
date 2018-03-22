@@ -1315,8 +1315,8 @@ const RCL_EIGHT_EXT_CREEP = {
   ROLE_BUILDER:
   {
     upgradeCreeps: true,
-    maxCreeps: 2,
-    maxLevel: 50,
+    maxCreeps: 1,
+    maxLevel: 25,
     blueprint:
     {
       base: [MOVE, CARRY, WORK],
@@ -1367,6 +1367,17 @@ const RCL_EIGHT_EXT_CREEP = {
   }
 };
 const RCL_ALL_COL_CREEP = {
+  ROLE_COLONIST:
+  {
+    maxCreeps: 4,
+    maxLevel: 50,
+    blueprint:
+    {
+      base: [MOVE, MOVE, WORK, CARRY],
+      levelUp: [MOVE, MOVE, WORK, CARRY]
+    }
+
+  },
   ROLE_RESERVER:
   {
     maxCreeps: 1,
