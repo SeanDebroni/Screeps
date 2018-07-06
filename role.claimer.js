@@ -23,8 +23,11 @@ var roleClaimer = {
 
     //Try to claim controller.
     var err = creep.claimController(controller);
+    console.log(err);
+    console.log(creep.room.name);
+
     //If out of range, move to it.
-    if (err == ERR_NOT_IN_RANGE)
+    if (err == ERR_NOT_IN_RANGE || err == ERR_GCL_NOT_ENOUGH)
     {
       util.moveToNonWalkable(creep, util.getWorkRoom(creep)
         .controller);

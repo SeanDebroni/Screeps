@@ -1,6 +1,8 @@
 'use strict';
 const CONST = require('CONSTANTS');
 
+var mp = require('monkeypatch');
+
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
@@ -49,19 +51,18 @@ var terminalLogic = require('terminalLogic');
 
 var cacheFind = require('cacheFind');
 var cachedGetDistance = require('cachedGetDistance');
-console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 let gTaskAvg = {};
 let gTaskNum = {};
 let codeAge = 0;
 let manualGC = 0;
-module.exports.loop = function ()
+
+
+module.exports.loop = function()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-  //let z = Object.keys(global);
-  //console.log(z.length);
 
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
@@ -76,35 +77,6 @@ module.exports.loop = function ()
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
 
-
-  /*
-    var cenU = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_UPGRADER)));
-    var cenB = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_BUILDER)));
-    var cenH = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HAULER)));
-    var cenHarv = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_HARVESTER)));
-    var cenZerg = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_ZERGLING)));
-    var cenScout = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_SCOUT)));
-    var cenR = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_REPAIRMAN)));
-    var cenRes = _.filter(Game.creeps, (creep) => ((creep.memory.role === CONST.ROLE_RESERVER)));
-    var cenOther = _.filter(Game.creeps, (creep) => ((creep.memory.role != CONST.ROLE_RESERVER &&
-      creep.memory.role != CONST.ROLE_REPAIRMAN &&
-      creep.memory.role != CONST.ROLE_SCOUT &&
-      creep.memory.role != CONST.ROLE_ZERGLING &&
-      creep.memory.role != CONST.ROLE_HARVESTER &&
-      creep.memory.role != CONST.ROLE_HAULER &&
-      creep.memory.role != CONST.ROLE_BUILDER &&
-      creep.memory.role != CONST.ROLE_UPGRADER
-    )));
-    console.log("sum : " + (cenOther.length + cenHarv.length + cenU.length + cenB.length + cenH.length + cenZerg.length + cenScout.length + cenR.length + cenRes.length));
-    console.log("Num weird: " + cenOther.length);
-    console.log("Num Harvesters: " + cenHarv.length);
-    console.log("Num Upgraderss: " + cenU.length);
-    console.log("Num Builders: " + cenB.length);
-    console.log("Num Haulers: " + cenH.length);
-    console.log("Num Zerg: " + cenZerg.length);
-    console.log("Num Scout: " + cenScout.length);
-    console.log("Num Repairman: " + cenR.length);
-    console.log("num reser: " + cenRes.length);*/
 
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
@@ -161,8 +133,6 @@ module.exports.loop = function ()
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
 
-  //  var roleTimes = {};
-  //var roleNums = {};
   for (var name in Game.creeps)
   {
     let roleStart = Game.cpu.getUsed();
@@ -170,67 +140,54 @@ module.exports.loop = function ()
     var creep = Game.creeps[name];
     switch (creep.memory.task)
     {
-    case CONST.ROLE_COLONIST:
-      roleColonist.run(creep);
-      break;
-    case CONST.ROLE_MINERALMINER:
-      roleMineralMiner.run(creep);
-      break;
-    case CONST.ROLE_REPAIRMAN:
-      roleRepairman.run(creep);
-      break;
-    case CONST.ROLE_DISASSEMBLEFLAG:
-      roleDisassembleFlag.run(creep);
-      break;
-    case CONST.ROLE_HARVESTER:
-      roleHarvester.run(creep);
-      break;
-    case CONST.ROLE_UPGRADER:
-      roleUpgrader.run(creep);
-      break;
-    case CONST.ROLE_BUILDER:
-      roleBuilder.run(creep);
-      break;
-    case CONST.ROLE_HAULER:
-      roleHauler.run(creep);
-      break;
-    case CONST.ROLE_SCOUT:
-      roleScout.run(creep);
-      break;
-    case CONST.ROLE_RESERVER:
-      roleReserver.run(creep);
-      break;
-    case CONST.ROLE_ZERGLING:
-      roleZergling.run(creep);
-      break;
-    case CONST.ROLE_BASEHEALER:
-      roleBaseHealer.run(creep);
-      break;
-    case CONST.ROLE_UPGRADEDANCER:
-      roleUpgradeDancer.run(creep);
-      break;
-    case CONST.ROLE_ENERGYTRANSFERER:
-      roleEnergyTransferer.run(creep);
-      break;
-    case CONST.ROLE_CLAIMER:
-      roleClaimer.run(creep);
-      break;
-    default:
-      break;
+      case CONST.ROLE_COLONIST:
+        roleColonist.run(creep);
+        break;
+      case CONST.ROLE_MINERALMINER:
+        roleMineralMiner.run(creep);
+        break;
+      case CONST.ROLE_REPAIRMAN:
+        roleRepairman.run(creep);
+        break;
+      case CONST.ROLE_DISASSEMBLEFLAG:
+        roleDisassembleFlag.run(creep);
+        break;
+      case CONST.ROLE_HARVESTER:
+        roleHarvester.run(creep);
+        break;
+      case CONST.ROLE_UPGRADER:
+        roleUpgrader.run(creep);
+        break;
+      case CONST.ROLE_BUILDER:
+        roleBuilder.run(creep);
+        break;
+      case CONST.ROLE_HAULER:
+        roleHauler.run(creep);
+        break;
+      case CONST.ROLE_SCOUT:
+        roleScout.run(creep);
+        break;
+      case CONST.ROLE_RESERVER:
+        roleReserver.run(creep);
+        break;
+      case CONST.ROLE_ZERGLING:
+        roleZergling.run(creep);
+        break;
+      case CONST.ROLE_BASEHEALER:
+        roleBaseHealer.run(creep);
+        break;
+      case CONST.ROLE_UPGRADEDANCER:
+        roleUpgradeDancer.run(creep);
+        break;
+      case CONST.ROLE_ENERGYTRANSFERER:
+        roleEnergyTransferer.run(creep);
+        break;
+      case CONST.ROLE_CLAIMER:
+        roleClaimer.run(creep);
+        break;
+      default:
+        break;
     }
-    /*
-    let roleEnd = Game.cpu.getUsed();
-    let role = creep.memory.task;
-    if (roleNums[role] != undefined)
-    {
-      roleTimes[role] = roleTimes[role] + (roleEnd - roleStart);
-      roleNums[role] = roleNums[role] + 1;
-    }
-    else
-    {
-      roleTimes[role] = (roleEnd - roleStart);
-      roleNums[role] = 1;
-    }*/
   }
 
   cpuUsedNew = Game.cpu.getUsed();
@@ -256,75 +213,75 @@ module.exports.loop = function ()
     }
     switch (creep.memory.task)
     {
-    case CONST.TASK_TEMPMINEENERGY:
-      taskTempMineEnergy.run(creep);
-      break;
-    case CONST.TASK_FILLTARGETSTRUCTURE:
-      taskFillTargetStructure.run(creep);
-      break;
-    case CONST.TASK_MINEMINERAL:
-      taskMineMineral.run(creep);
-      break;
-    case CONST.TASK_REPAIR:
-      taskRepair.run(creep);
-      break;
-    case CONST.TASK_DISASSEMBLE:
-      taskDisassemble.run(creep);
-      break;
-    case CONST.TASK_KILL:
-      taskKill.run(creep);
-      break;
-    case CONST.TASK_FILLBASE:
-      taskFillBase.run(creep);
-      break;
-    case CONST.TASK_MINEENERGY:
-      taskMineEnergy.run(creep);
-      break;
-    case CONST.TASK_PICKUPENERGY:
-      taskPickUpEnergy.run(creep);
-      break;
-    case CONST.TASK_RECYCLE:
-      taskRecycle.run(creep);
-      break;
-    case CONST.TASK_WAITINGTOBERECYCLED:
-      taskWaitingToBeRecycled.run(creep);
-      break;
-    case CONST.TASK_SPAWNING:
-      taskSpawning.run(creep);
-      break;
-    case CONST.TASK_IDLE:
-      taskIdle.run(creep);
-      break;
-    case CONST.TASK_BUILD:
-      taskBuild.run(creep);
-      break;
-    case CONST.TASK_FILLFROMBASE:
-      taskFillFromBase.run(creep);
-      break;
-    case CONST.TASK_UPGRADEROOM:
-      taskUpgradeRoom.run(creep);
-      break;
-    case CONST.TASK_MOVETOTARGET:
-      taskMoveToTarget.run(creep);
-      break;
-    case CONST.TASK_RESERVE:
-      taskReserve.run(creep);
-      break;
-    case CONST.TASK_FILLFROMTARGETSTRUCTURE:
-      taskFillFromTargetStructure.run(creep);
-      break;
-    case CONST.TASK_HEALTARGET:
-      taskHealTarget.run(creep);
-      break;
-    case CONST.TASK_FLEE:
-      taskFlee.run(creep);
-      break;
-    case CONST.TASK_UPGRADEDANCE:
-      taskUpgradeDance.run(creep);
-      break;
-    default:
-      isTask = false;
-      break;
+      case CONST.TASK_TEMPMINEENERGY:
+        taskTempMineEnergy.run(creep);
+        break;
+      case CONST.TASK_FILLTARGETSTRUCTURE:
+        taskFillTargetStructure.run(creep);
+        break;
+      case CONST.TASK_MINEMINERAL:
+        taskMineMineral.run(creep);
+        break;
+      case CONST.TASK_REPAIR:
+        taskRepair.run(creep);
+        break;
+      case CONST.TASK_DISASSEMBLE:
+        taskDisassemble.run(creep);
+        break;
+      case CONST.TASK_KILL:
+        taskKill.run(creep);
+        break;
+      case CONST.TASK_FILLBASE:
+        taskFillBase.run(creep);
+        break;
+      case CONST.TASK_MINEENERGY:
+        taskMineEnergy.run(creep);
+        break;
+      case CONST.TASK_PICKUPENERGY:
+        taskPickUpEnergy.run(creep);
+        break;
+      case CONST.TASK_RECYCLE:
+        taskRecycle.run(creep);
+        break;
+      case CONST.TASK_WAITINGTOBERECYCLED:
+        taskWaitingToBeRecycled.run(creep);
+        break;
+      case CONST.TASK_SPAWNING:
+        taskSpawning.run(creep);
+        break;
+      case CONST.TASK_IDLE:
+        taskIdle.run(creep);
+        break;
+      case CONST.TASK_BUILD:
+        taskBuild.run(creep);
+        break;
+      case CONST.TASK_FILLFROMBASE:
+        taskFillFromBase.run(creep);
+        break;
+      case CONST.TASK_UPGRADEROOM:
+        taskUpgradeRoom.run(creep);
+        break;
+      case CONST.TASK_MOVETOTARGET:
+        taskMoveToTarget.run(creep);
+        break;
+      case CONST.TASK_RESERVE:
+        taskReserve.run(creep);
+        break;
+      case CONST.TASK_FILLFROMTARGETSTRUCTURE:
+        taskFillFromTargetStructure.run(creep);
+        break;
+      case CONST.TASK_HEALTARGET:
+        taskHealTarget.run(creep);
+        break;
+      case CONST.TASK_FLEE:
+        taskFlee.run(creep);
+        break;
+      case CONST.TASK_UPGRADEDANCE:
+        taskUpgradeDance.run(creep);
+        break;
+      default:
+        isTask = false;
+        break;
     }
     if (isTask)
     {
@@ -342,38 +299,7 @@ module.exports.loop = function ()
     }
   }
   cachedGetDistance.cachedGetDistanceSave();
-  /*let debugKeysR = Object.keys(roleTimes);
-  for (let i = 0; i < debugKeysR.length; ++i)
-  {
-    console.log("Time Average for role " + debugKeysR[i] + ": " + (roleTimes[debugKeysR[i]] / roleNums[debugKeysR[i]])
-      .toFixed(3));
-  }*/
-  /*  let debugKeys = Object.keys(taskTimes);
-    for (let i = 0; i < debugKeys.length; ++i)
-    {
-      if (gTaskAvg[debugKeys[i]] == undefined)
-      {
-        gTaskAvg[debugKeys[i]] = taskTimes[debugKeys[i]] / taskNums[debugKeys[i]];
-        gTaskNum[debugKeys[i]] = taskNums[debugKeys[i]];
-      }
-      else
-      {
-        gTaskAvg[debugKeys[i]] = ((gTaskAvg[debugKeys[i]] * gTaskNum[debugKeys[i]]) + taskTimes[debugKeys[i]]) / (gTaskNum[debugKeys[i]] + taskNums[debugKeys[i]]);
-        gTaskNum[debugKeys[i]] = gTaskNum[debugKeys[i]] + taskNums[debugKeys[i]];
-      }
 
-
-      console.log("Time Average|Sum for task " + debugKeys[i] + ": " + (taskTimes[debugKeys[i]] / taskNums[debugKeys[i]])
-        .toFixed(3) + "|" + (taskTimes[debugKeys[i]])
-        .toFixed(3));
-    }
-
-    for (let i = 0; i < debugKeys.length; ++i)
-    {
-      console.log("global Time Average|Sum for task " + debugKeys[i] + ": " + (gTaskAvg[debugKeys[i]])
-        .toFixed(3) + "|" + (gTaskNum[debugKeys[i]] * gTaskAvg[debugKeys[i]])
-        .toFixed(3));
-    }*/
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for tasks: " + (cpuUsedNew - cpuUsedOld)
     .toFixed(3));
@@ -386,11 +312,7 @@ module.exports.loop = function ()
   try
   {
     var stats = (Game.cpu.getHeapStatistics());
-    var keys = Object.keys(stats);
-    /*for (var i = 0; i < keys.length; ++i)
-    {
-      console.log(keys[i] + ": " + (stats[keys[i]]));
-    }*/
+
     console.log("Used " + (stats.total_heap_size / stats.heap_size_limit));
     let otherUsed = ((stats.total_heap_size + stats.externally_allocated_size) / stats.heap_size_limit);
     console.log("Other used:" + (otherUsed));
@@ -407,14 +329,9 @@ module.exports.loop = function ()
     }
     console.log("ManGC: " + manualGC);
 
-
   }
   catch (err)
   {}
-
-
-
-
 
   var maxCodeAge = Memory.maxCodeAge;
   if (maxCodeAge == undefined)
@@ -428,6 +345,5 @@ module.exports.loop = function ()
   }
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   cpuUsedOld = cpuUsedNew;
-
 
 }

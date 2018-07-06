@@ -6,7 +6,7 @@ const CONST = require("CONSTANTS");
 var roleHauler = {
   //
   //moves energy from harvester to container
-  run: function (creep)
+  run: function(creep)
   {
     //If the hauler is full enough, return the energy to base.
     //IMPORTANT : Tied toa check in pickupenergy.
@@ -103,7 +103,7 @@ var roleHauler = {
 
     if (tombstonesWithEnergy.length > 0)
     {
-      console.log("HI THERE " + creep.memory.workRoom + " " + creep.name);
+      //console.log("HI THERE " + creep.memory.workRoom + " " + creep.name);
       creep.memory.targetID = tombstonesWithEnergy[Math.floor(Math.random() * tombstonesWithEnergy.length)].id;
       creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
       creep.memory.fillResourceType = RESOURCE_ENERGY;

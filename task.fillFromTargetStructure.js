@@ -69,7 +69,7 @@ var taskFillFromTargetStructure = {
     var err = creep.withdraw(target, whatToFill);
     if (err == ERR_NOT_IN_RANGE)
     {
-      util.moveToNonWalkable(creep, target, 17);
+      util.moveToOffRoadNonWalkable(creep, target, 17);
     }
     else if (err == OK || ERR_FULL || ERR_NOT_ENOUGH_RESOURCES)
     {

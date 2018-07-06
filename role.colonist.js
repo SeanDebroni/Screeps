@@ -20,30 +20,31 @@ var roleColonist = {
     // the 5 is mostly for upgrade room reuse
     if (creep.carry[RESOURCE_ENERGY] <= 5)
     {
-      let sources = _.filter(cacheFind.findCached(CONST.CACHEFIND_SOURCES, room), (source) => (source.energy > creep.carryCapacity));
+      let sources = _.filter(cacheFind.findCached(CONST.CACHEFIND_SOURCES, room), (source) => (source.energy > 0));
 
       if (sources.length > 0)
       {
-        creep.memory.targetID = sources[0].id;
+        creep.memory.targetID = sources[Math.floor(Math.random() * sources.length)].id;
         creep.memory.task = CONST.TASK_TEMPMINEENERGY;
         return;
       }
-
-      //if at > 0 energy, find a construction site, and build it.
-      let constructionSites = cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, room);
-      if (constructionSites.length > 0)
-      {
-        creep.memory.targetID = constructionSites[0].id;
-        creep.memory.task = CONST.TASK_BUILD;
-        return;
-      }
-
-      //if no construction sites, upgrade the room.
-      creep.memory.task = CONST.TASK_UPGRADEROOM;
-      return;
-
     }
 
+    //if at > 0 energy, find a construction site, and build it.
+    let constructionSites = cacheFind.findCached(CONST.CACHEFIND_CONSTRUCTIONSITES, room);
+    if (constructionSites.length > 0)
+    {
+      creep.memory.targetID = constructionSites[0].id;
+      creep.memory.task = CONST.TASK_BUILD;
+      return;
+    }
+
+    //if no construction sites, upgrade the room.
+    creep.memory.task = CONST.TASK_UPGRADEROOM;
+    return;
+
   }
+
+
 }
 module.exports = roleColonist;

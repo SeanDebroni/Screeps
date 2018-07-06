@@ -4,7 +4,7 @@ var util = require('util');
 
 //Create with memory sID which is the id of the source to harvest
 var roleHarvester = {
-  run: function (creep)
+  run: function(creep)
   {
     var source = Game.getObjectById(creep.memory.sID);
 

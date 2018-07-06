@@ -20,22 +20,22 @@ function getMainBlueprint(mainRoom)
 
   switch (mainRoom.controller.level)
   {
-  case 1:
-    return BLUEPRINTS.RCL_ONE_MAIN_CREEP;
-  case 2:
-    return BLUEPRINTS.RCL_TWO_MAIN_CREEP;
-  case 3:
-    return BLUEPRINTS.RCL_THREE_MAIN_CREEP;
-  case 4:
-    return BLUEPRINTS.RCL_FOUR_MAIN_CREEP;
-  case 5:
-    return BLUEPRINTS.RCL_FIVE_MAIN_CREEP;
-  case 6:
-    return BLUEPRINTS.RCL_SIX_MAIN_CREEP;
-  case 7:
-    return BLUEPRINTS.RCL_SEVEN_MAIN_CREEP;
-  case 8:
-    return BLUEPRINTS.RCL_EIGHT_MAIN_CREEP;
+    case 1:
+      return BLUEPRINTS.RCL_ONE_MAIN_CREEP;
+    case 2:
+      return BLUEPRINTS.RCL_TWO_MAIN_CREEP;
+    case 3:
+      return BLUEPRINTS.RCL_THREE_MAIN_CREEP;
+    case 4:
+      return BLUEPRINTS.RCL_FOUR_MAIN_CREEP;
+    case 5:
+      return BLUEPRINTS.RCL_FIVE_MAIN_CREEP;
+    case 6:
+      return BLUEPRINTS.RCL_SIX_MAIN_CREEP;
+    case 7:
+      return BLUEPRINTS.RCL_SEVEN_MAIN_CREEP;
+    case 8:
+      return BLUEPRINTS.RCL_EIGHT_MAIN_CREEP;
 
   }
   console.log("invalid controller level in blueprint");
@@ -46,22 +46,22 @@ function getExtBlueprint(mainRoom)
 {
   switch (mainRoom.controller.level)
   {
-  case 1:
-    return BLUEPRINTS.RCL_ONE_EXT_CREEP;
-  case 2:
-    return BLUEPRINTS.RCL_TWO_EXT_CREEP;
-  case 3:
-    return BLUEPRINTS.RCL_THREE_EXT_CREEP;
-  case 4:
-    return BLUEPRINTS.RCL_FOUR_EXT_CREEP;
-  case 5:
-    return BLUEPRINTS.RCL_FIVE_EXT_CREEP;
-  case 6:
-    return BLUEPRINTS.RCL_SIX_EXT_CREEP;
-  case 7:
-    return BLUEPRINTS.RCL_SEVEN_EXT_CREEP;
-  case 8:
-    return BLUEPRINTS.RCL_EIGHT_EXT_CREEP;
+    case 1:
+      return BLUEPRINTS.RCL_ONE_EXT_CREEP;
+    case 2:
+      return BLUEPRINTS.RCL_TWO_EXT_CREEP;
+    case 3:
+      return BLUEPRINTS.RCL_THREE_EXT_CREEP;
+    case 4:
+      return BLUEPRINTS.RCL_FOUR_EXT_CREEP;
+    case 5:
+      return BLUEPRINTS.RCL_FIVE_EXT_CREEP;
+    case 6:
+      return BLUEPRINTS.RCL_SIX_EXT_CREEP;
+    case 7:
+      return BLUEPRINTS.RCL_SEVEN_EXT_CREEP;
+    case 8:
+      return BLUEPRINTS.RCL_EIGHT_EXT_CREEP;
   }
   console.log("invalid controller level in blueprint");
   return undefined;
@@ -89,10 +89,10 @@ function makeScoutForFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 //Done
 function runDisassemblyFlag(flagName, mainBaseRoom, notBusySpawns, curSpawn)
 {
-  var didntMakeCreep;
+  let didntMakeCreep;
 
   if (curSpawn > 0) return curSpawn;
-  didntMakeCreep = intelligentSpawner.spawnDisassembleFlag(notBusySpawns[curSpawn], Game.flags[flagName].room, 5, flagName);
+  didntMakeCreep = intelligentSpawner.spawnDisassembleFlag(notBusySpawns[curSpawn], Game.flags[flagName].room, 1, flagName);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
 
   return curSpawn;
@@ -104,7 +104,7 @@ function runColonyRoomPriorityOne(colonyRoom, mainRoom, notBusySpawns, curSpawn)
   let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, colonyRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, colonyRoom);
-  var didntMakeCreep;
+  let didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
   if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
@@ -123,7 +123,7 @@ function runColonyRoomPriorityTwo(colonyRoom, mainRoom, notBusySpawns, curSpawn)
 {
   let blueprint = BLUEPRINTS.RCL_ALL_COL_CREEP;
 
-  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], colonyRoom);
+  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], colonyRoom, false);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -233,7 +233,7 @@ function runAttackRoom(attackRoom, mainRoom, notBusySpawns, curSpawn)
 
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, attackRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, attackRoom);
-  var didntMakeCreep;
+  let didntMakeCreep;
 
   //if theres a hostile creep, GO GO GO KILLLLL
   if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
@@ -257,55 +257,17 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   var hostileBuildings = cacheFind.findCached(CONST.CACHEFIND_HOSTILEBUILDINGS, extRoom);
 
-  var didntMakeCreep;
+  let didntMakeCreep;
   if ((hostileCreeps.length > 0 || hostileBuildings.length > 0) && mainRoom.energyAvailable > mainRoom.energyCapacityAvailable / 2)
   {
-    for (var z = 0; z < 3; ++z)
+    if (hostileCreeps.length > 0)
     {
-      if (hostileCreeps[0].owner.username == "Invader" || hostileCreeps[0].owner.username == "Screeps")
+      for (var z = 0; z < 3; ++z)
       {
-        var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
+        if (hostileCreeps[0].owner.username == "Invader" || hostileCreeps[0].owner.username == "Screeps")
+        {
+          var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
 
-        if (!(extRoom.controller.level > 0))
-        {
-          for (var v = 0; v < nonCombat.length; ++v)
-          {
-            nonCombat[v].memory.task = CONST.TASK_FLEE;
-          }
-        }
-
-        didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1, false);
-        if (!didntMakeCreep) curSpawn = curSpawn + 1;
-        if (curSpawn >= notBusySpawns.length) return curSpawn;
-      }
-      /*else if (hostileCreeps[0].owner.username == "Patrik")
-      {
-        for (var g = 0; g < hostileCreeps.length; ++g)
-        {
-          var body = hostileCreeps[g].body;
-          if (body.includes(ATTACK) || body.includes(RANGED_ATTACK))
-          {
-            didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
-            if (!didntMakeCreep) curSpawn = curSpawn + 1;
-            if (curSpawn >= notBusySpawns.length) return curSpawn;
-          }
-        }
-      }*/
-      else
-      {
-        var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
-        var isDangerous = false;
-        var dangerousCreep = 0;
-        for (var v = 0; v < hostileCreeps.length; ++v)
-        {
-          isDangerous = util.isDangerousCreep(hostileCreeps[v]);
-          if (isDangerous)
-          {
-            break;
-          }
-        }
-        if (isDangerous)
-        {
           if (!(extRoom.controller.level > 0))
           {
             for (var v = 0; v < nonCombat.length; ++v)
@@ -313,12 +275,59 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
               nonCombat[v].memory.task = CONST.TASK_FLEE;
             }
           }
-          didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
+
+          didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1, false);
           if (!didntMakeCreep) curSpawn = curSpawn + 1;
           if (curSpawn >= notBusySpawns.length) return curSpawn;
         }
+        /*else if (hostileCreeps[0].owner.username == "Patrik")
+        {
+          for (var g = 0; g < hostileCreeps.length; ++g)
+          {
+            var body = hostileCreeps[g].body;
+            if (body.includes(ATTACK) || body.includes(RANGED_ATTACK))
+            {
+              didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
+              if (!didntMakeCreep) curSpawn = curSpawn + 1;
+              if (curSpawn >= notBusySpawns.length) return curSpawn;
+            }
+          }
+        }*/
+        else
+        {
+          var nonCombat = cacheFind.findCached(CONST.CACHEFIND_NONCOMBATCREEPS, extRoom);
+          var isDangerous = false;
+          var dangerousCreep = 0;
+          for (var v = 0; v < hostileCreeps.length; ++v)
+          {
+            isDangerous = util.isDangerousCreep(hostileCreeps[v]);
+            if (isDangerous)
+            {
+              break;
+            }
+          }
+          if (isDangerous)
+          {
+            if (!(extRoom.controller.level > 0))
+            {
+              for (var v = 0; v < nonCombat.length; ++v)
+              {
+                nonCombat[v].memory.task = CONST.TASK_FLEE;
+              }
+            }
+            didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 3, true);
+            if (!didntMakeCreep) curSpawn = curSpawn + 1;
+            if (curSpawn >= notBusySpawns.length) return curSpawn;
+          }
 
+        }
       }
+    }
+    else
+    {
+      didntMakeCreep = intelligentSpawner.spawnZergling(notBusySpawns[curSpawn], extRoom, 1, false);
+      if (!didntMakeCreep) curSpawn = curSpawn + 1;
+      if (curSpawn >= notBusySpawns.length) return curSpawn;
     }
   }
   return curSpawn;
@@ -328,7 +337,7 @@ function runExtensionRoomPriorityZero(extRoom, mainRoom, notBusySpawns, curSpawn
 
 function runOuterDefenseRoom(outerRoom, mainRoom, notBusySpawns, curSpawn)
 {
-  var didntMakeCreep;
+  let didntMakeCreep;
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, outerRoom);
   if (hostileCreeps.length > 0)
   {
@@ -353,7 +362,7 @@ function runExtensionRoomPriorityOne(extRoom, mainRoom, notBusySpawns, curSpawn)
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   if (hostileCreeps.length > 0) return curSpawn;
 
-  var didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
+  let didntMakeCreep = intelligentSpawner.spawnHauler(blueprint, notBusySpawns[curSpawn], extRoom);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -371,7 +380,11 @@ function runExtensionRoomPriorityReservers(extRoom, mainRoom, notBusySpawns, cur
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   if (hostileCreeps.length > 0) return curSpawn;
 
-  var didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], extRoom);
+  let didntMakeCreep = intelligentSpawner.spawnReserver(blueprint, notBusySpawns[curSpawn], extRoom);
+  if (!didntMakeCreep) curSpawn = curSpawn + 1;
+  if (curSpawn >= notBusySpawns.length) return curSpawn;
+
+  didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom, false);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -380,9 +393,17 @@ function runExtensionRoomPriorityReservers(extRoom, mainRoom, notBusySpawns, cur
 
 function runPowerlevelRoomPriorityZero(notBusySpawns, plRoom, curSpawn)
 {
+  if (plRoom)
+  {
+    if (plRoom.controller.level == 8)
+    {
+      plRoom.controller.unclaim();
+    }
+  }
+
   let blueprint = BLUEPRINTS.RCL_ALL_PL_CREEP;
 
-  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], plRoom);
+  let didntMakeCreep = intelligentSpawner.spawnClaimer(blueprint, notBusySpawns[curSpawn], plRoom, true);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -447,11 +468,7 @@ function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
   var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, extRoom);
   if (hostileCreeps.length > 0) return curSpawn;
 
-  var didntMakeCreep = intelligentSpawner.spawnRepairman(blueprint, notBusySpawns[curSpawn], extRoom, false);
-  if (!didntMakeCreep) curSpawn = curSpawn + 1;
-  if (curSpawn >= notBusySpawns.length) return curSpawn;
-
-  didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], extRoom, false);
+  let didntMakeCreep = intelligentSpawner.spawnBuilder(blueprint, notBusySpawns[curSpawn], extRoom, false);
   if (!didntMakeCreep) curSpawn = curSpawn + 1;
   if (curSpawn >= notBusySpawns.length) return curSpawn;
 
@@ -460,20 +477,20 @@ function runExtensionRoomPriorityTwo(extRoom, mainRoom, notBusySpawns, curSpawn)
 
 module.exports = {
   //TODO: save and load this at some point rather then remaking it every time.
-  init: function ()
+  init: function()
   {
     var flags = Game.flags;
-    if (Object.keys(flags)
+    /*if (Object.keys(flags)
       .length == savedFlagLength)
     {
       return roomControllers;
     }
     else
-    {
-      savedFlagLength = Object.keys(flags)
-        .length;
-      roomControllers = [];
-    }
+    {*/
+    savedFlagLength = Object.keys(flags)
+      .length;
+    roomControllers = [];
+    //}
 
     var flagNames = Object.keys(flags);
 
@@ -483,12 +500,6 @@ module.exports = {
     //I think this is good so that i can use what I name rooms to decide behavior
     for (var i = 0; i < flagNames.length; ++i)
     {
-      //lost sight of room TODO get IT BACK
-      if (flags[flagNames[i]].room == undefined)
-      {
-
-      }
-
       var splitFlag = flagNames[i].split("-");
       if (splitFlag[0] == "RC" && splitFlag.length == 3)
       {
@@ -514,7 +525,7 @@ module.exports = {
 
   },
 
-  runRoomController: function (roomController, rcName)
+  runRoomController: function(roomController, rcName)
   {
     var rooms = Object.keys(roomController);
 
@@ -536,6 +547,7 @@ module.exports = {
     var mainBaseRoom = Game.rooms[roomController["M"]];
     if (mainBaseRoom == undefined)
     {
+      console.log(rcName);
       console.log("ROOM CONTROLLER MISSING MAIN BASE FLAG. ABORT. ABORT. ABORT");
       return;
     }
@@ -593,31 +605,32 @@ module.exports = {
         let roomType = roomName.charAt(0);
         switch (roomType)
         {
-        case "P":
-          powerlevelRooms.push(room);
-          break;
-        case "C":
-          colonyRooms.push(room);
-          break;
-        case "E":
-          extensionRooms.push(room);
-          break;
-        case "A":
-          attackRooms.push(room);
-          break;
-        case "O":
-          outerWarningRooms.push(room);
-          break;
-        case "B":
-          console.log("found flag");
-          let flagNamesss = "RC-" + rcName + "-" + roomName;
-          Game.flags[flagNamesss].remove();
-          buildRoads.push(room);
-          break;
-        case "R":
-          let flagName = "RC-" + rcName + "-" + roomName;
-          disassembleFlags.push(flagName);
-          break;
+          case "P":
+            powerlevelRooms.push(room);
+            break;
+          case "C":
+            colonyRooms.push(room);
+            break;
+          case "E":
+            extensionRooms.push(room);
+            break;
+          case "A":
+            attackRooms.push(room);
+            break;
+          case "O":
+            outerWarningRooms.push(room);
+            break;
+            a
+          case "B":
+            console.log("found flag");
+            let flagNamesss = "RC-" + rcName + "-" + roomName;
+            Game.flags[flagNamesss].remove();
+            buildRoads.push(room);
+            break;
+          case "R":
+            let flagName = "RC-" + rcName + "-" + roomName;
+            disassembleFlags.push(flagName);
+            break;
         }
       }
     }

@@ -7,8 +7,7 @@ var roleMineralMiner = {
     if (_.sum(creep.carry) == 0)
     {
       let timeThreshold = Math.floor(creep.carryCapacity / (creep.memory.lvl / 2)) * 5 + 60;
-      console.log("!!!");
-      console.log(timeThreshold);
+
       if (creep.ticksToLive < timeThreshold)
       {
         creep.memory.targetID = -1;

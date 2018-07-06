@@ -215,7 +215,7 @@ function findCachedInternal(whatToFind, room)
     {
       filter: (structure) =>
       {
-        return (structure.structureType == STRUCTURE_TOWER) && (structure.energy < 0.6 * structure.energyCapacity);
+        return (structure.structureType == STRUCTURE_TOWER) && (structure.energy < 0.6 * structure.energyCapacity) && structure.isActive();
       }
     });
     cache.set(key, a);

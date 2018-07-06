@@ -102,6 +102,7 @@ var taskFillFromBase = {
           if (baseContainers.length > 0)
           {
             containerToFillFrom = 0;
+
             creep.memory.targetID = baseContainers[containerToFillFrom].id;
             var target = Game.getObjectById(baseContainers[containerToFillFrom].id);
             let err = withdrawEnergyFrom(creep, target, true);

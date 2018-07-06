@@ -10,16 +10,16 @@ let globalTerminals = {};
 
 let sellMineralsTimer = 500;
 let PRICES = {
-  "H": 0.325,
-  "O": 0.085,
-  "U": 0.25,
-  "L": 0.21,
-  "K": 0.26
+  "H": 0.2,
+  "O": 0.2,
+  "U": 0.20,
+  "L": 0.2,
+  "K": 0.2
 };
 
 module.exports = {
 
-  update: function (roomController, rcName)
+  update: function(roomController, rcName)
   {
     if (globalTerminals[rcName] != undefined && globalTerminals[rcName].timeToNextUpdate > 0)
     {
@@ -106,14 +106,16 @@ module.exports = {
     }
     sellMineralsTimer = 1000;
     let activeOrders = Game.market.orders;
+    let activeOrderKeys = Object.keys(activeOrders);
 
-    if (activeOrders.length > 50)
+    if (activeOrderKeys.length > 40)
     {
-      let inactiveOrders = _.filter(activeOrders, (order) => !order.isActive);
-
-      for (let i = 0; i < inactiveOrders.length; ++i)
+      for (let i = 0; i < activeOrderKeys.length; ++i)
       {
-        Game.market.cancelOrder(inactiveOrders[i].id);
+        if (!(activeOrders[activeOrderKeys[i]].active))
+        {
+          Game.market.cancelOrder(activeOrders[activeOrderKeys[i]].id);
+        }
       }
     }
 
@@ -138,7 +140,7 @@ module.exports = {
           }
           else
           {
-            Game.market.changeOrderPrice(activeOrder[0].id, activeOrder[0].price * 0.99);
+            Game.market.changeOrderPrice(activeOrder[0].id, activeOrder[0].price * 0.96);
           }
         }
       }

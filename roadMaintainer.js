@@ -33,23 +33,26 @@ function setUpNewRoom(roomController, rcName)
     let roomType = roomName.charAt(0);
     if (roomType == "M" || roomType == "E")
     {
-      if (!room)
+      if ((room != undefined && room.controller.level > 4 && roomType == "M") || roomType == "E")
       {
-        newMainRoomRecord[absRoomName] = [];
-        continue;
-      }
-
-      let roads = cacheFind.findCached(CONST.CACHEFIND_FINDROADS, room);
-      let roadPositions = [];
-      for (let j = 0; j < roads.length; ++j)
-      {
-        roadPositions.push(
+        if (!room)
         {
-          x: roads[j].pos.x,
-          y: roads[j].pos.y
-        });
+          newMainRoomRecord[absRoomName] = [];
+          continue;
+        }
+
+        let roads = cacheFind.findCached(CONST.CACHEFIND_FINDROADS, room);
+        let roadPositions = [];
+        for (let j = 0; j < roads.length; ++j)
+        {
+          roadPositions.push(
+          {
+            x: roads[j].pos.x,
+            y: roads[j].pos.y
+          });
+        }
+        newMainRoomRecord[absRoomName] = roadPositions;
       }
-      newMainRoomRecord[absRoomName] = roadPositions;
     }
   }
   return newMainRoomRecord;
@@ -57,13 +60,13 @@ function setUpNewRoom(roomController, rcName)
 }
 module.exports = {
 
-  clear: function ()
+  clear: function()
   {
     rememberedRoads = {};
   },
 
   //returns true if it maintained roads, false otherwise.
-  maintainRoads: function (roomController, rcName)
+  maintainRoads: function(roomController, rcName)
   {
     //Check if it is time for a maintance run.
     let mainRoomRecord = rememberedRoads[rcName];
@@ -117,7 +120,7 @@ module.exports = {
           else //newRoads.length<oldRoads.pathLength
           {
 
-            oldRoads.sort(function (a, b)
+            oldRoads.sort(function(a, b)
             {
               if (a.x != b.x)
               {
@@ -129,7 +132,7 @@ module.exports = {
               }
             });
 
-            newRoads.sort(function (a, b)
+            newRoads.sort(function(a, b)
             {
               if (a.pos.x != b.pos.x)
               {

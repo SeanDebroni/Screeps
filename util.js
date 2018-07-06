@@ -4,11 +4,16 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  findOpenSpotAdjacent(roomPos)
+  {
+
+  },
   moveToWalkable(creep, thing, reuse = 17)
   {
     return creep.moveTo(thing,
     {
-      reusePath: reuse
+      reusePath: reuse,
+      maxOps: 3000
     });
   },
   moveToNonWalkable(creep, thing, reuse = 17)
@@ -16,7 +21,19 @@ module.exports = {
     return creep.moveTo(thing,
     {
       reusePath: reuse,
-      range: 1
+      range: 1,
+      maxOps: 3000
+    });
+  },
+  moveToOffRoadNonWalkable(creep, thing, reuse = 17)
+  {
+    return creep.moveTo(thing,
+    {
+      reusePath: reuse,
+      plainCost: 1,
+      swampCost: 5,
+      range: 1,
+      maxOps: 3000
     });
   },
   countWorkParts(creep)
@@ -76,25 +93,25 @@ module.exports = {
       curPos = new RoomPosition(path[path.length - 1].x, path[path.length - 1].y, startPos.roomName);
       switch (curPos.x)
       {
-      case 0:
-        curPos.x = 49;
-        curPos.roomName = roomAdj[LEFT];
-        break;
-      case 49:
-        curPos.x = 0;
-        curPos.roomName = roomAdj[RIGHT];
-        break;
+        case 0:
+          curPos.x = 49;
+          curPos.roomName = roomAdj[LEFT];
+          break;
+        case 49:
+          curPos.x = 0;
+          curPos.roomName = roomAdj[RIGHT];
+          break;
       }
       switch (curPos.y)
       {
-      case 0:
-        curPos.y = 49;
-        curPos.roomName = roomAdj[TOP];
-        break;
-      case 49:
-        curPos.y = 0;
-        curPos.roomName = roomAdj[BOTTOM];
-        break;
+        case 0:
+          curPos.y = 49;
+          curPos.roomName = roomAdj[TOP];
+          break;
+        case 49:
+          curPos.y = 0;
+          curPos.roomName = roomAdj[BOTTOM];
+          break;
       }
 
       roomAdj = Game.map.describeExits(curPos.roomName);
@@ -117,7 +134,7 @@ module.exports = {
       reusePath: 17
     });
   },
-  isAdjacent: function (pos1, pos2)
+  isAdjacent: function(pos1, pos2)
   {
     if (Math.abs(pos1.x - pos2.x) <= 1 && Math.abs(pos1.y - pos2.y) <= 1)
     {
@@ -125,7 +142,7 @@ module.exports = {
     }
     return false;
   },
-  getNotBusySpawns: function (room)
+  getNotBusySpawns: function(room)
   {
     var spawns = cacheFind.findCached(CONST.CACHEFIND_SPAWNS, room);
     var notBusySpawns = [];
@@ -139,7 +156,7 @@ module.exports = {
     }
     return notBusySpawns;
   },
-  getHomeRoom: function (creep)
+  getHomeRoom: function(creep)
   {
     var ret = Game.rooms[creep.memory.homeRoom];
     if (ret == undefined)
@@ -148,7 +165,7 @@ module.exports = {
     }
     return ret;
   },
-  getWorkRoom: function (creep)
+  getWorkRoom: function(creep)
   {
     var ret = Game.rooms[creep.memory.workRoom];
     if (ret == undefined && creep.memory.role != CONST.ROLE_RESERVER)
@@ -157,7 +174,7 @@ module.exports = {
     }
     return ret;
   },
-  cleanUpDeadCreeps: function ()
+  cleanUpDeadCreeps: function()
   {
     for (var name in Memory.creeps)
     {

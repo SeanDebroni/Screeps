@@ -1,4 +1,5 @@
 'use strict';
+var util = require('util');
 var taskTempMineEnergy = {
   run: function (creep)
   {
@@ -13,7 +14,13 @@ var taskTempMineEnergy = {
     let res = creep.harvest(source);
     if (res == ERR_NOT_IN_RANGE)
     {
-      util.moveToNonWalkable(creep, source);
+      util.moveToNonWalkable(creep, source, 3);
+    }
+    else if (res != OK)
+    {
+      creep.memory.targetID = -1;
+      creep.memory.task = creep.memory.role;
+      return;
     }
   }
 }

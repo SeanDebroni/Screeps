@@ -15,9 +15,8 @@ function genericCreepGetMemoryToSet(spawner, workRoom, mem)
 
 module.exports = {
 
-
   //memory must have role. blueprint must be valid
-  makeBestCreepFromBlueprint: function (spawner, workRoom, blueprint, creepMemory, maxLevel, makeCreep)
+  makeBestCreepFromBlueprint: function(spawner, workRoom, blueprint, creepMemory, maxLevel, makeCreep)
   {
     creepMemory = genericCreepGetMemoryToSet(spawner, workRoom, creepMemory);
     let rand = Math.floor(Math.random() * 1024);
@@ -62,7 +61,7 @@ module.exports = {
 
   },
 
-  makeDisassembleFlag: function (homeRoom, workRoom, spawner, makeCreep, flagName)
+  makeDisassembleFlag: function(homeRoom, workRoom, spawner, makeCreep, flagName)
   {
     var parts = [WORK, WORK, MOVE];
     var level = 1;
@@ -99,7 +98,7 @@ module.exports = {
     return level - 1;
   },
 
-  makeZergling: function (homeRoom, workRoom, spawner, makeCreep, goAllOut)
+  makeZergling: function(homeRoom, workRoom, spawner, makeCreep, goAllOut)
   {
     var parts = [MOVE, MOVE, ATTACK];
     var level = 1;
@@ -154,7 +153,7 @@ module.exports = {
     return level;
 
   },
-  makeBestScout: function (homeRoom, workRoom, spawner, makeCreep, flagName)
+  makeBestScout: function(homeRoom, workRoom, spawner, makeCreep, flagName)
   {
     var parts = [MOVE];
     var level = 1;

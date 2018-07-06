@@ -1,10 +1,14 @@
 'use strict';
 var util = require('util');
+var CONST = require('CONSTANTS');
 
 var taskUpgradeRoom = {
   run: function (creep)
   {
-    if (creep.carry.energy <= 5)
+    let amountToStopAt = 0;
+    if (creep.memory.role == CONST.ROLE_UPGRADER) amountToStopAt = 5;
+
+    if (creep.carry.energy <= amountToStopAt)
     {
       creep.memory.task = creep.memory.role;
     }

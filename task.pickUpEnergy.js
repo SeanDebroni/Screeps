@@ -6,7 +6,7 @@ function pickupEnergyFrom(creep, target)
   var result = creep.pickup(target);
   if (result == ERR_NOT_IN_RANGE)
   {
-    var res2 = util.moveToNonWalkable(creep, target);
+    var res2 = util.moveToOffRoadNonWalkable(creep, target);
     if (res2 = ERR_NO_PATH)
     {
       return res2;
