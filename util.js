@@ -4,6 +4,15 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  outputMovementError(err, creep, position)
+  {
+    console.log("#$#$#$#$#$#$#$#$#$#$#$#$#$");
+    console.log("FROM: ");
+    console.log(creep.pos);
+    console.log("TO: ");
+    console.log(position);
+    console.log(err);
+  },
   findOpenSpotAdjacent(roomPos)
   {
 
@@ -126,13 +135,17 @@ module.exports = {
     }
     return pathLength;
   },
-  moveToRoom(creep, roomName, x = 25, y = 25)
+  moveToRoom(creep, roomName, x = 25, y = 25, pathRange = 20)
   {
     const pos = new RoomPosition(x, y, roomName);
-    return creep.moveTo(pos,
+    var err = creep.moveTo(pos,
     {
-      reusePath: 17
+      reusePath: 17,
+      range: pathRange,
+      maxOps: 3000
     });
+
+    return err;
   },
   isAdjacent: function(pos1, pos2)
   {

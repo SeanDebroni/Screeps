@@ -3,8 +3,15 @@ var CONST = require("CONSTANTS");
 var util = require("util");
 
 var roleClaimer = {
-  run: function (creep)
+  run: function(creep)
   {
+
+    if (creep.room.name != creep.memory.workRoom)
+    {
+      util.moveToRoom(creep, creep.memory.workRoom);
+      return;
+    }
+
     var workRoom = util.getWorkRoom(creep);
     //sanity check???
     if (workRoom == undefined || workRoom == null)

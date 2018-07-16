@@ -1,7 +1,7 @@
 'use strict';
 var util = require('util');
 var taskMoveToTarget = {
-  run: function (creep)
+  run: function(creep)
   {
     var target = Game.flags[creep.memory.targetID];
 
@@ -14,6 +14,10 @@ var taskMoveToTarget = {
     }
     var err = util.moveToWalkable(creep, target, 50);
 
+    if (err == ERR_NO_PATH || err == ERR_INVALID_TARGET)
+    {
+      util.outputMovementError(err, creep, target);
+    }
   }
 
 }

@@ -2,14 +2,14 @@
 var util = require('util');
 
 var taskKill = {
-  run: function (creep)
+  run: function(creep)
   {
     var target = Game.getObjectById(creep.memory.targetID);
     if (creep.room.name != creep.memory.workRoom && (target == undefined || target == null))
     {
       if (creep.memory.targetLastX != undefined)
       {
-        util.moveToRoom(creep, creep.memory.workRoom, creep.memory.targetLastX, creep.memory.targetLastY);
+        util.moveToRoom(creep, creep.memory.workRoom, creep.memory.targetLastX, creep.memory.targetLastY, 0);
       }
       else
       {

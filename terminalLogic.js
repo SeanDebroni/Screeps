@@ -86,11 +86,20 @@ module.exports = {
     for (let i = 0; i < terminalKeys.length; ++i)
     {
       let term = Game.getObjectById(globalTerminals[terminalKeys[i]].terminalID);
-      let amount = term.store[RESOURCE_ENERGY];
 
-      if (amount > 100000)
+      if (term != undefined)
       {
-        spareEnergy = spareEnergy + (amount - 100000);
+        let amount = term.store[RESOURCE_ENERGY];
+
+        if (amount > 100000)
+        {
+          spareEnergy = spareEnergy + (amount - 100000);
+        }
+      }
+      else
+      {
+
+
       }
     }
     return spareEnergy;

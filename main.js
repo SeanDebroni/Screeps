@@ -1,7 +1,7 @@
 'use strict';
 const CONST = require('CONSTANTS');
 
-var mp = require('monkeypatch');
+//var mp = require('monkeypatch');
 
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
@@ -52,6 +52,8 @@ var terminalLogic = require('terminalLogic');
 var cacheFind = require('cacheFind');
 var cachedGetDistance = require('cachedGetDistance');
 
+var constructionSiteManager = require('constructionSiteManager');
+
 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 let gTaskAvg = {};
@@ -77,6 +79,7 @@ module.exports.loop = function()
   cacheFind.cacheFindClear();
   util.cleanUpDeadCreeps();
 
+  constructionSiteManager.run();
 
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for Util: " + (cpuUsedNew - cpuUsedOld));
@@ -317,8 +320,8 @@ module.exports.loop = function()
     let otherUsed = ((stats.total_heap_size + stats.externally_allocated_size) / stats.heap_size_limit);
     console.log("Other used:" + (otherUsed));
     console.log("Age: " + codeAge);
-
-    if (otherUsed > 0.4 && (cpuUsedSum / Game.cpu.limit) < 0.65 && (Game.cpu.tickLimit - cpuUsedSum) > 200)
+    //Trigger a manual Garbage collection event.
+    if (otherUsed > 0.60 && (cpuUsedSum / Game.cpu.limit) < 0.65 && (Game.cpu.tickLimit - cpuUsedSum) > 200)
     {
       let cpuUsedPreGC = Game.cpu.getUsed();
       gc();
