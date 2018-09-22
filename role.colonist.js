@@ -5,7 +5,7 @@ var cacheFind = require("cacheFind");
 
 
 var roleColonist = {
-  run: function (creep)
+  run: function(creep)
   {
     //if not in work room, move to work room.
     if (creep.room.name != creep.memory.workRoom)
@@ -27,6 +27,25 @@ var roleColonist = {
         creep.memory.targetID = sources[Math.floor(Math.random() * sources.length)].id;
         creep.memory.task = CONST.TASK_TEMPMINEENERGY;
         return;
+      }
+      else
+      {
+        let stuff = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, room);
+        if (stuff.length > 0)
+        {
+          creep.memory.targetID = -1;
+          creep.memory.task = CONST.TASK_FILLFROMBASE;
+          return;
+        }
+        else
+        {
+          let stuff2 = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESWITHENERGY, room);
+          creep.memory.targetID = stuff2[Math.floor(Math.random() * stuff2.length)].id;
+          creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+          return;
+        }
+
+
       }
     }
 

@@ -57,7 +57,7 @@ module.exports = {
     return true;
 
   },
-  spawnRepairman: function(blueprint, spawner, workRoom, forceMake)
+  spawnRepairman: function(blueprint, spawner, workRoom, forceMake, limitMax = -1)
   {
     let repairBlueprint = blueprint.ROLE_REPAIRMAN;
     let maxRepairmen = repairBlueprint.maxCreeps;
@@ -69,6 +69,10 @@ module.exports = {
     {
       maxRepairmen = 10;
       maxLevel = 50;
+    }
+    if (limitMax != -1)
+    {
+      maxRepairmen = limitMax;
     }
 
     if (maxRepairmen == 0) return true;

@@ -14,7 +14,7 @@ function wipeCreepMemory(creep)
 //  creep.memory.fillResourceType
 var taskFillFromTargetStructure = {
 
-  run: function (creep)
+  run: function(creep)
   {
     //check if targetID is set correctly.
     var targetID = creep.memory.targetID;
@@ -67,9 +67,13 @@ var taskFillFromTargetStructure = {
       return;
     }
     var err = creep.withdraw(target, whatToFill);
-    if (err == ERR_NOT_IN_RANGE)
+    if (err == ERR_NOT_IN_RANGE && creep.carry[RESOURCE_ENERGY] == 0)
     {
       util.moveToOffRoadNonWalkable(creep, target, 17);
+    }
+    else if (err == ERR_NOT_IN_RANGE)
+    {
+      util.moveToNonWalkable(creep, target, 17);
     }
     else if (err == OK || ERR_FULL || ERR_NOT_ENOUGH_RESOURCES)
     {

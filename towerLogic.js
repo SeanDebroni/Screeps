@@ -6,7 +6,7 @@ var util = require('util');
 
 module.exports = {
 
-  runTowers: function (towers)
+  runTowers: function(towers)
   {
     if (towers == undefined || towers == null) return;
     if (towers.length > 0)
@@ -63,7 +63,8 @@ module.exports = {
       {
         for (var i = 0; i < towers.length; ++i)
         {
-          towers[i].attack(closestHostile);
+          if ((closestHostile.owner.username == "Invader"))
+            towers[i].attack(closestHostile);
         }
         return;
       }

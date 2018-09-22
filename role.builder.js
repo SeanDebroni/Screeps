@@ -4,7 +4,7 @@ var cacheFind = require('cacheFind');
 var util = require('util');
 var roleBuilder = {
 
-  run: function (creep)
+  run: function(creep)
   {
 
     //If there is no energy to be used in room, and no energy on the builder, go idle.
@@ -40,7 +40,15 @@ var roleBuilder = {
     var damagedStructures = cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
     if (damagedStructures.length > 0)
     {
-      creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+      var damagedStructures2 = cacheFind.findCached(CONST.CACHEFIND_CRITICALDAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
+      if (damagedStructures2.length > 0)
+      {
+        creep.memory.targetID = damagedStructures2[Math.floor(Math.random() * damagedStructures2.length)].id;
+      }
+      else
+      {
+        creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+      }
       creep.memory.task = CONST.TASK_REPAIR;
       return;
     }

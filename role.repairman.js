@@ -4,7 +4,7 @@ var cacheFind = require('cacheFind');
 var util = require('util');
 
 var roleRepairman = {
-  run: function (creep)
+  run: function(creep)
   {
     var energyStorageStructures = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, Game.rooms[creep.memory.homeRoom]);
 
@@ -53,7 +53,15 @@ var roleRepairman = {
       }
       else
       {
-        creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+        var damagedStructures2 = cacheFind.findCached(CONST.CACHEFIND_CRITICALDAMAGEDSTRUCTURES, Game.rooms[creep.memory.workRoom]);
+        if (damagedStructures2.length > 0)
+        {
+          creep.memory.targetID = damagedStructures2[Math.floor(Math.random() * damagedStructures2.length)].id;
+        }
+        else
+        {
+          creep.memory.targetID = damagedStructures[Math.floor(Math.random() * damagedStructures.length)].id;
+        }
       }
       creep.memory.task = CONST.TASK_REPAIR;
       return;

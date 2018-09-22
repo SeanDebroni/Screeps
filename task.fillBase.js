@@ -31,16 +31,16 @@ function moveEnergyTo(creep, target, revertIfEmpty)
     var targetSpace = -1;
     switch (target.structureType)
     {
-    case STRUCTURE_SPAWN:
-    case STRUCTURE_EXTENSION:
-    case STRUCTURE_TOWER:
-      targetSpace = target.energyCapacity - target.energy;
-      break;
+      case STRUCTURE_SPAWN:
+      case STRUCTURE_EXTENSION:
+      case STRUCTURE_TOWER:
+        targetSpace = target.energyCapacity - target.energy;
+        break;
 
-    case STRUCTURE_STORAGE:
-    case STRUCTURE_CONTAINER:
-      targetSpace = target.storeCapacity - _.sum(target.store);
-      break;
+      case STRUCTURE_STORAGE:
+      case STRUCTURE_CONTAINER:
+        targetSpace = target.storeCapacity - _.sum(target.store);
+        break;
     }
 
     if (creepEnergy >= targetSpace)
@@ -58,7 +58,7 @@ function moveEnergyTo(creep, target, revertIfEmpty)
 }
 
 var taskFillBaseUtil = {
-  fillTowersAndStructures: function (creep, room)
+  fillTowersAndStructures: function(creep, room)
   {
     //var baseToFill = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESTOFILL, room);
     //This only works if creep is in same room. Hmmmmmm.HRM. TODO find path to room, then entrance would use, then from that entrance find closest to fill.
@@ -103,8 +103,6 @@ var taskFillBaseUtil = {
       return true;
     }
 
-
-
     var containersToFill = cacheFind.findCached(CONST.CACHEFIND_ENERGYCONTAINERSTOFILL, room);
     if (containersToFill.length > 0)
     {
@@ -114,16 +112,12 @@ var taskFillBaseUtil = {
       return true;
     }
 
-
-
-
-
     return false;
   }
 }
 
 var taskFillBase = {
-  run: function (creep)
+  run: function(creep)
   {
     if (creep.carry.energy == 0)
     {

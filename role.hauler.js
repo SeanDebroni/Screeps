@@ -57,7 +57,6 @@ var roleHauler = {
         creep.memory.assignedHarvesterName = undefined;
       }
     }
-
     //try to find harvester next to source;
     else if (creep.memory.assignedSourceID != undefined)
     {
@@ -85,6 +84,25 @@ var roleHauler = {
             creep.memory.assignedHarvesterName = whatsThere[i].creep.name;
           }
         }
+      }
+    }
+
+    //thief code 
+    let isT = creep.memory.isThief;
+    if (isT == 1 || isT == undefined)
+    {
+      let stealEnergyStructs = cacheFind.findCached(CONST.CACHEFIND_FINDSTRUCTURESTOSTEALENERGYFROM, util.getWorkRoom(creep));
+
+      if (stealEnergyStructs.length > 0)
+      {
+        creep.memory.targetID = stealEnergyStructs[Math.floor(Math.random() * stealEnergyStructs.length)].id;
+        creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+        creep.memory.fillResourceType = RESOURCE_ENERGY;
+        creep.memory.isThief = 1;
+      }
+      else
+      {
+        creep.memory.isThief = 0;
       }
     }
 

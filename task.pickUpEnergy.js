@@ -6,7 +6,15 @@ function pickupEnergyFrom(creep, target)
   var result = creep.pickup(target);
   if (result == ERR_NOT_IN_RANGE)
   {
-    var res2 = util.moveToOffRoadNonWalkable(creep, target);
+    var res2;
+    if (creep.carry[RESOURCE_ENERGY] == 0)
+    {
+      res2 = util.moveToOffRoadNonWalkable(creep, target);
+    }
+    else
+    {
+      res2 = util.moveToNonWalkable(creep, target);
+    }
     if (res2 = ERR_NO_PATH)
     {
       return res2;
@@ -16,7 +24,7 @@ function pickupEnergyFrom(creep, target)
 }
 
 var taskPickUpEnergy = {
-  run: function (creep)
+  run: function(creep)
   {
     //IMPORTANT : Tied toa check in ROLE HAULER
     if (creep.carry.energy > creep.carryCapacity * 0.95)

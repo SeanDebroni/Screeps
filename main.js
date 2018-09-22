@@ -128,6 +128,7 @@ module.exports.loop = function()
     var roomController = allRoomControllers[allRoomControllersKeys[i]];
     terminalLogic.update(roomController, allRoomControllersKeys[i]);
   }
+  //if (codeAge % 100 == 0)
   terminalLogic.doPowerLevelEnergyBalance();
   terminalLogic.doSellMinerals();
 

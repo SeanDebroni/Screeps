@@ -10,12 +10,25 @@ const CONST = require('CONSTANTS');
 //HOME ROOM IS ROOM transfering to.
 
 //NEEDS TERMINAL ID ASSIGNED AT CREATION. TO STRUCTURETODRAWFROM
+var util = require('util');
 
 var roleEnergyTransferer = {
-  run: function (creep)
+  run: function(creep)
   {
     if (creep.carry.energy < creep.carryCapacity)
     {
+      let term = Game.getObjectById(creep.memory.structureToDrawFromID);
+      if (!term) return;
+      if (term.store[RESOURCE_ENERGY] == 0)
+      {
+        let stor = util.getHomeRoom(creep).storage;
+        if (!stor) return;
+
+        creep.memory.targetID = stor.id;
+        creep.memory.fillResourceType = RESOURCE_ENERGY;
+        creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+        return;
+      }
       creep.memory.targetID = creep.memory.structureToDrawFromID;
       creep.memory.fillResourceType = RESOURCE_ENERGY;
       creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;

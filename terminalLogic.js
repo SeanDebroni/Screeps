@@ -11,9 +11,9 @@ let globalTerminals = {};
 let sellMineralsTimer = 500;
 let PRICES = {
   "H": 0.2,
-  "O": 0.2,
+  "O": 0.1,
   "U": 0.20,
-  "L": 0.2,
+  "L": 0.1,
   "K": 0.2
 };
 
@@ -91,9 +91,9 @@ module.exports = {
       {
         let amount = term.store[RESOURCE_ENERGY];
 
-        if (amount > 100000)
+        if (amount > 125000)
         {
-          spareEnergy = spareEnergy + (amount - 100000);
+          spareEnergy = spareEnergy + (amount - 25000) / 2;
         }
       }
       else
@@ -143,9 +143,12 @@ module.exports = {
           let activeOrder = _.filter(activeOrders, (order) => order.roomName == term.room.name && order.active);
           if (activeOrder.length == 0)
           {
+            let price = PRICES[storeKeys[j]];
+            if (price == undefined) price = 0.2;
+
             let amount = Math.max(term.store[storeKeys[j]] / 2, 20000);
-            console.log("MADE AN ORDER: " + storeKeys[j] + " " + PRICES[storeKeys[j]] + " " + "20000" + " " + term.room.name);
-            Game.market.createOrder(ORDER_SELL, storeKeys[j], PRICES[storeKeys[j]], amount, term.room.name);
+            console.log("MADE AN ORDER: " + storeKeys[j] + " " + price + " " + "20000" + " " + term.room.name);
+            Game.market.createOrder(ORDER_SELL, storeKeys[j], price, amount, term.room.name);
           }
           else
           {
@@ -167,31 +170,43 @@ module.exports = {
     for (let i = 0; i < terminalKeys.length; ++i)
     {
       let term = globalTerminals[terminalKeys[i]];
-      if (term.isPowerLeveler && termToFillIndex == -1)
+      if (term == null || term == undefined) continue;
+      if (termToFillIndex == -1)
       {
         if (Game.getObjectById(term.terminalID)
-          .store[RESOURCE_ENERGY] < 50000)
+          .store[RESOURCE_ENERGY] == 0)
         {
+          console.log("@!$!@$!@$!@$!@$@!$@!$");
           termToFillIndex = i;
         }
       }
-      else if (!term.isPowerLeveler && termToFillFromIndex == -1)
+      else if (termToFillFromIndex == -1 && i != termToFillIndex)
       {
-        if (Game.getObjectById(term.terminalID)
-          .store[RESOURCE_ENERGY] > 125000)
+        let terminalToCheck = Game.getObjectById(term.terminalID);
+        if (terminalToCheck)
         {
-          termToFillFromIndex = i;
+          if (terminalToCheck.store[RESOURCE_ENERGY] > 125000)
+          {
+            console.log("@!$!@$!@$!@$!@$@!$@!$2222222");
+            termToFillFromIndex = i;
+          }
         }
       }
     }
 
     if (termToFillIndex != -1 && termToFillFromIndex != -1)
     {
-      let termToFillFrom = globalTerminals[terminalKeys[termToFillFromIndex]];
-      let termToFill = globalTerminals[terminalKeys[termToFillIndex]];
-      Game.getObjectById(termToFillFrom.terminalID)
-        .send(RESOURCE_ENERGY, 100000, Game.getObjectById(termToFill.terminalID)
-          .room.name);
+      let termToFillFrom = Game.getObjectById(globalTerminals[terminalKeys[termToFillFromIndex]].terminalID);
+      let termToFill = Game.getObjectById(globalTerminals[terminalKeys[termToFillIndex]].terminalID);
+
+      let maxAmountToSend = 100000;
+      let cost = Game.market.calcTransactionCost(maxAmountToSend, termToFillFrom.room.name, termToFill.room.name);
+      cost = cost + 1; //make sure doesnt round down.
+      console.log("COST: " + cost);
+      let ratio = cost / maxAmountToSend;
+      let amountToSend = Math.min(Math.floor(termToFillFrom.store[RESOURCE_ENERGY] / (1 + ratio)), maxAmountToSend);
+      console.log("AMOUNTTOSEND: " + amountToSend);
+      termToFillFrom.send(RESOURCE_ENERGY, amountToSend, termToFill.room.name);
       return true;
     }
   }
