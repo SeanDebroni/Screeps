@@ -5,7 +5,7 @@ var util = require('util');
 
 var roleZergling = {
 
-  run: function (creep)
+  run: function(creep)
   {
     var targRoom = Game.rooms[creep.memory.workRoom];
     if (creep.room.name != creep.memory.workRoom && (targRoom == undefined || targRoom == null))

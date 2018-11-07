@@ -173,23 +173,38 @@ module.exports = {
       if (term == null || term == undefined) continue;
       if (termToFillIndex == -1)
       {
+        /*
+        if (term.terminalID == "5b471149b52fc04b0847f0b0" || term.terminalID == "5b417508cf9ac67cd071405d" || term.terminalID == "5a7e9ca8ff918d28526184f1" || term.terminalID == "5ba71bab493f8c44139a65ec")
+        {
+          if (Game.getObjectById(term.terminalID)
+            .store[RESOURCE_ENERGY] <= 75000)
+          {
+            console.log("@!$!@$!@$!@$!@$@!$@!$");
+            termToFillIndex = i;
+
+          }
+        }*/
+
         if (Game.getObjectById(term.terminalID)
-          .store[RESOURCE_ENERGY] == 0)
+          .store[RESOURCE_ENERGY] <= 2000)
         {
           console.log("@!$!@$!@$!@$!@$@!$@!$");
           termToFillIndex = i;
         }
       }
-      else if (termToFillFromIndex == -1 && i != termToFillIndex)
+      if (termToFillFromIndex == -1 && i != termToFillIndex)
       {
         let terminalToCheck = Game.getObjectById(term.terminalID);
         if (terminalToCheck)
         {
+          //if (term.terminalID != "5b471149b52fc04b0847f0b0" && term.terminalID != "5b417508cf9ac67cd071405d" && term.terminalID != "5a7e9ca8ff918d28526184f1" && term.terminalID != "5ba71bab493f8c44139a65ec")
+          //{
           if (terminalToCheck.store[RESOURCE_ENERGY] > 125000)
           {
             console.log("@!$!@$!@$!@$!@$@!$@!$2222222");
             termToFillFromIndex = i;
           }
+          //}
         }
       }
     }

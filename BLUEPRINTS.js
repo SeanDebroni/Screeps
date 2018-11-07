@@ -745,7 +745,7 @@ const RCL_EIGHT_MAIN_CREEP = {
   ROLE_BASEHEALER:
   {
     maxCreeps: 1,
-    maxLevel: 1,
+    maxLevel: 5,
     blueprint:
     {
       base: [MOVE, HEAL],
@@ -1294,11 +1294,11 @@ const RCL_EIGHT_EXT_CREEP = {
   ROLE_HARVESTER:
   {
     maxCreepPerSource: 1,
-    maxLevel: 6,
+    maxLevel: 8,
     blueprint:
     {
-      base: [MOVE, WORK],
-      levelUp: [WORK]
+      base: [CARRY, MOVE, WORK],
+      levelUp: [WORK, MOVE, WORK]
     }
   },
   ROLE_UPGRADER:
@@ -1325,11 +1325,11 @@ const RCL_EIGHT_EXT_CREEP = {
   },
   ROLE_HAULER:
   {
-    maxCreepPerHarvester: 3,
+    maxCreepPerHarvester: 2,
     maxLevel: 26,
     blueprint:
     {
-      base: [CARRY, MOVE],
+      base: [CARRY, MOVE, WORK, MOVE],
       levelUp: [CARRY, MOVE, CARRY]
     }
   },
@@ -1349,14 +1349,14 @@ const RCL_EIGHT_EXT_CREEP = {
     maxLevel: 1,
     blueprint:
     {
-      base: [MOVE, CLAIM, CLAIM, MOVE],
+      base: [MOVE, CLAIM, CLAIM, MOVE, MOVE, MOVE],
       levelUp: [MOVE, CLAIM]
     }
   },
 
   ROLE_REPAIRMAN:
   {
-    maxCreeps: 1,
+    maxCreeps: 0,
     maxLevel: 13,
     blueprint:
     {

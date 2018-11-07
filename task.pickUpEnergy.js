@@ -3,6 +3,8 @@ var util = require('util');
 
 function pickupEnergyFrom(creep, target)
 {
+  util.repairUnderCreep(creep);
+
   var result = creep.pickup(target);
   if (result == ERR_NOT_IN_RANGE)
   {

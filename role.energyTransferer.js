@@ -17,21 +17,24 @@ var roleEnergyTransferer = {
   {
     if (creep.carry.energy < creep.carryCapacity)
     {
-      let term = Game.getObjectById(creep.memory.structureToDrawFromID);
-      if (!term) return;
-      if (term.store[RESOURCE_ENERGY] == 0)
+      let term = creep.room.terminal;
+      if (term)
       {
-        let stor = util.getHomeRoom(creep).storage;
-        if (!stor) return;
-
-        creep.memory.targetID = stor.id;
-        creep.memory.fillResourceType = RESOURCE_ENERGY;
-        creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
-        return;
+        if (term.store[RESOURCE_ENERGY] >= 100)
+        {
+          creep.memory.targetID = creep.room.terminal.id;
+          creep.memory.fillResourceType = RESOURCE_ENERGY;
+          creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+          return;
+        }
       }
-      creep.memory.targetID = creep.memory.structureToDrawFromID;
+      let stor = util.getHomeRoom(creep).storage;
+      if (!stor) return;
+      creep.memory.targetID = stor.id;
       creep.memory.fillResourceType = RESOURCE_ENERGY;
       creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+      return;
+
     }
     else
     {

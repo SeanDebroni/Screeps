@@ -4,14 +4,116 @@ const CONST = require('CONSTANTS');
 
 
 module.exports = {
+  repairUnderCreep(creep)
+  {
+    let hasWork = creep.memory.hasWorkPart;
+    if (hasWork || hasWork == undefined)
+    {
+      if (creep.carry.energy > 0)
+      {
+        let road = creep.pos.lookFor(LOOK_STRUCTURES);
+        if (road.length > 0)
+        {
+          if (road[0].hits < road[0].hitsMax)
+          {
+            let ret = creep.repair(road[0]);
+            if (ret == -12)
+            {
+              creep.memory.hasWorkPart = false;
+            }
+          }
+        }
+      }
+    }
+  },
+  moveOffEdge(creep)
+  {
+    let rand = Math.random();
+    if (creep.pos.x >= 46)
+    {
+      if (rand < 0.33)
+      {
+        creep.move(LEFT);
+      }
+      else if (rand < 0.66)
+      {
+        creep.move(BOTTOM_LEFT);
+      }
+      else
+      {
+        creep.move(TOP_LEFT);
+      }
+    }
+    else if (creep.pos.x <= 3)
+    {
+      if (rand < 0.33)
+      {
+        creep.move(RIGHT);
+      }
+      else if (rand < 0.66)
+      {
+        creep.move(TOP_RIGHT);
+      }
+      else
+      {
+        creep.move(BOTTOM_RIGHT);
+      }
+    }
+    else if (creep.pos.y >= 46)
+    {
+      if (rand < 0.33)
+      {
+        creep.move(TOP);
+      }
+      else if (rand < 0.66)
+      {
+        creep.move(TOP_RIGHT);
+      }
+      else
+      {
+        creep.move(TOP_LEFT);
+      }
+
+    }
+    else if (creep.pos.y <= 3)
+    {
+      if (rand < 0.33)
+      {
+        creep.move(BOTTOM);
+      }
+      else if (rand < 0.66)
+      {
+        creep.move(BOTTOM_LEFT);
+
+      }
+      else
+      {
+        creep.move(BOTTOM_RIGHT);
+      }
+    }
+  },
+  shouldKite(target)
+  {
+    let rangePart = false;
+    let meleePart = false;
+    for (var i = 0; i < target.body.length; ++i)
+    {
+      if (target.body[i].type == ATTACK)
+      {
+        return true;
+      }
+    }
+    return false;
+  },
   outputMovementError(err, creep, position)
   {
-    console.log("#$#$#$#$#$#$#$#$#$#$#$#$#$");
-    console.log("FROM: ");
-    console.log(creep.pos);
-    console.log("TO: ");
-    console.log(position);
-    console.log(err);
+    /*
+        console.log("#$#$#$#$#$#$#$#$#$#$#$#$#$");
+        console.log("FROM: ");
+        console.log(creep.pos);
+        console.log("TO: ");
+        console.log(position);
+        console.log(err);*/
   },
   findOpenSpotAdjacent(roomPos)
   {
@@ -74,6 +176,17 @@ module.exports = {
     if (workcount > creep.body.length / 3)
     {
       return true;
+    }
+    return false;
+  },
+  shouldFleeFrom(creep)
+  {
+    for (var i = 0; i < creep.body.length; ++i)
+    {
+      if (creep.body[i].type == ATTACK || creep.body[i].type == RANGED_ATTACK)
+      {
+        return true;
+      }
     }
     return false;
   },

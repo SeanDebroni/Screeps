@@ -30,16 +30,6 @@ var roleHauler = {
         var whatsThere = harv.room.lookAt(harv.pos);
         for (var i = 0; i < whatsThere.length; ++i)
         {
-          if (whatsThere[i].type == 'structure' && whatsThere[i].structure.structureType == STRUCTURE_CONTAINER)
-          {
-            if (whatsThere[i].structure.store[RESOURCE_ENERGY] > 20)
-            {
-              creep.memory.targetID = whatsThere[i].structure.id;
-              creep.memory.fillResourceType = RESOURCE_ENERGY;
-              creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
-              return;
-            }
-          }
           if (whatsThere[i].type === 'energy')
           {
             if (whatsThere[i].energy.amount > 20)
@@ -47,6 +37,17 @@ var roleHauler = {
               //console.log(creep.name + " going to priority target");
               creep.memory.targetID = whatsThere[i].energy.id;
               creep.memory.task = CONST.TASK_PICKUPENERGY;
+              return;
+            }
+          }
+          if (whatsThere[i].type == 'structure' && whatsThere[i].structure.structureType == STRUCTURE_CONTAINER)
+          {
+            if (whatsThere[i].structure.store[RESOURCE_ENERGY] > 100)
+            {
+              creep.memory.targetID = whatsThere[i].structure.id;
+              creep.memory.fillResourceType = RESOURCE_ENERGY;
+              creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+              creep.memory.leaveEnergy = 75;
               return;
             }
           }
@@ -87,7 +88,7 @@ var roleHauler = {
       }
     }
 
-    //thief code 
+    //thief code
     let isT = creep.memory.isThief;
     if (isT == 1 || isT == undefined)
     {
@@ -99,6 +100,7 @@ var roleHauler = {
         creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
         creep.memory.fillResourceType = RESOURCE_ENERGY;
         creep.memory.isThief = 1;
+        creep.memory.leaveEnergy = undefined;
       }
       else
       {
@@ -125,6 +127,7 @@ var roleHauler = {
       creep.memory.targetID = tombstonesWithEnergy[Math.floor(Math.random() * tombstonesWithEnergy.length)].id;
       creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
       creep.memory.fillResourceType = RESOURCE_ENERGY;
+      creep.memory.leaveEnergy = undefined;
       return;
     }
 
@@ -133,12 +136,16 @@ var roleHauler = {
     {
       var energyContainers = cacheFind.findCached(CONST.CACHEFIND_CONTAINERSWITHENERGY, util.getWorkRoom(creep));
 
-      if (energyContainers.length > 0)
+      for (var b = 0; b < energyContainers.length; ++b)
       {
-        creep.memory.targetID = energyContainers[Math.floor(Math.random() * droppedEnergy.length)].id;
-        creep.memory.fillResourceType = RESOURCE_ENERGY;
-        creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
-        return;
+        if (energyContainers[b].store.energy >= 71)
+        {
+          creep.memory.targetID = energyContainers[b].id;
+          creep.memory.fillResourceType = RESOURCE_ENERGY;
+          creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+          creep.memory.leaveEnergy = 75;
+          return;
+        }
       }
     }
 

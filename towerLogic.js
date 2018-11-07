@@ -64,7 +64,10 @@ module.exports = {
         for (var i = 0; i < towers.length; ++i)
         {
           if ((closestHostile.owner.username == "Invader"))
+          {
             towers[i].attack(closestHostile);
+            console.log("HERE");
+          }
         }
         return;
       }
@@ -73,7 +76,7 @@ module.exports = {
       {
         for (var i = 0; i < towers.length; ++i)
         {
-          if (towers[i].energyCapacity * 0.50 > towers[i].energy)
+          if (towers[i].energyCapacity * 0.59 > towers[i].energy)
           {
             continue;
           }

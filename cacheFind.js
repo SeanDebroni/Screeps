@@ -18,6 +18,11 @@ function findCachedInternal(whatToFind, room)
 
   switch (whatToFind)
   {
+    case CONST.CACHEFIND_GUARDS:
+      var a = _.filter(Game.creeps, (creep) => creep.memory.role = CONST.ROLE_GUARD, creep.memory.room.name == room.name);
+      cache.set(key, a);
+      return a;
+      break;
     case CONST.CACHEFIND_FINDSTRUCTURESTOSTEALENERGYFROM:
       var a = room.find(FIND_HOSTILE_STRUCTURES,
       {
@@ -170,12 +175,40 @@ function findCachedInternal(whatToFind, room)
       break;
 
     case CONST.CACHEFIND_HOSTILECREEPS:
-      var a = (room.find(FIND_HOSTILE_CREEPS));
+      var a = (room.find(FIND_HOSTILE_CREEPS,
+      {
+        filter: (creep) =>
+        {
+          return (creep.owner.username != "Source Keeper") && creep.owner.username != "demawi";
+        }
+      }));
+      cache.set(key, a);
+      break;
+
+    case CONST.CACHEFIND_HOSTILESOURCEKEEPERS:
+      var a = (room.find(FIND_HOSTILE_CREEPS,
+      {
+        filter: (creep) =>
+        {
+          return (creep.owner.username == "Source Keeper");
+        }
+      }));
       cache.set(key, a);
       break;
 
     case CONST.CACHEFIND_MYTOWERS:
       var a = room.find(FIND_MY_STRUCTURES,
+      {
+        filter: (structure) =>
+        {
+          return (structure.structureType == STRUCTURE_TOWER);
+        }
+      });
+      cache.set(key, a);
+      break;
+
+    case CONST.CACHEFIND_HOSTILETOWERS:
+      var a = room.find(FIND_HOSTILE_STRUCTURES,
       {
         filter: (structure) =>
         {
@@ -242,6 +275,16 @@ function findCachedInternal(whatToFind, room)
       cache.set(key, a);
       break;
 
+    case CONST.CACHEFIND_NEAREMPTYTOWERS:
+      var a = room.find(FIND_MY_STRUCTURES,
+      {
+        filter: (structure) =>
+        {
+          return (structure.structureType == STRUCTURE_TOWER) && (structure.energy < 0.4 * structure.energyCapacity) && structure.isActive();
+        }
+      });
+      cache.set(key, a);
+      break;
     case CONST.CACHEFIND_TOWERSTOFILL:
       var a = room.find(FIND_MY_STRUCTURES,
       {

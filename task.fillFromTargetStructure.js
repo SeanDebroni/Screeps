@@ -16,6 +16,8 @@ var taskFillFromTargetStructure = {
 
   run: function(creep)
   {
+    util.repairUnderCreep(creep);
+
     //check if targetID is set correctly.
     var targetID = creep.memory.targetID;
     if (targetID == undefined || targetID == null || targetID == -1)
@@ -61,12 +63,23 @@ var taskFillFromTargetStructure = {
     }
 
     var amount = target.store[whatToFill];
-    if (amount == 0 || amount == undefined || (amount < 50 && whatToFill == RESOURCE_ENERGY))
+    if (creep.memory.leaveEnergy != undefined)
+    {
+      amount -= creep.memory.leaveEnergy;
+    }
+    if (creep.memory.workRoom == "W37S42")
+    {
+      console.log(amount);
+    }
+    if (amount <= 0 || amount == undefined || (amount < 50 && whatToFill == RESOURCE_ENERGY))
     {
       wipeCreepMemory(creep);
       return;
     }
-    var err = creep.withdraw(target, whatToFill);
+
+    let openSpace = creep.carryCapacity - creep.carry[whatToFill];
+    if (amount > openSpace) amount = openSpace;
+    var err = creep.withdraw(target, whatToFill, amount);
     if (err == ERR_NOT_IN_RANGE && creep.carry[RESOURCE_ENERGY] == 0)
     {
       util.moveToOffRoadNonWalkable(creep, target, 17);

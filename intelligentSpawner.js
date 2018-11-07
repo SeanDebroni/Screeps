@@ -82,7 +82,12 @@ module.exports = {
     if (repairmen.length < maxRepairmen)
     {
       //0.9 is magic number, felt right.
-      var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom), (structure) => (structure.hits < structure.hitsMax * 0.9));
+      let magic = 0.9;
+      if (spawner.room.name != workRoom.name)
+      {
+        magic = 0.5;
+      }
+      var damagedStructures = _.filter(cacheFind.findCached(CONST.CACHEFIND_DAMAGEDSTRUCTURES, workRoom), (structure) => (structure.hits < structure.hitsMax * magic));
       if (damagedStructures.length == 0) return true;
 
       var mem = {};
@@ -103,24 +108,64 @@ module.exports = {
     }
     return true;
   },
-  spawnZergling: function(spawner, workRoom, maxZerglings, goAllOut)
+  spawnGuard: function(spawner, workRoomName, maxGuards)
+  {
+    let time = 300;
+    if (workRoomName == "W37S46") time = 450;
+    let guards = _.filter(Game.creeps, (creep) => ((creep.memory.patrolRoom == workRoomName) && (creep.memory.role == CONST.ROLE_GUARD) && (creep.memory.homeRoom == spawner.room.name) && (creep.ticksToLive > time || creep.ticksToLive == undefined)));
+    console.log("GUARDS " + spawner.room.name + " " + workRoomName);
+    console.log(guards.length);
+    if (workRoomName == "W40S41")
+    {
+      for (var i = 0; i < guards.length; ++i)
+      {
+        console.log(guards[i].pos);
+      }
+    }
+    if (guards.length < maxGuards)
+    {
+      let res = makeCreep.makeGuard(spawner.room, workRoomName, spawner);
+      if (res != -1)
+      {
+        return false;
+      }
+    }
+
+
+    return true;
+
+  },
+  spawnZergling: function(spawner, workRoom, maxZerglings, goAllOut, makeSuperCreep = false)
   {
     if (maxZerglings == 0) return true;
-    if (spawner == undefined) return true;
+    let doSpawning = true;
+    let spawnerRoom;
+    let consoleOut = false;
+    if (spawner == undefined)
+    {
+      consoleOut = true;
+      doSpawning = false;
+      spawnerRoom = workRoom;
+    }
+    else
+    {
+      spawnerRoom = spawner.room;
+    }
 
     var lings;
     if (goAllOut)
     {
-      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && creep.memory.task != CONST.TASK_SPAWNING);
+      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && creep.memory.task != CONST.TASK_SPAWNING && (creep.memory.task != CONST.TASK_IDLE));
     }
     else
     {
-      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING));
+      lings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.workRoom] == workRoom) && (creep.memory.role === CONST.ROLE_ZERGLING) && (creep.memory.task != CONST.TASK_IDLE));
     }
 
     if (lings.length < maxZerglings)
     {
-      let retiredLing = cacheFind.findCached(CONST.CACHEFIND_RETIREDZERGLINGS, spawner.room);
+      let retiredLing = cacheFind.findCached(CONST.CACHEFIND_RETIREDZERGLINGS, spawnerRoom);
+
       if (retiredLing.length > 0)
       {
         let ling = retiredLing[0];
@@ -131,11 +176,20 @@ module.exports = {
         return false;
       }
 
-      var totalLings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.homeRoom] == spawner.room.name) && (creep.memory.role === CONST.ROLE_ZERGLING));
+      var totalLings = _.filter(Game.creeps, (creep) => (Game.rooms[creep.memory.homeRoom] == spawnerRoom.name) && (creep.memory.role === CONST.ROLE_ZERGLING));
       //5 felt right, should maybe be refactored to be dynamic at some point, maybe in to blueprint
-      if (totalLings.length < 5)
+      if (totalLings.length < 10)
       {
-        var res = makeCreep.makeZergling(spawner.room, workRoom, spawner, true, goAllOut);
+        if (!doSpawning) return false;
+        var res;
+        if (!makeSuperCreep)
+        {
+          res = makeCreep.makeZergling(spawnerRoom, workRoom, spawner, true, goAllOut);
+        }
+        else
+        {
+          res = makeCreep.makeSuperZergling(spawnerRoom, workRoom, spawner, true, goAllOut);
+        }
         if (res != -1)
         {
           return false;
@@ -461,7 +515,7 @@ module.exports = {
 
     for (var i = 0; i < sources.length; ++i)
     {
-      sourceDistances[sources[i].id] = cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos);
+      sourceDistances[sources[i].id] = parseInt(cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos));
     }
 
     var haulers = [];
@@ -471,6 +525,7 @@ module.exports = {
       let curHaulerTTL = unfilteredHaulers[i].ticksToLive;
       let curHaulerSID = unfilteredHaulers[i].memory.assignedSourceID;
       let dist = sourceDistances[curHaulerSID] * 2;
+
 
       if (curHaulerTTL == undefined || curHaulerTTL > dist)
       {
@@ -542,7 +597,7 @@ module.exports = {
 
       // if there is twice as much stuff dropped as there is capacity to carry it : or, it will take more then 2 trips to haul it all.
       //  make a new hauler
-      if (sourceLeastCount < maxHaulersPerSource || ((droppedSum > sumCapac * 2 || droppedSum > 3000) && spawner.room.name != workRoom.name))
+      if (sourceLeastCount < maxHaulersPerSource || ((droppedSum > sumCapac * 2 || droppedSum > 3200) && spawner.room.name != workRoom.name))
       {
         mem.assignedSourceID = sourceLeastID;
         var res = makeCreep.makeBestCreepFromBlueprint(spawner, workRoom, haulerBlueprint.blueprint, mem, haulerBlueprint.maxLevel, true);
@@ -591,7 +646,16 @@ module.exports = {
       //takes 3 ticks to move one space on road for current harvesters
       //18 was how long it took to spawn a harvester at the time.
       //50 is buffer time, magic number
-      var ttspd = (cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos) * 3) + 50 + 18;
+      let ttspd;
+      if (spawner.room.controller.level == 8 && spawner.room.name != workRoom.name)
+      {
+        ttspd = (parseInt(cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos))) + 50 + 24;
+      }
+      else
+      {
+        ttspd = (parseInt(cachedGetDistance.cachedGetDistance(spawner.pos, sources[i].pos)) * 3) + 50 + 18;
+      }
+
 
       var unfilteredHarvesters = cacheFind.findCached(CONST.CACHEFIND_FINDHARVESTERS, workRoom);
       var harvesters2 = _.filter(unfilteredHarvesters, (creep) => (creep.memory.sID == sources[i].id && (creep.ticksToLive > ttspd || creep.ticksToLive == undefined)));

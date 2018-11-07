@@ -22,21 +22,21 @@ function withdrawEnergyFrom(creep, target, revertIfEmpty)
 
   switch (target.structureType)
   {
-  case STRUCTURE_SPAWN:
-  case STRUCTURE_EXTENSION:
-  case STRUCTURE_TOWER:
-    targetEnergy = target.energy;
-    break;
+    case STRUCTURE_SPAWN:
+    case STRUCTURE_EXTENSION:
+    case STRUCTURE_TOWER:
+      targetEnergy = target.energy;
+      break;
 
-  case STRUCTURE_STORAGE:
-  case STRUCTURE_CONTAINER:
-  case STRUCTURE_TERMINAL:
-  case STRUCTURE_LAB:
-    targetEnergy = target.store[RESOURCE_ENERGY];
-    break;
-  default:
-    console.log(target.structureType + " IS NOT SUPPORTED FOR FILLING FROM");
-    break;
+    case STRUCTURE_STORAGE:
+    case STRUCTURE_CONTAINER:
+    case STRUCTURE_TERMINAL:
+    case STRUCTURE_LAB:
+      targetEnergy = target.store[RESOURCE_ENERGY];
+      break;
+    default:
+      console.log(target.structureType + " IS NOT SUPPORTED FOR FILLING FROM");
+      break;
   }
 
   if (targetEnergy < 50)
@@ -74,7 +74,7 @@ function withdrawEnergyFrom(creep, target, revertIfEmpty)
 
 
 var taskFillFromBase = {
-  run: function (creep)
+  run: function(creep)
   {
     if (creep.carry.energy < creep.carryCapacity)
     {

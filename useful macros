@@ -1,0 +1,91 @@
+//CONTAINER check
+
+for(var TTroom of Object.values(Game.rooms))
+{
+	if(TTroom!=undefined)
+	{
+		var TTa = _.filter(TTroom.find(FIND_STRUCTURES), (struct)=>(struct.structureType==STRUCTURE_CONTAINER)).length;
+		var TTb = TTroom.find(FIND_SOURCES).length;
+		if(TTa<TTb)
+		console.log(TTroom.name);
+
+	}
+}
+
+
+
+//Nuke room no walls
+let roomName = "";
+let room = Game.rooms[roomName];
+let structures = room.find(FIND_MY_STRUCTURES).concat(room.find(FIND_STRUCTURES)).concat(room.find(FIND_HOSTILE_STRUCTURES));
+for(var struct of structures)
+{
+	if(struct.structureType!= STRUCTURE_TERMINAL )
+	{
+		struct.destroy();
+	}
+}
+
+//Nuke room no walls
+let roomName = "";
+
+
+
+//claim rooms
+let claimercreepid= "5bcd4ed520c0671b75bf4a03";
+Game.getObjectById(claimercreepid).claimController(Game.getObjectById(claimercreepid).room.controller);
+
+
+
+//Delete road construction
+let roomName = "W38S39";
+let room = Game.rooms[roomName];
+console.log(room);
+let sites = room.find(FIND_CONSTRUCTION_SITES);
+console.log(sites.length);
+for(var site of sites)
+{
+
+		site.remove();
+
+}
+
+
+var value;
+Object.keys(Game.constructionSites).forEach(function(key) {
+    value = Game.constructionSites[key];
+		value.remove();
+    console.log(value);
+});
+
+
+
+
+
+//Make roads
+let roomName = "W37S42";
+let x1=    36;
+let y1=    10;
+let x2=    11;
+let y2=    25;
+
+let room = Game.rooms[roomName];
+let origin = new RoomPosition(x1, y1, roomName);
+let dest =  {pos: new RoomPosition(x2, y2, roomName), range:0 };
+
+let res = PathFinder.search(origin, dest);
+for(var point of res.path)
+{
+	room.createConstructionSite(point, STRUCTURE_ROAD);
+}
+
+
+
+
+
+//Testing
+
+let pos1 = new RoomPosition(25,25, "W36S40");
+let pos2 = new RoomPosition(25,27, "W36S40");
+let ret = PathFinder.search(pos1, {pos:pos2, range: 3},{flee: true});
+ret.path;

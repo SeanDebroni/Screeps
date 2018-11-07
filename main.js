@@ -18,6 +18,7 @@ var roleEnergyTransferer = require('role.energyTransferer');
 var roleMineralMiner = require('role.mineralMiner');
 var roleClaimer = require('role.claimer');
 var roleColonist = require('role.colonist');
+var roleGuard = require('role.guard');
 
 var taskFillBase = require('task.fillBase');
 var taskMineEnergy = require('task.mineEnergy');
@@ -60,12 +61,12 @@ let gTaskAvg = {};
 let gTaskNum = {};
 let codeAge = 0;
 let manualGC = 0;
+let totalCPUUsedOverall = 0;
 
 
 module.exports.loop = function()
 {
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
   let cpuTimesUsedArr = [];
   var cpuUsedOld = Game.cpu.getUsed();
   var cpuUsedNew = Game.cpu.getUsed();
@@ -110,13 +111,13 @@ module.exports.loop = function()
   console.log("CPU used for spawning logic: " + (cpuUsedNew - cpuUsedOld));
   cpuTimesUsedArr.push(cpuUsedNew - cpuUsedOld);
   cpuUsedOld = cpuUsedNew;
-
-  for (var i = 0; i < allRoomControllersKeys.length; ++i)
-  {
-    var roomController = allRoomControllers[allRoomControllersKeys[i]];
-    var didWork = roadMaintainer.maintainRoads(roomController, allRoomControllersKeys[i]);
-    if (didWork) break;
-  }
+  /*
+    for (var i = 0; i < allRoomControllersKeys.length; ++i)
+    {
+      var roomController = allRoomControllers[allRoomControllersKeys[i]];
+      var didWork = roadMaintainer.maintainRoads(roomController, allRoomControllersKeys[i]);
+      if (didWork) break;
+    }*/
 
   cpuUsedNew = Game.cpu.getUsed();
   console.log("CPU used for roadMaintainance: " + (cpuUsedNew - cpuUsedOld));
@@ -188,6 +189,9 @@ module.exports.loop = function()
         break;
       case CONST.ROLE_CLAIMER:
         roleClaimer.run(creep);
+        break;
+      case CONST.ROLE_GUARD:
+        roleGuard.run(creep);
         break;
       default:
         break;
@@ -347,7 +351,8 @@ module.exports.loop = function()
   {
     Memory.maxCodeAge = codeAge;
   }
+  totalCPUUsedOverall += cpuUsedSum;
+  console.log("CPU UsedAverage: " + (totalCPUUsedOverall / codeAge));
   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   cpuUsedOld = cpuUsedNew;
-
 }

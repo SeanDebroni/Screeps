@@ -40,9 +40,12 @@ var roleColonist = {
         else
         {
           let stuff2 = cacheFind.findCached(CONST.CACHEFIND_STRUCTURESWITHENERGY, room);
-          creep.memory.targetID = stuff2[Math.floor(Math.random() * stuff2.length)].id;
-          creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
-          return;
+          if (stuff2.length > 0)
+          {
+            creep.memory.targetID = stuff2[Math.floor(Math.random() * stuff2.length)].id;
+            creep.memory.task = CONST.TASK_FILLFROMTARGETSTRUCTURE;
+            return;
+          }
         }
 
 

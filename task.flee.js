@@ -6,8 +6,15 @@ var cacheFind = require('cacheFind');
 //Requires targetIDSet
 var taskFlee = {
 
-  run: function (creep)
+  run: function(creep)
   {
+    if (creep.memory.role == CONST.ROLE_HARVESTER)
+    {
+      if (creep.carry.energy > 0)
+      {
+        creep.drop(RESOURCE_ENERGY);
+      }
+    }
     var hostileCreeps = cacheFind.findCached(CONST.CACHEFIND_HOSTILECREEPS, util.getWorkRoom(creep));
 
     if (hostileCreeps.length > 0 || Game.rooms[creep.memory.workRoom] == undefined)
